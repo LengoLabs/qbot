@@ -8,7 +8,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "Unlicense",
   "dependencies": {
     "discord.js": "^11.4.2",
     "noblox.js": "^4.2.6"
