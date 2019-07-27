@@ -1,7 +1,3 @@
 {
-    "token" : "[INSERT DISCORD BOT TOKEN]",
-    "prefix" : "q!",
-    "cookie" : "[INSERT ROBLOX BOT COOKIE]",
-    "groupId" : [INSERT GROUP ID],
-    "maximumRank" : 255
+    
 }
