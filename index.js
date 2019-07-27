@@ -22,7 +22,7 @@ onShout.on('data', function (shout) {
             description: shout.body,
             title: `Posted by ${shout.poster.username}`,
             footer: {
-                text: 'Action Logs'
+                text: 'Shout Announcement'
             },
             timestamp: new Date()
         }});
@@ -32,7 +32,7 @@ onShout.on('data', function (shout) {
             description: '*Shout cleared.*',
             title: `Posted by ${shout.poster.username}`,
             footer: {
-                text: 'Action Logs'
+                text: 'Shout Announcement'
             },
             timestamp: new Date()
         }});
