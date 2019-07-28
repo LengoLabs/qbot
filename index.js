@@ -298,7 +298,7 @@ client.on("message", async message => {
                                 var logchannel = message.guild.channels.get(config.logchannelid);
                                 logchannel.send({embed: {
                                     color: 11253955,
-                                    description: `<@${message.author.id}> has demoted ${username}`,
+                                    description: `<@${message.author.id}> has demoted ${username}.`,
                                     author: {
                                         name: message.author.tag,
                                         icon_url: message.author.displayAvatarURL
