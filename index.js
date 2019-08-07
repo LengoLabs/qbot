@@ -541,8 +541,29 @@ client.on("message", async message => {
            }});
         });
     }
-
+if(command === 'getrank') {
+               var username = args[1]
+            if (username){
+                rbx.getIdFromUsername(username)
+			.then(function(userId){
+        
+                rbx.getRankNameInGroup(config.groupId, id)
+                    .then(function(RankName){
+            } else {
+                 message.channel.send({embed: {
+               color: 11253955,
+               description: `**Your Rank in Group**\nRank: ${RankName}`,
+               author: {
+                   name: message.author.tag,
+                   icon_url: message.author.displayAvatarURL
+               }
+           }});
+                })
+            })
+            }
+}
 // End of commands.
 });
+
 
 client.login(config.token);
