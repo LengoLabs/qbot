@@ -24,7 +24,6 @@ onShout.on('data', function (shout) {
             footer: {
                 text: 'Shout Announcement'
             },
-            thumbnail: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${shout.poster.username}`,
             timestamp: new Date()
         }});
     } else {
@@ -35,7 +34,6 @@ onShout.on('data', function (shout) {
             footer: {
                 text: 'Shout Announcement'
             },
-            thumbnail: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${shout.poster.username}`,
             timestamp: new Date()
         }});
     }
@@ -118,8 +116,7 @@ client.on("message", async message => {
                                     footer: {
                                         text: 'Action Logs'
                                     },
-                                    timestamp: new Date(),
-                                    thumbnail: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${username}`
+                                    timestamp: new Date()
                                 }});
                             }).catch(function(err){
                                 console.log(chalk.red('Issue with setRank: ' + err));
@@ -214,8 +211,7 @@ client.on("message", async message => {
                                     footer: {
                                         text: 'Action Logs'
                                     },
-                                    timestamp: new Date(),
-                                    thumbnail: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${username}`
+                                    timestamp: new Date()
                                 }});
                             }).catch(function(err){
                                 console.log(chalk.red('Issue with promote: ' + err));
@@ -310,8 +306,7 @@ client.on("message", async message => {
                                     footer: {
                                         text: 'Action Logs'
                                     },
-                                    timestamp: new Date(),
-                                    thumbnail: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${username}`
+                                    timestamp: new Date()
                                 }});
                             }).catch(function(err){
                                 console.log(chalk.red('Issue with demote: ' + err));
@@ -406,8 +401,7 @@ client.on("message", async message => {
                                     footer: {
                                         text: 'Action Logs'
                                     },
-                                    timestamp: new Date(),
-                                    thumbnail: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${username}`
+                                    timestamp: new Date()
                                 }});
                             }).catch(function(err){
                                 console.log(chalk.red('Issue with setRank (fire): ' + err));
@@ -543,8 +537,7 @@ client.on("message", async message => {
                author: {
                    name: message.author.tag,
                    icon_url: message.author.displayAvatarURL
-               },
-               thumbnail: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${shout.poster.username}`
+               }
            }});
         });
     }
