@@ -15,6 +15,7 @@
     "discord.js": "^11.5.1",
     "figlet": "^1.2.3",
     "inquirer": "^6.5.0",
-    "noblox.js": "^4.2.6"
+    "noblox.js": "^4.2.6",
+    "roblox-js": "^4.0.4"
   }
 }
