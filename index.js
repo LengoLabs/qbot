@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const rbx = require('noblox.js');
+const roblox = require("roblox-js")
 const client = new Discord.Client();
 const config = require("./config.json");
 const chalk = require('chalk');
@@ -57,7 +58,7 @@ client.on("message", async message => {
     if(command === "help") {
         return message.channel.send({embed: {
             color: 11253955,
-            description: `My commands are \`${config.prefix}help\`, \`${config.prefix}setrank <user> <rank number>\`, \`${config.prefix}promote <user>\`, \`${config.prefix}demote <user>\`, \`${config.prefix}fire <user>\`, \`${config.prefix}shout <msg>\`, and \`${config.prefix}clearshout\`.`,
+            description: `My commands are \`${config.prefix}help\`, \`${config.prefix}setrank <user> <rank number>\`, \`${config.prefix}promote <user>\`, \`${config.prefix}demote <user>\`, \`${config.prefix}fire <user>\`, \`${config.prefix}shout <msg>\`, \`${config.prefix}clearshout\` and \`${config.prefix}getinfo <user>\`.`,
             author: {
                 name: message.author.tag,
                 icon_url: message.author.displayAvatarURL
@@ -562,6 +563,60 @@ client.on("message", async message => {
            }});
         });
     }
+
+if(command === 'getinfo'){
+  let username = args[0];
+  if(!username) return message.channel.send({embed: {
+    description: `You did not provide the \`username\` argument.\n`
+    + `\n`
+    + `Usage: ${config.prefix}getinfo <username>`,
+    author: {
+      name: message.author.tag,
+      icon_url: message.author.displayAvatarURL
+    }, 
+    color: 16732497
+  }});
+  rbx.getIdFromUsername(username).then(function (id) {
+    roblox.getRankNameInGroup(config.groupId, id).then(function (rank) {
+        message.channel.send({embed: {
+        description: `:white_check_mark: **Information Loading..**`,
+        author: {
+          name: message.author.tag,
+          icon_url: message.author.displayAvatarURL
+                },
+        color: 7456369,
+        fields: [{
+          name: `Username`,
+          value: username,
+          inline: false
+        }, {
+          name: `ID`,
+          value: id,
+          inline: false
+        }, {
+          name: `Group Rank`,
+          value: rank,
+          inline: false
+        }],
+        thumbnail: {
+            url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${username}`        
+        }
+      }})
+    })
+  }).catch(function (err) {
+    return message.channel.send({embed: {
+    description: `I couldn't find that user!`
+    + `\n`
+    + `You provided: ${username}`,
+    author: {
+      name: message.author.tag,
+      icon_url: message.author.displayAvatarURL
+    }, 
+    color: 16732497
+  }})
+  })
+};
+}
 
 // End of commands.
 });
