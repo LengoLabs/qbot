@@ -1,4 +1,4 @@
-# qbot - A free but advanced open source Discord-Roblox ranking bot.
+# Links
 
 Download qbot on Github: [https://github.com/yogurtsyum/qbot/releases](https://github.com/yogurtsyum/qbot/releases)
 
