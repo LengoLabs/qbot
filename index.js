@@ -6,8 +6,10 @@ const chalk = require('chalk');
 const figlet = require('figlet');
 
 const Keyv = require('keyv');
-const keyv = new Keyv(config.db);
-keyv.on('error', err => console.log('Database error: ' + err));
+if(config.db === 'false'){
+    const keyv = new Keyv(config.db);
+    keyv.on('error', err => console.log('Database error: ' + err));
+}
 
 rbx.cookieLogin(config.cookie);
 
