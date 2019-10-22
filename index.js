@@ -6,7 +6,7 @@ const chalk = require('chalk');
 const figlet = require('figlet');
 
 const Keyv = require('keyv');
-if(config.db === 'true'){
+if(config.verifytoggle === 'true'){
     const keyv = new Keyv(config.db);
     keyv.on('error', err => console.log('Database error: ' + err));
 }
