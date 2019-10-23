@@ -5,12 +5,6 @@ const config = require("./config.json");
 const chalk = require('chalk');
 const figlet = require('figlet');
 
-const Keyv = require('keyv');
-if(config.verifytoggle === 'true'){
-    const keyv = new Keyv(config.db);
-    keyv.on('error', err => console.log('Database error: ' + err));
-}
-
 rbx.cookieLogin(config.cookie);
 
 client.on("ready", () => {
@@ -63,7 +57,7 @@ client.on("message", async message => {
     if(command === "help") {
         return message.channel.send({embed: {
             color: 11253955,
-            description: `Command List:\n\`${config.prefix}help\`\n\`${config.prefix}setrank <user> <rank number>\`\n\`${config.prefix}promote <user>\`\n\`${config.prefix}demote <user>\`\n\`${config.prefix}fire <user>\`\n\`${config.prefix}shout <msg>\`\n\`${config.prefix}clearshout\`\n\`${config.prefix}verify <username>\`\n\`${config.prefix}discord-user <Roblox username>\`\n\`${config.prefix}roblox-user <tag a Discord user>\`\n\`${config.prefix}getrole\`\n\`${config.prefix}forcegetrole <tag a Discord user>\``,
+            description: `My commands are \`${config.prefix}help\`, \`${config.prefix}setrank <user> <rank number>\`, \`${config.prefix}promote <user>\`, \`${config.prefix}demote <user>\`, \`${config.prefix}fire <user>\`, \`${config.prefix}shout <msg>\`, and \`${config.prefix}clearshout\`.`,
             author: {
                 name: message.author.tag,
                 icon_url: message.author.displayAvatarURL
@@ -72,7 +66,7 @@ client.on("message", async message => {
     };
 
     if(command === "setrank") {
-        if(!message.member.roles.some(r=>["Ranking Permissions"].includes(r.name))){
+        if(!message.member.roles.some(r=>["Ranking Permissions"].includes(r.name)) )
             return message.channel.send({embed: {
                 color: 15406156,
                 description: "You need the `Ranking Permissions` role to run this command.",
@@ -81,7 +75,6 @@ client.on("message", async message => {
                     icon_url: message.author.displayAvatarURL
                 }
             }});
-        }
             var username = args[0]
             var rankIdentifier = Number(args[1]) ? Number(args[1]) : args[1];
             if (!rankIdentifier) return message.channel.send({embed: {
@@ -180,7 +173,7 @@ client.on("message", async message => {
     }
 
     if(command === "promote") {
-        if(!message.member.roles.some(r=>["Ranking Permissions"].includes(r.name))){
+        if(!message.member.roles.some(r=>["Ranking Permissions"].includes(r.name)) )
             return message.channel.send({embed: {
                 color: 15406156,
                 description: "You need the `Ranking Permissions` role to run this command.",
@@ -189,7 +182,6 @@ client.on("message", async message => {
                     icon_url: message.author.displayAvatarURL
                 }
             }});
-        }
             var username = args[0]
             if (username){
                 rbx.getIdFromUsername(username)
@@ -279,7 +271,7 @@ client.on("message", async message => {
     }
 
     if(command === "demote") {
-        if(!message.member.roles.some(r=>["Ranking Permissions"].includes(r.name))){
+        if(!message.member.roles.some(r=>["Ranking Permissions"].includes(r.name)) )
             return message.channel.send({embed: {
                 color: 15406156,
                 description: "You need the `Ranking Permissions` role to run this command.",
@@ -288,7 +280,6 @@ client.on("message", async message => {
                     icon_url: message.author.displayAvatarURL
                 }
             }});
-        }
             var username = args[0]
             if (username){
                 rbx.getIdFromUsername(username)
@@ -378,7 +369,7 @@ client.on("message", async message => {
     }
 
     if(command === "fire") {
-        if(!message.member.roles.some(r=>["Ranking Permissions"].includes(r.name))){
+        if(!message.member.roles.some(r=>["Ranking Permissions"].includes(r.name)) )
             return message.channel.send({embed: {
                 color: 15406156,
                 description: "You need the `Ranking Permissions` role to run this command.",
@@ -387,7 +378,6 @@ client.on("message", async message => {
                     icon_url: message.author.displayAvatarURL
                 }
             }});
-        }
             var username = args[0]
             if (username){
                 rbx.getIdFromUsername(username)
@@ -477,16 +467,15 @@ client.on("message", async message => {
     }
 
     if(command === 'shout'){
-        if(!message.member.roles.some(r=>["Ranking Permissions", "Shout Permissions"].includes(r.name))){
-            return message.channel.send({embed: {
-                color: 15406156,
-                description: "You need the `Ranking Permissions` or `Shout Permissions` role to run this command.",
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        }
+        if(!message.member.roles.some(r=>["Ranking Permissions", "Shout Permissions"].includes(r.name)) )
+        return message.channel.send({embed: {
+            color: 15406156,
+            description: "You need the `Ranking Permissions` or `Shout Permissions` role to run this command.",
+            author: {
+                name: message.author.tag,
+                icon_url: message.author.displayAvatarURL
+            }
+        }});
         var msg = args.slice(0).join(" ");
         if(!msg){
             return message.channel.send({embed: {
@@ -524,16 +513,15 @@ client.on("message", async message => {
     }
 
     if(command === 'clearshout'){
-        if(!message.member.roles.some(r=>["Ranking Permissions", "Shout Permissions"].includes(r.name))){
-            return message.channel.send({embed: {
-                color: 15406156,
-                description: "You need the `Ranking Permissions` or `Shout Permissions` role to run this command.",
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        }
+        if(!message.member.roles.some(r=>["Ranking Permissions", "Shout Permissions"].includes(r.name)) )
+        return message.channel.send({embed: {
+            color: 15406156,
+            description: "You need the `Ranking Permissions` or `Shout Permissions` role to run this command.",
+            author: {
+                name: message.author.tag,
+                icon_url: message.author.displayAvatarURL
+            }
+        }});
     rbx.shout(config.groupId, "").catch(console.error);
     message.channel.send({embed: {
         color: 8117429,
@@ -573,390 +561,6 @@ client.on("message", async message => {
                }
            }});
         });
-    }
-
-    if(command === 'verify'){
-        if(config.verifytoggle === 'false') return;
-        let username = args[0];
-        if(!username){
-            return message.channel.send({embed: {
-                color: 15406156,
-                description: `Please specify a username.`,
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        }
-        let robloxuserid = await rbx.getIdFromUsername(username);
-        let alreadyverified = await keyv.get(robloxuserid);
-        if(alreadyverified){
-            return message.channel.send({embed: {
-                color: 15406156,
-                description: `That user is already verified!`,
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        }
-        rbx.getIdFromUsername(username)
-        .then(function(id){
-            keyv.set(`${id}_verifycode`, message.author.id, 120000);
-            keyv.set(`${id}_verifycode_discord`, message.author.id);
-            message.channel.send({embed: {
-                description: `Please change your Roblox status to the following message:\n\`${message.author.id}\`\nOnce you have done so, type this command:\n\`${config.prefix}verify-done ${username}\`\nThis will expire in 2 minutes.`,
-                color: 11253955,
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        }).catch(function(err){
-            message.channel.send({embed: {
-                color: 15406156,
-                description: `Oops! ${username} does not exist in the Roblox user database. Perhaps you misspelled?`,
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        });
-    }
-
-    if(command === 'verify-done'){
-        if(config.verifytoggle === 'false') return;
-        let username = args[0];
-        if(!username){
-            return message.channel.send({embed: {
-                color: 15406156,
-                description: `Please specify a username.`,
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        }
-        let id = await rbx.getIdFromUsername(username);
-        if(!id){
-            return message.channel.send({embed: {
-                color: 15406156,
-                description: `Oops! ${username} does not exist in the Roblox user database. Perhaps you misspelled?`,
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        }
-            let code = await keyv.get(`${id}_verifycode`);
-            if(!code){
-                return message.channel.send({embed: {
-                    description: `That user does not have a verification code assigned to them or it expired.`,
-                    color: 15406156,
-                    author: {
-                        name: message.author.tag,
-                        icon_url: message.author.displayAvatarURL
-                    }
-                }});
-            }
-            let codedisc = await keyv.get(`${id}_verifycode_discord`);
-            if(codedisc !== message.author.id){
-                return message.channel.send({embed: {
-                    description: `That code is not assigned to you.`,
-                    color: 15406156,
-                    author: {
-                        name: message.author.tag,
-                        icon_url: message.author.displayAvatarURL
-                    }
-                }});
-            }
-            let status = await rbx.getStatus(id)
-            if(!status){
-                return message.channel.send({embed: {
-                    description: `There is no status on that Roblox account.`,
-                    color: 15406156,
-                    author: {
-                        name: message.author.tag,
-                        icon_url: message.author.displayAvatarURL
-                    }
-                }});
-            }
-            if(status != code){
-                return message.channel.send({embed: {
-                    description: `The status was not entered correctly.`,
-                    color: 15406156,
-                    author: {
-                        name: message.author.tag,
-                        icon_url: message.author.displayAvatarURL
-                    }
-                }});
-            } else {
-                await keyv.set(id, message.author.id);
-                await keyv.set(message.author.id, id);
-                let rbxrole = await rbx.getRankInGroup(config.groupId, id);
-                let rbxrolename = await rbx.getRankNameInGroup(config.groupId, id);
-                let discrole = await message.guild.roles.find(role => role.name === `[${rbxrole}] ${rbxrolename}`);
-                let alreadyhaverole = await keyv.get(`${message.author.id}_CURRENTROLE`);
-                message.channel.send({embed: {
-                    description: `Your Discord account has successfully been linked to the specified Roblox account!`,
-                    color: 8117429,
-                    author: {
-                        name: message.author.tag,
-                        icon_url: message.author.displayAvatarURL
-                    }
-                }});
-                if(!discrole){
-                    if(!alreadyhaverole){
-                        return;
-                    } else {
-                        message.member.removeRole(alreadyhaverole);
-                        await keyv.delete(`${message.author.id}_CURRENTROLE`);
-                    }
-                }
-                if(!alreadyhaverole){
-                    message.member.addRole(discrole.id);
-                } else {
-                    message.member.removeRole(alreadyhaverole);
-                    message.member.addRole(discrole.id);
-                }
-                await keyv.set(`${message.author.id}_CURRENTROLE`, discrole.id);
-            }
-    }
-
-    if(command === 'roblox-user'){
-        if(config.verifytoggle === 'false') return;
-        let user = message.mentions.members.first() || message.guild.members.get(args[0]);
-        if(!user){
-            return message.channel.send({embed: {
-                color: 15406156,
-                description: `Please tag a user after the command or enter their User ID.`,
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        }
-        let userid = await keyv.get(user.id);
-        if(!userid){
-            return message.channel.send({embed: {
-                color: 15406156,
-                description: `That user is not verified.`,
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        }
-        let username = await rbx.getUsernameFromId(userid);
-        message.channel.send({embed: {
-            description: `\`${user.user.tag}\` is linked to \`${username}\`.`,
-            color: 8117429,
-            author: {
-                name: message.author.tag,
-                icon_url: message.author.displayAvatarURL
-            }
-        }});
-    }
-
-    if(command === 'discord-user'){
-        if(config.verifytoggle === 'false') return;
-        let user = args[0];
-        if(!user){
-            return message.channel.send({embed: {
-                color: 15406156,
-                description: `Please specify a username.`,
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        }
-        let rbxuserid = await rbx.getIdFromUsername(user);
-        let userid = await keyv.get(rbxuserid);
-        if(!userid){
-            return message.channel.send({embed: {
-                color: 15406156,
-                description: `That user is not verified.`,
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        }
-        let discuser = await client.users.get(userid);
-        message.channel.send({embed: {
-            description: `\`${user}\` is linked to \`${discuser.tag}\`.`,
-            color: 8117429,
-            author: {
-                name: message.author.tag,
-                icon_url: message.author.displayAvatarURL
-            }
-        }});
-    }
-
-    if(command === 'unverify'){
-        if(config.verifytoggle === 'false') return;
-        let rbxid = await keyv.get(message.author.id);
-        let discid = await keyv.get(rbxid);
-        if(!rbxid || !discid){
-            return message.channel.send({embed: {
-                color: 15406156,
-                description: `You are not verified.`,
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        }
-        let isgivenrole = await keyv.get(`${message.author.id}_CURRENTROLE`);
-        if(isgivenrole){
-            message.member.removeRole(isgivenrole);
-        }
-        await keyv.delete(message.author.id);
-        await keyv.delete(rbxid);
-        message.channel.send({embed: {
-            description: `Successfully unverified.`,
-            color: 8117429,
-            author: {
-                name: message.author.tag,
-                icon_url: message.author.displayAvatarURL
-            }
-        }});
-    }
-
-    if(command === 'getrole'){
-        if(config.verifytoggle === 'false') return;
-        let id = await keyv.get(message.author.id);
-        if(!id){
-            return message.channel.send({embed: {
-                color: 15406156,
-                description: `The specified user is not verified.`,
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        }
-        let rbxrole = await rbx.getRankInGroup(config.groupId, id);
-        let rbxrolename = await rbx.getRankNameInGroup(config.groupId, id);
-        let discrole = await message.guild.roles.find(role => role.name === `[${rbxrole}] ${rbxrolename}`);
-        let alreadyhaverole = await keyv.get(`${message.author.id}_CURRENTROLE`);
-        if(!discrole){
-            if(!alreadyhaverole){
-                return message.channel.send({embed: {
-                    description: `Successfully refreshed the specified user's roles.`,
-                    color: 8117429,
-                    author: {
-                        name: message.author.tag,
-                        icon_url: message.author.displayAvatarURL
-                    }
-                }});
-            } else {
-                message.member.removeRole(alreadyhaverole);
-                await keyv.delete(`${message.author.id}_CURRENTROLE`);
-                message.channel.send({embed: {
-                    description: `Successfully refreshed the specified user's roles.`,
-                    color: 8117429,
-                    author: {
-                        name: message.author.tag,
-                        icon_url: message.author.displayAvatarURL
-                    }
-                }});
-            }
-        }
-        if(!alreadyhaverole){
-            message.member.addRole(discrole.id);
-        } else {
-            message.member.removeRole(alreadyhaverole);
-            message.member.addRole(discrole.id);
-        }
-        await keyv.set(`${message.author.id}_CURRENTROLE`, discrole.id);
-        message.channel.send({embed: {
-            description: `Successfully refreshed your roles.`,
-            color: 8117429,
-            author: {
-                name: message.author.tag,
-                icon_url: message.author.displayAvatarURL
-            }
-        }});
-    }
-
-    if(command === 'forcegetrole'){
-        if(config.verifytoggle === 'false') return;
-        if(!message.member.roles.some(r=>["Ranking Permissions"].includes(r.name))){
-            return message.channel.send({embed: {
-                color: 15406156,
-                description: "You need the `Ranking Permissions` role to run this command.",
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        }
-        let username = message.mentions.members.first() || message.guild.members.get(args[0]);
-        if(!username){
-            return message.channel.send({embed: {
-                color: 15406156,
-                description: `Please tag a Discord user after the command or put their User ID.`,
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        }
-        let id = await keyv.get(username.id);
-        if(!id){
-            return message.channel.send({embed: {
-                color: 15406156,
-                description: `The specified user is not verified.`,
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
-                }
-            }});
-        }
-        let rbxrole = await rbx.getRankInGroup(config.groupId, id);
-        let rbxrolename = await rbx.getRankNameInGroup(config.groupId, id);
-        let discrole = await message.guild.roles.find(role => role.name === `[${rbxrole}] ${rbxrolename}`);
-        let alreadyhaverole = await keyv.get(`${username.id}_CURRENTROLE`);
-        if(!discrole){
-            if(!alreadyhaverole){
-                return message.channel.send({embed: {
-                    description: `Successfully refreshed the specified user's roles.`,
-                    color: 8117429,
-                    author: {
-                        name: message.author.tag,
-                        icon_url: message.author.displayAvatarURL
-                    }
-                }});
-            } else {
-                username.removeRole(alreadyhaverole);
-                await keyv.delete(`${username.id}_CURRENTROLE`);
-                message.channel.send({embed: {
-                    description: `Successfully refreshed the specified user's roles.`,
-                    color: 8117429,
-                    author: {
-                        name: message.author.tag,
-                        icon_url: message.author.displayAvatarURL
-                    }
-                }});
-            }
-        }
-        if(!alreadyhaverole){
-            username.addRole(discrole.id);
-        } else {
-            username.removeRole(alreadyhaverole);
-            username.addRole(discrole.id);
-        }
-        await keyv.set(`${username.id}_CURRENTROLE`, discrole.id);
-        message.channel.send({embed: {
-            description: `Successfully refreshed the specified user's roles.`,
-            color: 8117429,
-            author: {
-                name: message.author.tag,
-                icon_url: message.author.displayAvatarURL
-            }
-        }});
     }
 
 // End of commands.
