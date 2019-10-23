@@ -1,10 +1,11 @@
 {
   "name": "qbot",
-  "version": "4.0.0",
+  "version": "3.0.0",
   "description": "This is a really cool roblox rank bot that I made! It is open source, so feel free to use it for your server/bot. Join the support server here: https://lengo.codes/discord",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "setup": "node installer.js"
   },
   "keywords": [],
   "author": "Lengo#0001",
@@ -14,7 +15,6 @@
     "discord.js": "^11.5.1",
     "figlet": "^1.2.3",
     "inquirer": "^6.5.0",
-    "keyv": "^3.1.0",
     "noblox.js": "^4.2.6"
   }
 }
