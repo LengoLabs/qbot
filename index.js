@@ -557,7 +557,7 @@ client.on("message", async message => {
                    icon_url: message.author.displayAvatarURL
                },
                thumbnail: {
-                   url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${username}`
+                   url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${shout.poster.username}`
                }
            }});
         });
