@@ -96,7 +96,7 @@ client.on("message", async message => {
       if(blacklistedUsers.includes(message.author.id))
             return message.channel.send({embed: {
                 color: 15406156,
-                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
+                description: "You are currently blacklisted from this bot, please DM somethinghere#0001 to appeal.",
                 author: {
                     name: message.author.tag,
                     icon_url: message.author.displayAvatarURL
@@ -209,7 +209,7 @@ client.on("message", async message => {
       if(blacklistedUsers.includes(message.author.id))
             return message.channel.send({embed: {
                 color: 15406156,
-                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
+                description: "You are currently blacklisted from this bot, please DM somethinghere#0001 to appeal.",
                 author: {
                     name: message.author.tag,
                     icon_url: message.author.displayAvatarURL
@@ -313,7 +313,7 @@ client.on("message", async message => {
       if(blacklistedUsers.includes(message.author.id))
             return message.channel.send({embed: {
                 color: 15406156,
-                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
+                description: "You are currently blacklisted from this bot, please DM somethinghere#0001 to appeal.",
                 author: {
                     name: message.author.tag,
                     icon_url: message.author.displayAvatarURL
@@ -417,7 +417,7 @@ client.on("message", async message => {
       if(blacklistedUsers.includes(message.author.id))
             return message.channel.send({embed: {
                 color: 15406156,
-                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
+                description: "You are currently blacklisted from this bot, please DM somethinghere#0001 to appeal.",
                 author: {
                     name: message.author.tag,
                     icon_url: message.author.displayAvatarURL
@@ -521,7 +521,7 @@ client.on("message", async message => {
       if(blacklistedUsers.includes(message.author.id))
             return message.channel.send({embed: {
                 color: 15406156,
-                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
+                description: "You are currently blacklisted from this bot, please DM somethinghere#0001 to appeal.",
                 author: {
                     name: message.author.tag,
                     icon_url: message.author.displayAvatarURL
@@ -576,7 +576,7 @@ client.on("message", async message => {
       if(blacklistedUsers.includes(message.author.id))
             return message.channel.send({embed: {
                 color: 15406156,
-                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
+                description: "You are currently blacklisted from this bot, please DM somethinghere#0001 to appeal.",
                 author: {
                     name: message.author.tag,
                     icon_url: message.author.displayAvatarURL
@@ -611,7 +611,7 @@ client.on("message", async message => {
       if(blacklistedUsers.includes(message.author.id))
             return message.channel.send({embed: {
                 color: 15406156,
-                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
+                description: "You are currently blacklisted from this bot, please DM somethinghere#0001 to appeal.",
                 author: {
                     name: message.author.tag,
                     icon_url: message.author.displayAvatarURL
@@ -643,7 +643,7 @@ client.on("message", async message => {
     if(blacklistedUsers.includes(message.author.id))
             return message.channel.send({embed: {
                 color: 15406156,
-                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
+                description: "You are currently blacklisted from this bot, please DM somethinghere#0001 to appeal.",
                 author: {
                     name: message.author.tag,
                     icon_url: message.author.displayAvatarURL
@@ -750,7 +750,7 @@ client.on("message", async message => {
       
       
     } catch (err) {
-      message.channel.send(err);
+      console.log(err)
     }
   }
 
@@ -767,7 +767,7 @@ if(command === "exile") {
   if(blacklistedUsers.includes(message.author.id))
             return message.channel.send({embed: {
                 color: 15406156,
-                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
+                description: "You are currently blacklisted from this bot, please DM somethinghere#0001 to appeal.",
                 author: {
                     name: message.author.tag,
                     icon_url: message.author.displayAvatarURL
@@ -857,12 +857,6 @@ if(command === "exile") {
             }
             return;
     }
-  
-  if(command === "getgrouproles") {
-    rbx.getRoles(config.groupId).then(ranks => {
-      console.log(ranks)
-    })
-  }
 
 // End of commands.
 });
