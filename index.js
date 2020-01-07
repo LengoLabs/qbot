@@ -4,11 +4,34 @@ const client = new Discord.Client();
 const config = require("./config.json");
 const chalk = require('chalk');
 const figlet = require('figlet');
+const http = require('http');
+const express = require('express');
+const app = express();
+var server = require('http').createServer(app);
+app.get("/", (request, response) => {
+  console.log(Date.now() + " Ping Received");
+  response.sendStatus(200);
+});
+const listener = server.listen(process.env.PORT, function () {
+  console.log('App listening on port ' + listener.address().port);
+});
+setInterval(() => {
+  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 280000);
+
+const clean = text => {
+  if (typeof(text) === "string")
+    return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
+  else
+      return text;
+}
+
+let blacklistedUsers = ['ID', 'ID', 'ID'];
 
 rbx.cookieLogin(config.cookie);
 
 client.on("ready", () => {
-    console.log(chalk.yellow(figlet.textSync('qbot', { horizontalLayout: 'full' })));
+    console.log(chalk.yellow(figlet.textSync('Mano County Ranking Bot', { horizontalLayout: 'full' })));
     console.log(chalk.yellow(`Bot started! This bot is currently helping ${client.users.size} users in ${client.users.size} channels of ${client.guilds.size} servers.`));
 });
 
@@ -24,9 +47,6 @@ onShout.on('data', function (shout) {
             footer: {
                 text: 'Shout Announcement'
             },
-            thumbnail: {
-                url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${shout.poster.username}`
-            },
             timestamp: new Date()
         }});
     } else {
@@ -36,9 +56,6 @@ onShout.on('data', function (shout) {
             title: `Posted by ${shout.poster.username}`,
             footer: {
                 text: 'Shout Announcement'
-            },
-            thumbnail: {
-                url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${shout.poster.username}`
             },
             timestamp: new Date()
         }});
@@ -53,11 +70,12 @@ client.on("message", async message => {
     if(message.content.indexOf(config.prefix) !== 0) return;
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
     const command = args.shift().toLowerCase();
+    client.user.setStatus("dnd")
 
     if(command === "help") {
         return message.channel.send({embed: {
             color: 11253955,
-            description: `My commands are \`${config.prefix}help\`, \`${config.prefix}setrank <user> <rank number>\`, \`${config.prefix}promote <user>\`, \`${config.prefix}demote <user>\`, \`${config.prefix}fire <user>\`, \`${config.prefix}shout <msg>\`, and \`${config.prefix}clearshout\`.`,
+            description: `My commands are \`${config.prefix}help\`, \`${config.prefix}setrank <user> <rank number>\`, \`${config.prefix}promote <user>\`, \`${config.prefix}demote <user>\`, \`${config.prefix}fire <user>\`, \`${config.prefix}suspend <user>\`, \`${config.prefix}exile <user>\`, \`${config.prefix}shout <msg>\`, \`${config.prefix}currentshout\`, \`${config.prefix}clearshout\`.`,
             author: {
                 name: message.author.tag,
                 icon_url: message.author.displayAvatarURL
@@ -70,6 +88,15 @@ client.on("message", async message => {
             return message.channel.send({embed: {
                 color: 15406156,
                 description: "You need the `Ranking Permissions` role to run this command.",
+                author: {
+                    name: message.author.tag,
+                    icon_url: message.author.displayAvatarURL
+                }
+            }});
+      if(blacklistedUsers.includes(message.author.id))
+            return message.channel.send({embed: {
+                color: 15406156,
+                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
                 author: {
                     name: message.author.tag,
                     icon_url: message.author.displayAvatarURL
@@ -104,7 +131,7 @@ client.on("message", async message => {
                             .then(function(newRole){
                                 message.channel.send({embed: {
                                     color: 8117429,
-                                    description: `You have successfully ranked ${username} to ${rankIdentifier}!`,
+                                    description: `You have successfully ranked ${username} to ${newRole.name}!`,
                                     author: {
                                         name: message.author.tag,
                                         icon_url: message.author.displayAvatarURL
@@ -114,7 +141,7 @@ client.on("message", async message => {
                                 var logchannel = message.guild.channels.get(config.logchannelid);
                                 logchannel.send({embed: {
                                     color: 11253955,
-                                    description: `<@${message.author.id}> has ranked ${username} to ${rankIdentifier}.`,
+                                    description: `<@${message.author.id}> has ranked ${username} to ${newRole.name}.`,
                                     author: {
                                         name: message.author.tag,
                                         icon_url: message.author.displayAvatarURL
@@ -122,16 +149,13 @@ client.on("message", async message => {
                                     footer: {
                                         text: 'Action Logs'
                                     },
-                                    timestamp: new Date(),
-                                    thumbnail: {
-                                        url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${username}`
-                                    }
+                                    timestamp: new Date()
                                 }});
                             }).catch(function(err){
                                 console.log(chalk.red('Issue with setRank: ' + err));
                                 message.channel.send({embed: {
                                     color: 15406156, 
-                                    description: "Oops! Something went wrong. The issue has been logged to the bot console.",
+                                    description: "Issue with setRank: " + err,
                                     author: {
                                         name: message.author.tag,
                                         icon_url: message.author.displayAvatarURL
@@ -142,7 +166,7 @@ client.on("message", async message => {
                     }).catch(function(err){
                         message.channel.send({embed: {
                             color: 15406156,
-                            description: "Oops! Something went wrong. The issue has been logged to the bot console.",
+                            description: "Issue with setRank: " + err,
                             author: {
                                 name: message.author.tag,
                                 icon_url: message.author.displayAvatarURL
@@ -177,6 +201,15 @@ client.on("message", async message => {
             return message.channel.send({embed: {
                 color: 15406156,
                 description: "You need the `Ranking Permissions` role to run this command.",
+                author: {
+                    name: message.author.tag,
+                    icon_url: message.author.displayAvatarURL
+                }
+            }});
+      if(blacklistedUsers.includes(message.author.id))
+            return message.channel.send({embed: {
+                color: 15406156,
+                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
                 author: {
                     name: message.author.tag,
                     icon_url: message.author.displayAvatarURL
@@ -220,16 +253,13 @@ client.on("message", async message => {
                                     footer: {
                                         text: 'Action Logs'
                                     },
-                                    timestamp: new Date(),
-                                    thumbnail: {
-                                        url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${username}`
-                                    }
+                                    timestamp: new Date()
                                 }});
                             }).catch(function(err){
                                 console.log(chalk.red('Issue with promote: ' + err));
                                 message.channel.send({embed: {
                                     color: 15406156, 
-                                    description: "Oops! Something went wrong. The issue has been logged to the bot console.",
+                                    description: "Issue with promote: " + err,
                                     author: {
                                         name: message.author.tag,
                                         icon_url: message.author.displayAvatarURL
@@ -240,7 +270,7 @@ client.on("message", async message => {
                     }).catch(function(err){
                         message.channel.send({embed: {
                             color: 15406156,
-                            description: "Oops! Something went wrong. The issue has been logged to the bot console.",
+                            description: "Issue with promote: " + err,
                             author: {
                                 name: message.author.tag,
                                 icon_url: message.author.displayAvatarURL
@@ -275,6 +305,15 @@ client.on("message", async message => {
             return message.channel.send({embed: {
                 color: 15406156,
                 description: "You need the `Ranking Permissions` role to run this command.",
+                author: {
+                    name: message.author.tag,
+                    icon_url: message.author.displayAvatarURL
+                }
+            }});
+      if(blacklistedUsers.includes(message.author.id))
+            return message.channel.send({embed: {
+                color: 15406156,
+                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
                 author: {
                     name: message.author.tag,
                     icon_url: message.author.displayAvatarURL
@@ -318,16 +357,13 @@ client.on("message", async message => {
                                     footer: {
                                         text: 'Action Logs'
                                     },
-                                    timestamp: new Date(),
-                                    thumbnail: {
-                                        url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${username}`
-                                    }
+                                    timestamp: new Date()
                                 }});
                             }).catch(function(err){
                                 console.log(chalk.red('Issue with demote: ' + err));
                                 message.channel.send({embed: {
                                     color: 15406156, 
-                                    description: "Oops! Something went wrong. The issue has been logged to the bot console.",
+                                    description: "Issue with demote: " + err,
                                     author: {
                                         name: message.author.tag,
                                         icon_url: message.author.displayAvatarURL
@@ -338,7 +374,7 @@ client.on("message", async message => {
                     }).catch(function(err){
                         message.channel.send({embed: {
                             color: 15406156,
-                            description: "Oops! Something went wrong. The issue has been logged to the bot console.",
+                            description: "Issue with demote: " + err,
                             author: {
                                 name: message.author.tag,
                                 icon_url: message.author.displayAvatarURL
@@ -378,6 +414,15 @@ client.on("message", async message => {
                     icon_url: message.author.displayAvatarURL
                 }
             }});
+      if(blacklistedUsers.includes(message.author.id))
+            return message.channel.send({embed: {
+                color: 15406156,
+                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
+                author: {
+                    name: message.author.tag,
+                    icon_url: message.author.displayAvatarURL
+                }
+            }});
             var username = args[0]
             if (username){
                 rbx.getIdFromUsername(username)
@@ -394,7 +439,7 @@ client.on("message", async message => {
                                 }
                             }});
                         } else {
-                            rbx.setRank(config.groupId, id, 1)
+                            rbx.setRank(config.groupId, id, config.lowestRole)
                             .then(function(newRole){
                                 message.channel.send({embed: {
                                     color: 8117429,
@@ -416,16 +461,13 @@ client.on("message", async message => {
                                     footer: {
                                         text: 'Action Logs'
                                     },
-                                    timestamp: new Date(),
-                                    thumbnail: {
-                                        url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${username}`
-                                    }
+                                    timestamp: new Date()
                                 }});
                             }).catch(function(err){
                                 console.log(chalk.red('Issue with setRank (fire): ' + err));
                                 message.channel.send({embed: {
                                     color: 15406156, 
-                                    description: "Oops! Something went wrong. The issue has been logged to the bot console.",
+                                    description: "Issue with fire: " + err,
                                     author: {
                                         name: message.author.tag,
                                         icon_url: message.author.displayAvatarURL
@@ -436,7 +478,7 @@ client.on("message", async message => {
                     }).catch(function(err){
                         message.channel.send({embed: {
                             color: 15406156,
-                            description: "Oops! Something went wrong. The issue has been logged to the bot console.",
+                            description: "Issue with fire: " + err,
                             author: {
                                 name: message.author.tag,
                                 icon_url: message.author.displayAvatarURL
@@ -476,6 +518,15 @@ client.on("message", async message => {
                 icon_url: message.author.displayAvatarURL
             }
         }});
+      if(blacklistedUsers.includes(message.author.id))
+            return message.channel.send({embed: {
+                color: 15406156,
+                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
+                author: {
+                    name: message.author.tag,
+                    icon_url: message.author.displayAvatarURL
+                }
+            }});
         var msg = args.slice(0).join(" ");
         if(!msg){
             return message.channel.send({embed: {
@@ -522,6 +573,15 @@ client.on("message", async message => {
                 icon_url: message.author.displayAvatarURL
             }
         }});
+      if(blacklistedUsers.includes(message.author.id))
+            return message.channel.send({embed: {
+                color: 15406156,
+                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
+                author: {
+                    name: message.author.tag,
+                    icon_url: message.author.displayAvatarURL
+                }
+            }});
     rbx.shout(config.groupId, "").catch(console.error);
     message.channel.send({embed: {
         color: 8117429,
@@ -547,21 +607,262 @@ client.on("message", async message => {
     }});
     }
 
-    if(command === 'currentshout'){
-        rbx.getShout(config.groupId).then(shout => {
+    if(command === 'currentshout') {
+      if(blacklistedUsers.includes(message.author.id))
+            return message.channel.send({embed: {
+                color: 15406156,
+                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
+                author: {
+                    name: message.author.tag,
+                    icon_url: message.author.displayAvatarURL
+                }
+            }});
+      rbx.getShout(config.groupId).then(shout => {
            message.channel.send({embed: {
                color: 11253955,
                description: `**Posted by ${shout.poster.username}**\n${shout.body}`,
                author: {
                    name: message.author.tag,
                    icon_url: message.author.displayAvatarURL
-               },
-               thumbnail: {
-                   url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${shout.poster.username}`
                }
            }});
         });
     }
+  
+  if(command === "suspend") {
+        if(!message.member.roles.some(r=>["Ranking Permissions"].includes(r.name))){
+            return message.channel.send({embed: {
+                color: 15406156,
+                description: "You need the `Ranking Permissions` role to run this command.",
+                author: {
+                    name: message.author.tag,
+                    icon_url: message.author.displayAvatarURL
+                }
+            }});
+        }
+    if(blacklistedUsers.includes(message.author.id))
+            return message.channel.send({embed: {
+                color: 15406156,
+                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
+                author: {
+                    name: message.author.tag,
+                    icon_url: message.author.displayAvatarURL
+                }
+            }});
+            var username = args[0]
+            if (username){
+                rbx.getIdFromUsername(username)
+                .then(function(id){
+                    rbx.getRankInGroup(config.groupId, id)
+                    .then(function(rank){
+                        if(config.maximumRank <= rank){
+                            message.channel.send({embed: {
+                                color: 15406156,
+                                description: "This rank cannot be ranked by this bot.",
+                                author: {
+                                    name: message.author.tag,
+                                    icon_url: message.author.displayAvatarURL
+                                }
+                            }});
+                        } else {
+                            rbx.setRank(config.groupId, id, config.suspendedRole)
+                            .then(function(newRole){
+                                message.channel.send({embed: {
+                                    color: 8117429,
+                                    description: `You have successfully suspended ${username}!`,
+                                    author: {
+                                        name: message.author.tag,
+                                        icon_url: message.author.displayAvatarURL
+                                    }
+                                }});
+                                if(config.logchannelid === 'false') return;
+                                var logchannel = message.guild.channels.get(config.logchannelid);
+                                logchannel.send({embed: {
+                                    color: 11253955,
+                                    description: `<@${message.author.id}> has suspended ${username}.`,
+                                    author: {
+                                        name: message.author.tag,
+                                        icon_url: message.author.displayAvatarURL
+                                    },
+                                    footer: {
+                                        text: 'Action Logs'
+                                    },
+                                    timestamp: new Date(),
+                                    thumbnail: {
+                                        url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${username}`
+                                    }
+                                }});
+                            }).catch(function(err){
+                                console.log(chalk.red('Issue with suspend: ' + err));
+                                message.channel.send({embed: {
+                                    color: 15406156, 
+                                    description: "Oops! Something went wrong! " + err,
+                                    author: {
+                                        name: message.author.tag,
+                                        icon_url: message.author.displayAvatarURL
+                                    }
+                                }});
+                            })
+                        }
+                    }).catch(function(err){
+                        message.channel.send({embed: {
+                            color: 15406156,
+                            description: "Oops! Something went wrong! " + err,
+                            author: {
+                                name: message.author.tag,
+                                icon_url: message.author.displayAvatarURL
+                            }
+                        }});
+                    });
+                }).catch(function(err){
+                    message.channel.send({embed: {
+                        color: 15406156,
+                        description: `Oops! ${username} does not exist in the Roblox user database. Perhaps you misspelled?`,
+                        author: {
+                            name: message.author.tag,
+                            icon_url: message.author.displayAvatarURL
+                        }
+                    }});
+                });
+            } else {
+                message.channel.send({embed: {
+                    color: 15406156,
+                    description: "Please specify a target username.",
+                    author: {
+                        name: message.author.tag,
+                        icon_url: message.author.displayAvatarURL
+                    }
+                }});
+            }
+            return;
+    }
+  
+  
+  if(command === "eval") {
+    if(message.author.id !== config.ownerID) return;
+    message.delete()
+    try {
+      const code = args.join(" ");
+      let evaled = eval(code);
+ 
+      if (typeof evaled !== "string")
+        evaled = require("util").inspect(evaled);
+      
+      
+    } catch (err) {
+      message.channel.send(err);
+    }
+  }
+
+if(command === "exile") {
+        if(!message.member.roles.some(r=>["Exile Permissions"].includes(r.name)) )
+            return message.channel.send({embed: {
+                color: 15406156,
+                description: "You need the `Exile Permissions` role to run this command.",
+                author: {
+                    name: message.author.tag,
+                    icon_url: message.author.displayAvatarURL
+                }
+            }});
+  if(blacklistedUsers.includes(message.author.id))
+            return message.channel.send({embed: {
+                color: 15406156,
+                description: "You are currently blacklisted from this bot, please DM zachariapopcorn#8105 to appeal.",
+                author: {
+                    name: message.author.tag,
+                    icon_url: message.author.displayAvatarURL
+                }
+            }});
+            var username = args[0]
+            if (username){
+                rbx.getIdFromUsername(username)
+                .then(function(id){
+                    rbx.getRankInGroup(config.groupId, id)
+                    .then(function(rank){
+                        if(config.maximumRank <= rank){
+                            message.channel.send({embed: {
+                                color: 15406156,
+                                description: "This rank cannot be exiled by this bot.",
+                                author: {
+                                    name: message.author.tag,
+                                    icon_url: message.author.displayAvatarURL
+                                }
+                            }});
+                        } else {
+                            rbx.exile(config.groupId, id)
+                            .then(function(newRole){
+                                message.channel.send({embed: {
+                                    color: 8117429,
+                                    description: `You have successfully exiled ${username}!`,
+                                    author: {
+                                        name: message.author.tag,
+                                        icon_url: message.author.displayAvatarURL
+                                    }
+                                }});
+                                if(config.logchannelid === 'false') return;
+                                var logchannel = message.guild.channels.get(config.logchannelid);
+                                logchannel.send({embed: {
+                                    color: 11253955,
+                                    description: `<@${message.author.id}> has promoted ${username}.`,
+                                    author: {
+                                        name: message.author.tag,
+                                        icon_url: message.author.displayAvatarURL
+                                    },
+                                    footer: {
+                                        text: 'Action Logs'
+                                    },
+                                    timestamp: new Date()
+                                }});
+                            }).catch(function(err){
+                                console.log(chalk.red('Issue with exile: ' + err));
+                                message.channel.send({embed: {
+                                    color: 15406156, 
+                                    description: "Issue with exile: " + err,
+                                    author: {
+                                        name: message.author.tag,
+                                        icon_url: message.author.displayAvatarURL
+                                    }
+                                }});
+                            })
+                        }
+                    }).catch(function(err){
+                        message.channel.send({embed: {
+                            color: 15406156,
+                            description: "Issue with exile: " + err,
+                            author: {
+                                name: message.author.tag,
+                                icon_url: message.author.displayAvatarURL
+                            }
+                        }});
+                    });
+                }).catch(function(err){
+                    message.channel.send({embed: {
+                        color: 15406156,
+                        description: `Oops! ${username} does not exist in the Roblox user database. Perhaps you misspelled?`,
+                        author: {
+                            name: message.author.tag,
+                            icon_url: message.author.displayAvatarURL
+                        }
+                    }});
+                });
+            } else {
+                message.channel.send({embed: {
+                    color: 15406156,
+                    description: "Please specify a target username.",
+                    author: {
+                        name: message.author.tag,
+                        icon_url: message.author.displayAvatarURL
+                    }
+                }});
+            }
+            return;
+    }
+  
+  if(command === "getgrouproles") {
+    rbx.getRoles(config.groupId).then(ranks => {
+      console.log(ranks)
+    })
+  }
 
 // End of commands.
 });
