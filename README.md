@@ -1,6 +1,8 @@
 # qbot Information
  [![Discord](https://discordapp.com/api/guilds/InsertIdAndEnableWidget/widget.png)](https://lengo.codes/discord) [![MIT Licensed](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-(Please scroll down and read everything for more information, instructions will be given below!)
+
+
+Please scroll down and read everything for more information, instructions will be given below!
 
 # What is qbot?
  
