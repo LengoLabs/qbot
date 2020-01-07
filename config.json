@@ -1,3 +1,12 @@
 {
-    
+    "token": "TOKEN HERE",
+    "prefix": "q!",
+    "cookie": "COOKIE HERE",
+    "groupId": 643643,
+    "maximumRank": 255,
+    "logchannelid": "LOG CHANNEL ID HERE",
+    "shoutchannelid": "SHOUT CHANNEL ID HERE",
+    "ownerID": "OWNER ID HERE",
+    "suspendedRole":238,
+    "lowestRole":237
 }
