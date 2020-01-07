@@ -24,4 +24,4 @@ Please keep note, this bot uses Noblox to perform the actions on ROBLOX, meaning
 You can find instructions on installing/hosting the bot at our wiki [which can be found here.](https://github.com/yogurtsyum/qbot/wiki)
 (If the link above doesn't work, click this! https://github.com/yogurtsyum/qbot/wiki)
 
-We hope we summarised qbot for you, if you face any issues or just have some questions, please join our Discord and go to our support channel, however, please read the rules before you talk.
+We hope we summarised qbot for you, if you face any issues or just have some questions, please join our Discord and go to our support channel, however, please read the rules before you talk. Thank you.
