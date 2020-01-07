@@ -30,7 +30,7 @@
         .addField("Banned by", `<@${message.author.id}> with the ID of ${message.author.id}`)
         .addField("Reason", bReason)
         var runner = message.author.id
-        message.guild.member(bUser).send(`You have been banned by <@${runner}> for the reason of ${bReason}.`)
+        message.guild.member(bUser).send(`You have been banned by <@${message.author.id}> for the reason of ${bReason}.`)
         message.guild.member(bUser).ban(bReason);
         message.channel.send(banEmbed);
     }
@@ -65,7 +65,7 @@
         .addField("Kicked by", `<@${message.author.id}> with the ID of ${message.author.id}`)
         .addField("Reason", kReason)
         var runner = message.author.id
-        message.guild.member(kUser).send(`You have been kicked by <@${runner}> for the reason of ${kReason}.`)
+        message.guild.member(kUser).send(`You have been kicked by <@${message.author.id}> for the reason of ${kReason}.`)
         message.guild.member(kUser).kick(kReason);
         message.channel.send(kickEmbed);
     }
