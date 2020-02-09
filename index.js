@@ -7,10 +7,29 @@ const figlet = require('figlet');
 
 rbx.cookieLogin(config.cookie);
 
-client.on("ready", () => {
+client.on("ready", async () => {
     console.log(chalk.yellow(figlet.textSync('qbot', { horizontalLayout: 'full' })));
     console.log(chalk.yellow(`Bot started! This bot is currently helping ${client.users.size} users in ${client.users.size} channels of ${client.guilds.size} servers.`));
 });
+
+async function getRankName(func_group, func_user){
+    let rolename = await rbx.getRankNameInGroup(func_group, func_user);
+    return rolename;
+}
+
+async function getRankID(func_group, func_user){
+    let role = await rbx.getRankInGroup(func_group, func_user);
+    return role;
+}
+
+async function GetRankFromName(func_rankname, func_group){
+    let roles = await rbx.getRoles(func_group);
+    let role = await roles.find(rank => rank.name == func_rankname);
+    if(!role){
+        return 'NOT_FOUND';
+    }
+    return role.rank;
+}
 
 let onShout = rbx.onShout(config.groupId);
 onShout.on('data', function (shout) {
@@ -76,15 +95,23 @@ client.on("message", async message => {
                 }
             }});
             var username = args[0]
-            var rankIdentifier = Number(args[1]) ? Number(args[1]) : args[1];
-            if (!rankIdentifier) return message.channel.send({embed: {
-                color: 15406156,
-                description: "Please specify a rank.",
-                author: {
-                    name: message.author.tag,
-                    icon_url: message.author.displayAvatarURL
+            var rankIdentifier = Number(args[1]);
+            if (!rankIdentifier){
+                var rankIdentifier = args.slice(1).join(' ');
+                if(!rankIdentifier){
+                    return message.channel.send({embed: {
+                        color: 15406156,
+                        description: "Please specify a rank.",
+                        author: {
+                            name: message.author.tag,
+                            icon_url: message.author.displayAvatarURL
+                        }
+                    }});
                 }
-            }});
+                GetRankFromName(rankIdentifier, config.groupId).then(function(result){
+                    rankIdentifier = result;
+                });
+            }
             if (username){
                 rbx.getIdFromUsername(username)
                 .then(function(id){
@@ -100,33 +127,46 @@ client.on("message", async message => {
                                 }
                             }});
                         } else {
+                            if(rankIdentifier == 'NOT_FOUND'){
+                                return message.channel.send({embed: {
+                                    color: 15406156,
+                                    description: "Rank not found.",
+                                    author: {
+                                        name: message.author.tag,
+                                        icon_url: message.author.displayAvatarURL
+                                    }
+                                }});
+                            }
                             rbx.setRank(config.groupId, id, rankIdentifier)
                             .then(function(newRole){
-                                message.channel.send({embed: {
-                                    color: 8117429,
-                                    description: `You have successfully ranked ${username} to ${rankIdentifier}!`,
-                                    author: {
-                                        name: message.author.tag,
-                                        icon_url: message.author.displayAvatarURL
-                                    }
-                                }});
-                                if(config.logchannelid === 'false') return;
-                                var logchannel = message.guild.channels.get(config.logchannelid);
-                                logchannel.send({embed: {
-                                    color: 11253955,
-                                    description: `<@${message.author.id}> has ranked ${username} to ${rankIdentifier}.`,
-                                    author: {
-                                        name: message.author.tag,
-                                        icon_url: message.author.displayAvatarURL
-                                    },
-                                    footer: {
-                                        text: 'Action Logs'
-                                    },
-                                    timestamp: new Date(),
-                                    thumbnail: {
-                                        url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${username}`
-                                    }
-                                }});
+                                getRankName(config.groupId, id)
+                                .then(function(rolename){
+                                    message.channel.send({embed: {
+                                        color: 8117429,
+                                        description: `You have successfully ranked ${username} to ${rolename} (${rankIdentifier})!`,
+                                        author: {
+                                            name: message.author.tag,
+                                            icon_url: message.author.displayAvatarURL
+                                        }
+                                    }});
+                                    if(config.logchannelid === 'false') return;
+                                    var logchannel = message.guild.channels.get(config.logchannelid);
+                                    logchannel.send({embed: {
+                                        color: 11253955,
+                                        description: `<@${message.author.id}> has ranked ${username} to ${rolename} (${rankIdentifier}).`,
+                                        author: {
+                                            name: message.author.tag,
+                                            icon_url: message.author.displayAvatarURL
+                                        },
+                                        footer: {
+                                            text: 'Action Logs'
+                                        },
+                                        timestamp: new Date(),
+                                        thumbnail: {
+                                            url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${username}`
+                                        }
+                                    }});
+                                });
                             }).catch(function(err){
                                 console.log(chalk.red('Issue with setRank: ' + err));
                                 message.channel.send({embed: {
@@ -200,14 +240,20 @@ client.on("message", async message => {
                         } else {
                             rbx.promote(config.groupId, id)
                             .then(function(newRole){
-                                message.channel.send({embed: {
-                                    color: 8117429,
-                                    description: `You have successfully promoted ${username}!`,
-                                    author: {
-                                        name: message.author.tag,
-                                        icon_url: message.author.displayAvatarURL
-                                    }
-                                }});
+                                getRankName(config.groupId, id)
+                                .then(function(rolename){
+                                    getRankID(config.groupId, id)
+                                    .then(function(roleid){
+                                        message.channel.send({embed: {
+                                            color: 8117429,
+                                            description: `You have successfully promoted ${username} to ${rolename} (${roleid})!`,
+                                            author: {
+                                                name: message.author.tag,
+                                                icon_url: message.author.displayAvatarURL
+                                            }
+                                        }});
+                                    })
+                                });
                                 if(config.logchannelid === 'false') return;
                                 var logchannel = message.guild.channels.get(config.logchannelid);
                                 logchannel.send({embed: {
@@ -298,14 +344,20 @@ client.on("message", async message => {
                         } else {
                             rbx.demote(config.groupId, id)
                             .then(function(newRole){
-                                message.channel.send({embed: {
-                                    color: 8117429,
-                                    description: `You have successfully demoted ${username}!`,
-                                    author: {
-                                        name: message.author.tag,
-                                        icon_url: message.author.displayAvatarURL
-                                    }
-                                }});
+                                getRankName(config.groupId, id)
+                                .then(function(rolename){
+                                    getRankID(config.groupId, id)
+                                    .then(function(roleid){
+                                        message.channel.send({embed: {
+                                            color: 8117429,
+                                            description: `You have successfully demoted ${username} to ${rolename} (${roleid})!`,
+                                            author: {
+                                                name: message.author.tag,
+                                                icon_url: message.author.displayAvatarURL
+                                            }
+                                        }});
+                                    })
+                                });
                                 if(config.logchannelid === 'false') return;
                                 var logchannel = message.guild.channels.get(config.logchannelid);
                                 logchannel.send({embed: {
@@ -396,14 +448,20 @@ client.on("message", async message => {
                         } else {
                             rbx.setRank(config.groupId, id, 1)
                             .then(function(newRole){
-                                message.channel.send({embed: {
-                                    color: 8117429,
-                                    description: `You have successfully fired ${username}!`,
-                                    author: {
-                                        name: message.author.tag,
-                                        icon_url: message.author.displayAvatarURL
-                                    }
-                                }});
+                                getRankName(config.groupId, id)
+                                .then(function(rolename){
+                                    getRankID(config.groupId, id)
+                                    .then(function(roleid){
+                                        message.channel.send({embed: {
+                                            color: 8117429,
+                                            description: `You have successfully fired ${username}.`,
+                                            author: {
+                                                name: message.author.tag,
+                                                icon_url: message.author.displayAvatarURL
+                                            }
+                                        }});
+                                    })
+                                });
                                 if(config.logchannelid === 'false') return;
                                 var logchannel = message.guild.channels.get(config.logchannelid);
                                 logchannel.send({embed: {
@@ -562,6 +620,10 @@ client.on("message", async message => {
            }});
         });
     }
+    
+// Start of extra commands.
+
+
 
 // End of commands.
 });
