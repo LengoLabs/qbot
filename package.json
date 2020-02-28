@@ -1,7 +1,7 @@
 {
   "name": "qbot",
   "version": "3.0.0",
-  "description": "This is a really cool roblox rank bot that I made! It is open source, so feel free to use it for your server/bot. Join the support server here: https://lengo.codes/discord",
+  "description": "Это действительно крутой бот роблокс ранга, который я сделал! Это открытый исходный код, поэтому не стесняйтесь использовать его для своего сервера / бота. Присоединитесь к серверу поддержки здесь: https://lengo.codes/discord",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
