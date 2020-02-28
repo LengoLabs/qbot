@@ -1,8 +1,9 @@
 # qbot
-This is a really cool roblox rank bot that I made! It is open source, so feel free to use it for your server/bot.
+Это действительно крутой бот роблокс ранга, который я сделал! Это открытый исходный код, поэтому не стесняйтесь использовать его для своего сервера / бота.
 
-Acknowledgements: https://github.com/yogurtsyum/qbot/blob/master/acknowledgements.md
+Подтверждения: https://github.com/yogurtsyum/qbot/blob/master/acknowledgements.md
 
-# Please note I am not responsible for if anything happens to your bot account. It is your responsibility to keep the cookie away from anyone you don't trust. Please also note that sharing your bot account cookie with this script will process it through noblox.js. Do not share your config.json file with anyone once filled out.
+# Обратите внимание, я не несу ответственности за то, что что-то случится с вашей учетной записью бота. Вы несете ответственность за то, чтобы сохранить куки от тех, кому вы не доверяете. Также обратите внимание, что при совместном использовании cookie вашего аккаунта бота с этим скриптом он будет обрабатываться через noblox.js. Не делитесь своим файлом config.json ни с кем, когда-либо заполненным.
 
-# Instructions at https://github.com/yogurtsyum/qbot/wiki
+
+# Инструкции на https://github.com/yogurtsyum/qbot/wiki
