@@ -26,7 +26,7 @@ async function GetRankFromName(func_rankname, func_group){
     let roles = await rbx.getRoles(func_group);
     let role = await roles.find(rank => rank.name == func_rankname);
     if(!role){
-        return 'NOT_FOUND';
+        return 'НЕ_НАЙДЕН';
     }
     return role.rank;
 }
@@ -41,7 +41,7 @@ onShout.on('data', function (shout) {
             description: shout.body,
             title: `Сообщение от ${shout.poster.username}`,
             footer: {
-                text: 'Shout Announcement'
+                text: 'Кричать Объявление'
             },
             thumbnail: {
                 url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${shout.poster.username}`
@@ -54,7 +54,7 @@ onShout.on('data', function (shout) {
             description: '*Крик очищен.*',
             title: `Сообщение от ${shout.poster.username}`,
             footer: {
-                text: 'Shout Announcement'
+                text: 'Кричать Объявление'
             },
             thumbnail: {
                 url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${shout.poster.username}`
@@ -73,10 +73,10 @@ client.on("message", async message => {
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
-    if(command === "help") {
+    if(command === "Помогите") {
         return message.channel.send({embed: {
             color: 11253955,
-            description: `Мои команды \`${config.prefix}help\`, \`${config.prefix}setrank <пользователь> <номер ранга>\`, \`${config.prefix}promote <user>\`, \`${config.prefix}demote <user>\`, \`${config.prefix}fire <user>\`, \`${config.prefix}shout <msg>\`, and \`${config.prefix}clearshout\`.`,
+            description: `Мои команды \`${config.prefix}Помогите\`, \`${config.prefix}setrank <пользователь> <номер ранга>\`, \`${config.prefix}promote <user>\`, \`${config.prefix}demote <user>\`, \`${config.prefix}fire <user>\`, \`${config.prefix}shout <msg>\`, and \`${config.prefix}clearshout\`.`,
             author: {
                 name: message.author.tag,
                 icon_url: message.author.displayAvatarURL
@@ -84,7 +84,7 @@ client.on("message", async message => {
         }});
     };
 
-    if(command === "setrank") {
+    if(command === "установитьранг") {
         if(!message.member.roles.some(r=>["Ранжирование разрешений"].includes(r.name)) )
             return message.channel.send({embed: {
                 color: 15406156,
@@ -130,7 +130,7 @@ client.on("message", async message => {
                             if(rankIdentifier == 'НЕ_НАЙДЕН'){
                                 return message.channel.send({embed: {
                                     color: 15406156,
-                                    description: "Rank not found.",
+                                    description: "Ранг не найден.",
                                     author: {
                                         name: message.author.tag,
                                         icon_url: message.author.displayAvatarURL
@@ -143,7 +143,7 @@ client.on("message", async message => {
                                 .then(function(rolename){
                                     message.channel.send({embed: {
                                         color: 8117429,
-                                        description: `You have successfully ranked ${username} to ${rolename} (${rankIdentifier})!`,
+                                        description: `Вы успешно оценили ${username} в ${rolename} (${rankIdentifier})!`,
                                         author: {
                                             name: message.author.tag,
                                             icon_url: message.author.displayAvatarURL
@@ -153,13 +153,13 @@ client.on("message", async message => {
                                     var logchannel = message.guild.channels.get(config.logchannelid);
                                     logchannel.send({embed: {
                                         color: 11253955,
-                                        description: `<@${message.author.id}> has ranked ${username} to ${rolename} (${rankIdentifier}).`,
+                                        description: `<@${message.author.id}> оценил ${username} в ${rolename} (${rankIdentifier}).`,
                                         author: {
                                             name: message.author.tag,
                                             icon_url: message.author.displayAvatarURL
                                         },
                                         footer: {
-                                            text: 'Action Logs'
+                                            text: 'Журналы действий'
                                         },
                                         timestamp: new Date(),
                                         thumbnail: {
@@ -168,10 +168,10 @@ client.on("message", async message => {
                                     }});
                                 });
                             }).catch(function(err){
-                                console.log(chalk.red('Issue with setRank: ' + err));
+                                console.log(chalk.red('Проблема с заданнымрангом: ' + err));
                                 message.channel.send({embed: {
                                     color: 15406156, 
-                                    description: "Oops! Something went wrong. The issue has been logged to the bot console.",
+                                    description: "К сожалению! Что-то пошло не так. Проблема была зарегистрирована в консоли бота.",
                                     author: {
                                         name: message.author.tag,
                                         icon_url: message.author.displayAvatarURL
@@ -182,7 +182,7 @@ client.on("message", async message => {
                     }).catch(function(err){
                         message.channel.send({embed: {
                             color: 15406156,
-                            description: "Oops! Something went wrong. The issue has been logged to the bot console.",
+                            description: "К сожалению! Что-то пошло не так. Проблема была зарегистрирована в консоли бота.",
                             author: {
                                 name: message.author.tag,
                                 icon_url: message.author.displayAvatarURL
@@ -192,7 +192,7 @@ client.on("message", async message => {
                 }).catch(function(err){
                     message.channel.send({embed: {
                         color: 15406156,
-                        description: `Oops! ${username} does not exist in the Roblox user database. Perhaps you misspelled?`,
+                        description: `К сожалению! ${username} не существует в базе данных пользователей Roblox. Возможно, вы ошиблись?`,
                         author: {
                             name: message.author.tag,
                             icon_url: message.author.displayAvatarURL
@@ -202,7 +202,7 @@ client.on("message", async message => {
             } else {
                 message.channel.send({embed: {
                     color: 15406156,
-                    description: "Please specify a target username.",
+                    description: "Пожалуйста, укажите целевое имя пользователя.",
                     author: {
                         name: message.author.tag,
                         icon_url: message.author.displayAvatarURL
@@ -212,11 +212,11 @@ client.on("message", async message => {
             return;
     }
 
-    if(command === "promote") {
-        if(!message.member.roles.some(r=>["Ranking Permissions"].includes(r.name)) )
+    if(command === "содействовать") {
+        if(!message.member.roles.some(r=>["Рейтинг разрешений"].includes(r.name)) )
             return message.channel.send({embed: {
                 color: 15406156,
-                description: "You need the `Ranking Permissions` role to run this command.",
+                description: "Вам нужно `Рейтинг разрешений` роль для запуска этой команды.",
                 author: {
                     name: message.author.tag,
                     icon_url: message.author.displayAvatarURL
@@ -231,7 +231,7 @@ client.on("message", async message => {
                         if(config.maximumRank <= rank){
                             message.channel.send({embed: {
                                 color: 15406156,
-                                description: "This rank cannot be promoted by this bot.",
+                                description: "Этот бот не может повысить этот ранг.",
                                 author: {
                                     name: message.author.tag,
                                     icon_url: message.author.displayAvatarURL
@@ -246,7 +246,7 @@ client.on("message", async message => {
                                     .then(function(roleid){
                                         message.channel.send({embed: {
                                             color: 8117429,
-                                            description: `You have successfully promoted ${username} to ${rolename} (${roleid})!`,
+                                            description: `Вы успешно продвинулись ${username} в ${rolename} (${roleid})!`,
                                             author: {
                                                 name: message.author.tag,
                                                 icon_url: message.author.displayAvatarURL
@@ -254,17 +254,17 @@ client.on("message", async message => {
                                         }});
                                     })
                                 });
-                                if(config.logchannelid === 'false') return;
+                                if(config.logchannelid === 'ложный') return;
                                 var logchannel = message.guild.channels.get(config.logchannelid);
                                 logchannel.send({embed: {
                                     color: 11253955,
-                                    description: `<@${message.author.id}> has promoted ${username}.`,
+                                    description: `<@${message.author.id}> способствовал ${username}.`,
                                     author: {
                                         name: message.author.tag,
                                         icon_url: message.author.displayAvatarURL
                                     },
                                     footer: {
-                                        text: 'Action Logs'
+                                        text: 'Журналы действий'
                                     },
                                     timestamp: new Date(),
                                     thumbnail: {
@@ -272,10 +272,10 @@ client.on("message", async message => {
                                     }
                                 }});
                             }).catch(function(err){
-                                console.log(chalk.red('Issue with promote: ' + err));
+                                console.log(chalk.red('Проблема с продвижением: ' + err));
                                 message.channel.send({embed: {
                                     color: 15406156, 
-                                    description: "Oops! Something went wrong. The issue has been logged to the bot console.",
+                                    description: "К сожалению! Что-то пошло не так. Проблема была зарегистрирована в консоли бота.",
                                     author: {
                                         name: message.author.tag,
                                         icon_url: message.author.displayAvatarURL
@@ -286,7 +286,7 @@ client.on("message", async message => {
                     }).catch(function(err){
                         message.channel.send({embed: {
                             color: 15406156,
-                            description: "Oops! Something went wrong. The issue has been logged to the bot console.",
+                            description: "К сожалению! Что-то пошло не так. Проблема была зарегистрирована в консоли бота.",
                             author: {
                                 name: message.author.tag,
                                 icon_url: message.author.displayAvatarURL
@@ -296,7 +296,7 @@ client.on("message", async message => {
                 }).catch(function(err){
                     message.channel.send({embed: {
                         color: 15406156,
-                        description: `Oops! ${username} does not exist in the Roblox user database. Perhaps you misspelled?`,
+                        description: `К сожалению! ${username} не существует в базе данных пользователей Roblox. Возможно, вы ошиблись?`,
                         author: {
                             name: message.author.tag,
                             icon_url: message.author.displayAvatarURL
@@ -306,7 +306,7 @@ client.on("message", async message => {
             } else {
                 message.channel.send({embed: {
                     color: 15406156,
-                    description: "Please specify a target username.",
+                    description: "Пожалуйста, укажите целевое имя пользователя.",
                     author: {
                         name: message.author.tag,
                         icon_url: message.author.displayAvatarURL
@@ -316,11 +316,11 @@ client.on("message", async message => {
             return;
     }
 
-    if(command === "demote") {
-        if(!message.member.roles.some(r=>["Ranking Permissions"].includes(r.name)) )
+    if(command === "Понизить") {
+        if(!message.member.roles.some(r=>["Рейтинг разрешений"].includes(r.name)) )
             return message.channel.send({embed: {
                 color: 15406156,
-                description: "You need the `Ranking Permissions` role to run this command.",
+                description: "Вам нужно `Рейтинг разрешений` роль для запуска этой команды.",
                 author: {
                     name: message.author.tag,
                     icon_url: message.author.displayAvatarURL
@@ -335,7 +335,7 @@ client.on("message", async message => {
                         if(config.maximumRank <= rank){
                             message.channel.send({embed: {
                                 color: 15406156,
-                                description: "This rank cannot be ranked by this bot.",
+                                description: "Этот бот не может быть ранжирован этим ботом.",
                                 author: {
                                     name: message.author.tag,
                                     icon_url: message.author.displayAvatarURL
@@ -350,7 +350,7 @@ client.on("message", async message => {
                                     .then(function(roleid){
                                         message.channel.send({embed: {
                                             color: 8117429,
-                                            description: `You have successfully demoted ${username} to ${rolename} (${roleid})!`,
+                                            description: `Вы успешно понижены в должности ${username} в ${rolename} (${roleid})!`,
                                             author: {
                                                 name: message.author.tag,
                                                 icon_url: message.author.displayAvatarURL
@@ -358,7 +358,7 @@ client.on("message", async message => {
                                         }});
                                     })
                                 });
-                                if(config.logchannelid === 'false') return;
+                                if(config.logchannelid === 'ложный') return;
                                 var logchannel = message.guild.channels.get(config.logchannelid);
                                 logchannel.send({embed: {
                                     color: 11253955,
@@ -472,7 +472,7 @@ client.on("message", async message => {
                                         icon_url: message.author.displayAvatarURL
                                     },
                                     footer: {
-                                        text: 'Action Logs'
+                                        text: 'Журналы действий'
                                     },
                                     timestamp: new Date(),
                                     thumbnail: {
@@ -480,7 +480,7 @@ client.on("message", async message => {
                                     }
                                 }});
                             }).catch(function(err){
-                                console.log(chalk.red('Проблема с setRank (огонь): ' + err));
+                                console.log(chalk.red('Проблема с установитьранг (огонь): ' + err));
                                 message.channel.send({embed: {
                                     color: 15406156, 
                                     description: "К сожалению! Что-то пошло не так. Проблема была зарегистрирована в консоли бота.",
@@ -524,7 +524,7 @@ client.on("message", async message => {
             return;
     }
 
-    if(command === 'shout'){
+    if(command === 'окрик'){
         if(!message.member.roles.some(r=>["Ранжирование разрешений", "Разрешения крика"].includes(r.name)) )
         return message.channel.send({embed: {
             color: 15406156,
@@ -548,7 +548,7 @@ client.on("message", async message => {
     rbx.shout(config.groupId, msg).catch(console.error);
     message.channel.send({embed: {
         color: 8117429,
-        description: `Successfully sent shout.`,
+        description: `Успешно отправлен крик.`,
         author: {
             name: message.author.tag,
             icon_url: message.author.displayAvatarURL
@@ -564,13 +564,13 @@ client.on("message", async message => {
             icon_url: message.author.displayAvatarURL
         },
         footer: {
-            text: 'Action Logs'
+            text: 'Журналы действий'
         },
         timestamp: new Date()
     }});
     }
 
-    if(command === 'clearshout'){
+    if(command === 'чистый крик'){
         if(!message.member.roles.some(r=>["Ранжирование разрешений", "Разрешения крика"].includes(r.name)) )
         return message.channel.send({embed: {
             color: 15406156,
@@ -589,7 +589,7 @@ client.on("message", async message => {
             icon_url: message.author.displayAvatarURL
         }
     }});
-    if(config.logchannelid === 'false') return;
+    if(config.logchannelid === 'ложный') return;
     var logchannel = message.guild.channels.get(config.logchannelid);
     logchannel.send({embed: {
         color: 11253955,
@@ -599,7 +599,7 @@ client.on("message", async message => {
             icon_url: message.author.displayAvatarURL
         },
         footer: {
-            text: 'Action Logs'
+            text: 'Журналы действий'
         },
         timestamp: new Date()
     }});
