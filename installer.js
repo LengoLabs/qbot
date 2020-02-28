@@ -6,101 +6,101 @@ const fs = require('fs');
 var configFile = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 var initq = [
     {
-        name: 'usage',
+        name: 'использование',
         type: 'list',
-        message: 'What are you using this tool to do?',
-        choices: ['Setup qbot for the first time.', 'Update the cookie.']
+        message: 'Для чего вы используете этот инструмент?',
+        choices: ['Настройте qbot в первый раз.', 'Обновите куки.']
     }
 ]
 var updateq = [
     {
-        name: 'cookie',
+        name: 'печенье',
         type: 'input',
-        message: 'What is the Roblox bot cookie?',
+        message: 'Что такое бот-файл Roblox?',
         validate: function(value){
             if(value.length){
                 return true;
             } else {
-                return 'This field is required.';
+                return 'Это поле обязательно к заполнению.';
             }
         }
     }
 ]
 var setupq = [
     {
-        name: 'token',
+        name: 'знак',
         type: 'input',
-        message: 'What is the Discord bot token?',
+        message: 'Что такое бот-токен Discord?',
         validate: function(value){
             if(value.length){
                 return true;
             } else {
-                return 'This field is required.';
+                return 'Это поле обязательно к заполнению.';
             }
         }
     },
     {
-        name: 'prefix',
+        name: 'приставка',
         type: 'input',
         message: 'What is the Discord bot prefix?',
         validate: function(value){
             if(value.length){
                 return true;
             } else {
-                return 'This field is required.';
+                return 'Это поле обязательно к заполнению.';
             }
         }
     },
     {
-        name: 'cookie',
+        name: 'печенье',
         type: 'input',
-        message: 'What is the Roblox bot cookie?',
+        message: 'Что такое бот-файл Roblox?',
         validate: function(value){
             if(value.length){
                 return true;
             } else {
-                return 'This field is required.';
+                return 'Это поле обязательно к заполнению.';
             }
         }
     },
     {
-        name: 'groupId',
+        name: 'идентификаторгруппы',
         type: 'number',
-        message: 'What is the Roblox group ID?'
+        message: 'Что такое идентификатор группы Roblox?'
     },
     {
-        name: 'maximumRank',
+        name: 'максимальныйранг',
         type: 'number',
-        message: 'What is the Roblox maximum rank number?'
+        message: 'Каков максимальный номер ранга Roblox?'
     },
     {
-        name: 'logchannelid',
+        name: 'идентификаторканалажурнала',
         type: 'input',
-        message: 'What is the Discord log channel ID?',
+        message: 'Что такое идентификатор канала журнала Discord?',
         validate: function(value){
             if(value.length){
                 return true;
             } else {
-                return 'This field is required.';
+                return 'Это поле обязательно к заполнению.';
             }
         }
     },
     {
-        name: 'shoutchannelid',
+        name: 'крикIDканала',
         type: 'input',
-        message: 'What is the Discord shout channel ID?',
+        message: 'Что такое идентификатор канала Discord shout?',
         validate: function(value){
             if(value.length){
                 return true;
             } else {
-                return 'This field is required.';
+                return 'Это поле обязательно к заполнению.';
             }
         }
     }
 ]
 
 inquirer.prompt(initq).then(answers => {
-    if(answers.usage === 'Setup qbot for the first time.'){
+    if(answers.usage === 'Настройте qbot в первый раз.'){
         inquirer.prompt(setupq).then(answers => {
             configFile.token = answers.token;
             configFile.prefix = answers.prefix;
@@ -112,7 +112,7 @@ inquirer.prompt(initq).then(answers => {
             fs.writeFile('./config.json', JSON.stringify(configFile), (err) => {
                 if (err) console.log(err);
             });
-            console.log(chalk.green('qbot has been successfully setup.'));
+            console.log(chalk.green('qbot был успешно настроен.'));
         });
     } else {
         inquirer.prompt(updateq).then(answers => {
@@ -120,7 +120,7 @@ inquirer.prompt(initq).then(answers => {
             fs.writeFile('./config.json', JSON.stringify(configFile), (err) => {
                 if (err) console.log(err);
             });
-            console.log(chalk.green('Your qbot configuration has been successfully updated.'));
+            console.log(chalk.green('Ваша конфигурация qbot была успешно обновлена.'));
         });
     }
 });
