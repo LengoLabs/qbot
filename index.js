@@ -41,7 +41,7 @@ shoutEvent.on('data', async (shout) => {
 
 fs.readdir('./commands/', async (err, files) => {
     if(err){
-        return console.error(err);
+        return console.log(chalk.red('An error occured when checking the commands folder for commands to load: ' + err));
     }
     files.forEach(async (file) => {
         if(!file.endsWith('.js')) return;
