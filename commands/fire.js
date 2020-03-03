@@ -67,16 +67,6 @@ exports.run = async (client, message, args) => {
             }
         }});
     }
-    if(newrank == 'NOT_FOUND'){
-        return message.channel.send({embed: {
-            color: 16733013,
-            description: "The specified rank could not be found.",
-            author: {
-                name: message.author.tag,
-                icon_url: message.author.displayAvatarURL
-            }
-        }});
-    }
     let fireResponse;
     try {
         fireResponse = await roblox.setRank(client.config.groupId, id, 1);
