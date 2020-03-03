@@ -104,7 +104,7 @@ exports.run = async (client, message, args) => {
         },
         timestamp: new Date(),
         thumbnail: {
-            url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${username}`
+            url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=${username}`
         }
     }});
 }
