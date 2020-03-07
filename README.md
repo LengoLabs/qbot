@@ -13,6 +13,6 @@ If at any time while using qbot, you need support with it, then feel free to joi
 **Other Information**  
 qbot requires Node 12. If you are using https://glitch.com to host your bot, your server will automatically be updated to Node 12 because of it being specified in the package.json file.
 
-License: https://github.com/yogurtsyum/qbot/blob/master/LICENSE
-Acknowledgements: https://github.com/yogurtsyum/qbot/blob/master/acknowledgements.md
+License: https://github.com/yogurtsyum/qbot/blob/master/LICENSE  
+Acknowledgements: https://github.com/yogurtsyum/qbot/blob/master/acknowledgements.md  
 Contributors: https://github.com/yogurtsyum/qbot/graphs/contributors
