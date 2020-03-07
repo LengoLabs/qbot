@@ -1,6 +1,6 @@
 {
   "name": "qbot",
-  "version": "3.0.0",
+  "version": "5.1.0",
   "description": "This is a really cool roblox rank bot that I made! It is open source, so feel free to use it for your server/bot. Join the support server here: https://lengo.codes/discord",
   "main": "index.js",
   "scripts": {
