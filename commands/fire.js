@@ -21,13 +21,13 @@ async function getRankFromName(func_rankname, func_group){
 }
 
 exports.run = async (client, message, args) => {
-    if(!message.member.roles.some(role =>["Ranking Permissions"].includes(role.name))){
+    if(!message.member.roles.cache.some(role =>["Ranking Permissions"].includes(role.name))){
         return message.channel.send({embed: {
             color: 16733013,
             description: "You need the `Ranking Permissions` role to run this command.",
             author: {
                 name: message.author.tag,
-                icon_url: message.author.displayAvatarURL
+                icon_url: message.author.displayAvatarURL()
             }
         }})
     }
@@ -38,7 +38,7 @@ exports.run = async (client, message, args) => {
             description: "The username argument is required.",
             author: {
                 name: message.author.tag,
-                icon_url: message.author.displayAvatarURL
+                icon_url: message.author.displayAvatarURL()
             }
         }});
     }
@@ -51,7 +51,7 @@ exports.run = async (client, message, args) => {
             description: `Oops! ${username} is not a Roblox user. Perhaps you misspelled?`,
             author: {
                 name: message.author.tag,
-                icon_url: message.author.displayAvatarURL
+                icon_url: message.author.displayAvatarURL()
             }
         }});
     }
@@ -63,7 +63,7 @@ exports.run = async (client, message, args) => {
             description: "This rank cannot be ranked by this bot.",
             author: {
                 name: message.author.tag,
-                icon_url: message.author.displayAvatarURL
+                icon_url: message.author.displayAvatarURL()
             }
         }});
     }
@@ -77,7 +77,7 @@ exports.run = async (client, message, args) => {
             description: `Oops! An unexpected error has occured. It has been logged to the bot console.`,
             author: {
                 name: message.author.tag,
-                icon_url: message.author.displayAvatarURL
+                icon_url: message.author.displayAvatarURL()
             }
         }});
     }
@@ -87,17 +87,17 @@ exports.run = async (client, message, args) => {
         description: `**Success!** Fired ${username} to ${newRankName} (${fireResponse.rank})`,
         author: {
             name: message.author.tag,
-            icon_url: message.author.displayAvatarURL
+            icon_url: message.author.displayAvatarURL()
         }
     }});
     if(client.config.logchannelid === 'false') return;
-    let logchannel = await message.guild.channels.get(client.config.logchannelid);
+    let logchannel = await message.guild.channels.cache.get(client.config.logchannelid);
     logchannel.send({embed: {
         color: 2127726,
         description: `<@${message.author.id}> has fired ${username} from ${rankNameInGroup} (${rankInGroup}) to ${newRankName} (${fireResponse.rank}).`,
         author: {
             name: message.author.tag,
-            icon_url: message.author.displayAvatarURL
+            icon_url: message.author.displayAvatarURL()
         },
         footer: {
             text: 'Action Logs'
