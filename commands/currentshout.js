@@ -12,7 +12,7 @@ exports.run = async (client, message, args) => {
             description: `Oops! An unexpected error has occured. It has been logged to the bot console.`,
             author: {
                 name: message.author.tag,
-                icon_url: message.author.displayAvatarURL
+                icon_url: message.author.displayAvatarURL()
             }
         }});
     }
@@ -22,7 +22,7 @@ exports.run = async (client, message, args) => {
         description: `**Posted by ${shout.poster.username}**\n${shout.body}`,
         author: {
             name: message.author.tag,
-            icon_url: message.author.displayAvatarURL
+            icon_url: message.author.displayAvatarURL()
         },
         thumbnail: {
             url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`
@@ -34,7 +34,7 @@ exports.run = async (client, message, args) => {
         description: `**Posted by ${shout.poster.username}**\n*Shout cleared.*`,
         author: {
             name: message.author.tag,
-            icon_url: message.author.displayAvatarURL
+            icon_url: message.author.displayAvatarURL()
         },
         thumbnail: {
             url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`
