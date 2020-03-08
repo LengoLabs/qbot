@@ -1,3 +1,14 @@
+const express = require('express');
+const app = express();
+
+app.get('/', (request, response) => {
+     response.sendStatus(200);
+});
+
+let listener = app.listen(process.env.PORT, () => {
+     console.log('Your app is currently listening on port: ' + listener.address().port);
+});
+
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const roblox = require('noblox.js');
@@ -17,7 +28,7 @@ let shoutEvent = roblox.onShout(client.config.groupId);
 
 shoutEvent.on('data', async (shout) => {
   if(config.shoutchannelid === 'false') return;
-  let shoutchannel = await client.channels.get(config.shoutchannelid);
+  let shoutchannel = await client.channels.cache.get(config.shoutchannelid);
   if(shout.body){
     shoutchannel.send({embed: {
             color: 2127726,
@@ -56,9 +67,9 @@ fs.readdir('./commands/', async (err, files) => {
 client.on('ready', async () => {
     console.log(chalk.yellow(figlet.textSync('qbot', { horizontalLayout: 'full' })));
     console.log(chalk.red(`Bot started!\n---\n`
-    + `> Users: ${client.users.size}\n`
-    + `> Channels: ${client.channels.size}\n`
-    + `> Servers: ${client.guilds.size}`));
+    + `> Users: ${client.users.cache.size}\n`
+    + `> Channels: ${client.channels.cache.size}\n`
+    + `> Servers: ${client.guilds.cache.size}`));
 });
 
 client.on('message', async (message) => {
