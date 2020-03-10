@@ -8,8 +8,7 @@ There is currently 1 branches of qbot available:
 `5.4` - The latest version of qbot with many features.
 
 **Support**  
-If at any time while using qbot, you need support with it, then feel free to join our support server here:  
-https://discord.gg/PHHrjzY.
+If at any time while using qbot, you need support with it, then feel free to join our support server here: https://discord.gg/PHHrjzY.
 
 **Other Information**  
 qbot requires Node 12. If you are using https://glitch.com to host your bot, your server will automatically be updated to Node 12 because of it being specified in the package.json file.
