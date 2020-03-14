@@ -2,5 +2,8 @@
     "rules": {
         "semi": ["error", "always"]
     },
-    "extends": "eslint:recommended"
+    "extends": "eslint:recommended",
+    "env": {
+        "es6": true
+    }
 }
