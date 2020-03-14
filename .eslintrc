@@ -6,7 +6,6 @@
     "env": {
         "es6": true
     },
-    "ecmaVersion": 8,
     "parserOptions": {
         "ecmaVersion": 8
     }
