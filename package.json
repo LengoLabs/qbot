@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "setup": "node installer.js"
+    "setup": "node installer.js",
+    "test": "eslint ."
   },
   "engines": { "node": "12.0.0" },
   "keywords": [],
