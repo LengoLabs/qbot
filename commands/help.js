@@ -9,7 +9,9 @@ exports.run = async (client, message, args) => {
         + `\`${client.config.prefix}fire <user>\` - Moves a user to the lowest rank possible besides Guest.\n`
         + `\`${client.config.prefix}shout <message>\` - Posts a group shout.\n`
         + `\`${client.config.prefix}clearshout\` - Clears the group shout.\n`
-        + `\`${client.config.prefix}currentshout\` - Shows the current group shout.`,
+        + `\`${client.config.prefix}currentshout\` - Shows the current group shout.\n`
+        + `\`${client.config.prefix}accept-join <user>\` - Accepts a user's join request.\n`
+        + `\`${client.config.prefix}deny-join <user>\` - Denies a user's join request.`,
         author: {
             name: message.author.tag,
             icon_url: message.author.displayAvatarURL
