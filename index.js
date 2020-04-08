@@ -72,6 +72,7 @@ client.on('ready', async () => {
   + `> Servers: ${client.guilds.cache.size}`));
   let botstatus = fs.readFileSync('./bot-status.json');
   botstatus = JSON.parse(botstatus);
+  if(botstatus.activity == 'false') return;
   if(botstatus.activitytype == 'STREAMING'){
     client.user.setActivity(botstatus.activitytext, {
       type: botstatus.activitytype,
