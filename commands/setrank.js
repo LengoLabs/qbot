@@ -43,6 +43,7 @@ exports.run = async (client, message, args) => {
         }});
     }
     let rank = Number(args[1]);
+    let newrank;
     if(!rank){
         let midrank = args.slice(1).join(' ');
         if(!midrank){
