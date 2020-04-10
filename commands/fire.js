@@ -82,9 +82,10 @@ exports.run = async (client, message, args) => {
         }});
     }
     let newRankName = await getRankName(client.config.groupId, id);
+    let newRank = await getRankID(client.config.groupId, id);
     message.channel.send({embed: {
         color: 9240450,
-        description: `**Success!** Fired ${username} to ${newRankName} (${fireResponse.rank})`,
+        description: `**Success!** Fired ${username} to ${newRankName} (${newRank})`,
         author: {
             name: message.author.tag,
             icon_url: message.author.displayAvatarURL()
@@ -94,7 +95,7 @@ exports.run = async (client, message, args) => {
     let logchannel = await message.guild.channels.cache.get(client.config.logchannelid);
     logchannel.send({embed: {
         color: 2127726,
-        description: `<@${message.author.id}> has fired ${username} from ${rankNameInGroup} (${rankInGroup}) to ${newRankName} (${fireResponse.rank}).`,
+        description: `<@${message.author.id}> has fired ${username} from ${rankNameInGroup} (${rankInGroup}) to ${newRankName} (${newRank}).`,
         author: {
             name: message.author.tag,
             icon_url: message.author.displayAvatarURL()
