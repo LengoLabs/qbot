@@ -36,7 +36,7 @@ async function onShout(){
   } else {
     setTimeout(onShout, 30000);
     let currentshout = await roblox.getShout(config.groupId);
-    if(currentshout.updated == shout.updated) return;
+    if(currentshout.body == shout.body) return;
     if(currentshout.body){
       shoutchannel.send({embed: {
         color: 2127726,
