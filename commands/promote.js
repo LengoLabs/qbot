@@ -67,9 +67,10 @@ exports.run = async (client, message, args) => {
             }
         }});
     }
+    let rank = rankInGroup + 1;
     let promoteResponse;
     try {
-        promoteResponse = await roblox.promote(client.config.groupId, id);
+        promoteResponse = await roblox.setRank(client.config.groupId, id, rank);
     } catch (err) {
         console.log(chalk.red('An error occured when running the promote command: ' + err));
         return message.channel.send({embed: {
