@@ -24,31 +24,44 @@ roblox.cookieLogin(config.cookie).catch(async err => {
 
 let commandlist = [];
 
-let shoutEvent = roblox.onShout(client.config.groupId);
+let firstshout = true;
+let shout;
 
-shoutEvent.on('data', async (shout) => {
-  if(config.shoutchannelid === 'false') return;
+async function onShout(){
   let shoutchannel = await client.channels.cache.get(config.shoutchannelid);
-  if(shout.body){
-    shoutchannel.send({embed: {
-            color: 2127726,
-            description: shout.body,
-            author: {
-                name: shout.poster.username,
-                icon_url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`
-            }
-        }});
+  if(firstshout == true){
+    firstshout = false;
+    shout = await roblox.getShout(config.groupId);
+    setTimeout(onShout, 30000);
   } else {
-    shoutchannel.send({embed: {
-            color: 2127726,
-            description: '*Shout cleared.*',
+    setTimeout(onShout, 30000);
+    let currentshout = await roblox.getShout(config.groupId);
+    if(currentshout.updated == shout.updated) return;
+    if(currentshout.body){
+      shoutchannel.send({embed: {
+        color: 2127726,
+        description: currentshout.body,
+        author: {
+          name: shout.poster.username,
+          icon_url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`
+        }
+      }});
+    } else {
+      shoutchannel.send({embed: {
+        color: 2127726,
+          description: '*Shout cleared.*',
             author: {
-                name: shout.poster.username,
-                icon_url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`
+              name: shout.poster.username,
+              icon_url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`
             }
-        }});
+      }});
+    }
+    shout = currentshout;
   }
-});
+}
+if(config.shoutchannelid !== 'false'){
+  onShout();
+}
 
 fs.readdir('./commands/', async (err, files) => {
     if(err){
