@@ -67,10 +67,9 @@ exports.run = async (client, message, args) => {
             }
         }});
     }
-    let rank = rankInGroup - 1;
     let demoteResponse;
     try {
-        demoteResponse = await roblox.setRank(client.config.groupId, id, rank);
+        demoteResponse = await roblox.demote(client.config.groupId, id);
     } catch (err) {
         console.log(chalk.red('An error occured when running the demote command: ' + err));
         return message.channel.send({embed: {
