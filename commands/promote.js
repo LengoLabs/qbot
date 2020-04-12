@@ -51,7 +51,7 @@ exports.run = async (client, message, args) => {
             description: `Oops! ${username} is not a Roblox user. Perhaps you misspelled?`,
             author: {
                 name: message.author.tag,
-                icon_url: message.author.displayAvatarURL
+                icon_url: message.author.displayAvatarURL()
             }
         }});
     }
@@ -67,11 +67,11 @@ exports.run = async (client, message, args) => {
             }
         }});
     }
-    let promoteResponse;
+    let demoteResponse;
     try {
-        promoteResponse = await roblox.promote(client.config.groupId, id);
+        demoteResponse = await roblox.demote(client.config.groupId, id);
     } catch (err) {
-        console.log(chalk.red('An error occured when running the promote command: ' + err));
+        console.log(chalk.red('An error occured when running the demote command: ' + err));
         return message.channel.send({embed: {
             color: 16733013,
             description: `Oops! An unexpected error has occured. It has been logged to the bot console.`,
@@ -85,7 +85,7 @@ exports.run = async (client, message, args) => {
     let newRank = await getRankID(client.config.groupId, id);
     message.channel.send({embed: {
         color: 9240450,
-        description: `**Success!** Promoted ${username} to ${newRankName} (${newRank})`,
+        description: `**Success!** Demoted ${username} to ${newRankName} (${newRank})`,
         author: {
             name: message.author.tag,
             icon_url: message.author.displayAvatarURL()
@@ -95,7 +95,7 @@ exports.run = async (client, message, args) => {
     let logchannel = await message.guild.channels.cache.get(client.config.logchannelid);
     logchannel.send({embed: {
         color: 2127726,
-        description: `<@${message.author.id}> has promoted ${username} from ${rankNameInGroup} (${rankInGroup}) to ${newRankName} (${newRank}).`,
+        description: `<@${message.author.id}> has demoted ${username} from ${rankNameInGroup} (${rankInGroup}) to ${newRankName} (${newRank}).`,
         author: {
             name: message.author.tag,
             icon_url: message.author.displayAvatarURL()
