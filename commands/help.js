@@ -14,7 +14,7 @@ exports.run = async (client, message, args) => {
         + `\`${client.config.prefix}deny-join <user>\` - Denies a user's join request.`,
         author: {
             name: message.author.tag,
-            icon_url: message.author.displayAvatarURL
+            icon_url: message.author.displayAvatarURL()
         }
     }});
 }
