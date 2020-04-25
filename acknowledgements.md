@@ -1,5 +1,5 @@
 # qbot acknowledgements.
-The below acknowledgements are for modules that qbot depends on.
+The below acknowledgements are for modules that qbot depends on. Each modules' code is licensed under their own license.
 
 ## noblox.js
 ```
