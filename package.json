@@ -12,7 +12,7 @@
   },
   "keywords": [],
   "author": "Lengo#0001",
-  "license": "Unlicense",
+  "license": "MIT",
   "dependencies": {
     "chalk": "^3.0.0",
     "discord.js": "^12.1.1",
