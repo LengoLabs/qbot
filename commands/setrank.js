@@ -112,7 +112,7 @@ exports.run = async (client, message, args) => {
     let newRankName = await getRankName(client.config.groupId, id);
     message.channel.send({embed: {
         color: 9240450,
-        description: `**Success!** Ranked ${username} to ${setRankResponse.name} (${setRankResponse.rank})`,
+        description: `**Success!** Ranked ${username} to ${setRankResponse.newRole.name} (${setRankResponse.newRole.rank})`,
         author: {
             name: message.author.tag,
             icon_url: message.author.displayAvatarURL()
@@ -122,7 +122,7 @@ exports.run = async (client, message, args) => {
     let logchannel = await message.guild.channels.cache.get(client.config.logchannelid);
     logchannel.send({embed: {
         color: 2127726,
-        description: `<@${message.author.id}> has ranked ${username} from ${rankNameInGroup} (${rankInGroup}) to ${setRankResponse.name} (${setRankResponse.rank}).`,
+        description: `<@${message.author.id}> has ranked ${username} from ${rankNameInGroup} (${rankInGroup}) to ${setRankResponse.newRole.name} (${setRankResponse.newRole.rank}).`,
         author: {
             name: message.author.tag,
             icon_url: message.author.displayAvatarURL()
