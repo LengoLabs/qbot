@@ -75,6 +75,59 @@ exports.run = async (client, message, args) => {
     }
     let rankInGroup = await getRankID(client.config.groupId, id);
     let rankNameInGroup = await getRankName(client.config.groupId, id);
+    let ratelimitedresources = 0;
+    let bloxlinkresponse = await ratelimits.bloxlink(message.author.id);
+    if(bloxlinkresponse.msg === 'ratelimited') ratelimitedresources = ratelimitedresources + 1;
+    let roverresponse = await ratelimits.rover(message.author.id);
+    if(roverresponse.msg === 'ratelimited') ratelimitedresources = ratelimitedresources + 1;
+    if(ratelimitedresources !== 2){
+        return message.channel.send({embed: {
+            color: 16733013,
+            description: "The bot is currently ratelimited. Please try again in a minute.",
+            author: {
+                name: message.author.tag,
+                icon_url: message.author.displayAvatarURL()
+            }
+        }});
+    }
+    let verifiedId = 'notfound';
+    if(bloxlinkresponse.msg !== 'notfound'){
+        verifiedId = bloxlinkresponse.id;
+    }
+    if(verifiedId !== 'notfound' && roverresponse.msg !== 'notfound'){
+        verifiedId = roverresponse.id;
+    }
+    if(verifiedid === 'notfound'){
+          member.send({embed: {
+              color: 16733013,
+              description: "It looks like you are not verified with Bloxlink or Rover. Please verify yourself using [this link](https://verify.eryn.io/)!",
+              author: {
+                  name: message.author.tag,
+                  icon_url: message.author.displayAvatarURL()
+              }
+          }})
+    }
+    if(id == verifiedid){
+        member.send({embed: {
+            color: 16733013,
+            description: "It looks like you are not verified with Bloxlink or Rover. Please verify yourself using [this link](https://verify.eryn.io/)!",
+            author: {
+                name: message.author.tag,
+                icon_url: message.author.displayAvatarURL()
+            }
+        }})
+      }
+      let verifiedUserRankInGroup = await getRankID(client.config.groupId, verifiedId);
+if(rankInGroup <= verifiedUserRankInGroup){
+    return message.channel.send({embed: {
+        color: 16733013,
+        description: "You can't rank someone with the same or higher rank then you.",
+        author: {
+            name: message.author.tag,
+            icon_url: message.author.displayAvatarURL()
+        }
+    }});
+}
     if(client.config.maximumRank <= rankInGroup){
         return message.channel.send({embed: {
             color: 16733013,

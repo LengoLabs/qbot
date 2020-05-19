@@ -9,7 +9,7 @@ var initq = [
         name: 'usage',
         type: 'list',
         message: 'What are you using this tool to do?',
-        choices: ['Setup qbot for the first time.', 'Update the cookie.']
+        choices: ['Setup qbot for the first time.', 'Update the cookie.', 'Update verification check settings.']
     }
 ]
 var updateq = [
@@ -96,6 +96,21 @@ var setupq = [
                 return 'This field is required.';
             }
         }
+    },
+    {
+        name: 'toggleVerificationChecks',
+        type: 'list',
+        message: 'Do you want the bot to prevent people from ranking themselves or people with the same or higher rank with them in the Roblox group using Bloxlink or RoVer verification?',
+        choices: ['Yes', 'No']
+    }
+]
+
+var updatev = [
+    {
+        name: 'toggleVerificationChecks',
+        type: 'list',
+        message: 'Do you want the bot to prevent people from ranking themselves or people with the same or higher rank with them in the Roblox group using Bloxlink or RoVer verification?',
+        choices: ['Yes', 'No']
     }
 ]
 
@@ -109,14 +124,25 @@ inquirer.prompt(initq).then(answers => {
             configFile.maximumRank = answers.maximumRank;
             configFile.logchannelid = answers.logchannelid;
             configFile.shoutchannelid = answers.shoutchannelid;
+            if(answers.toggleVerificationChecks === 'Yes') configFile.toggleVerificationChecks = "true";
+            if(answers.toggleVerificationChecks === 'No') configFile.toggleVerificationChecks = "false";
             fs.writeFile('./config.json', JSON.stringify(configFile), (err) => {
                 if (err) console.log(err);
             });
             console.log(chalk.green('qbot has been successfully setup.'));
         });
-    } else {
+    } else if(answers.usage === 'Update the cookie.') {
         inquirer.prompt(updateq).then(answers => {
             configFile.cookie = answers.cookie;
+            fs.writeFile('./config.json', JSON.stringify(configFile), (err) => {
+                if (err) console.log(err);
+            });
+            console.log(chalk.green('Your qbot configuration has been successfully updated.'));
+        });
+    } else {
+        inquirer.prompt(updatev).then(answers => {
+            if(answers.toggleVerificationChecks === 'Yes') configFile.toggleVerificationChecks = "true";
+            if(answers.toggleVerificationChecks === 'No') configFile.toggleVerificationChecks = "false";
             fs.writeFile('./config.json', JSON.stringify(configFile), (err) => {
                 if (err) console.log(err);
             });
