@@ -18,8 +18,8 @@ const config = require('./config.json');
 const fs = require('fs');
 client.config = config;
 
-roblox.cookieLogin(config.cookie).catch(async err => {
-    console.log(chalk.red('Issue with logging in: ' + err))
+roblox.setCookie(config.cookie).catch(async err => {
+    console.log(chalk.red('Issue with logging in: ' + err));
 });
 
 let commandlist = [];
@@ -60,7 +60,7 @@ async function onShout(){
   }
 }
 if(config.shoutchannelid !== 'false'){
-  onShout();
+  setTimeout(onShout, 15000);
 }
 
 fs.readdir('./commands/', async (err, files) => {
