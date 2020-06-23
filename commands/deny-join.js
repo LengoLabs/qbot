@@ -1,5 +1,6 @@
 const roblox = require('noblox.js');
 const chalk = require('chalk');
+require('dotenv').config();
 
 exports.run = async (client, message, args) => {
     if(!message.member.roles.cache.some(role =>["Ranking Permissions", "Join Request Permissions"].includes(role.name))){
@@ -51,7 +52,7 @@ exports.run = async (client, message, args) => {
   }
   let denyJoinRequestResponse;
   try {
-    denyJoinRequestResponse = await roblox.handleJoinRequest(client.config.groupId, userid, false);
+    denyJoinRequestResponse = await roblox.handleJoinRequest(Number(process.env.groupId), userid, false);
   } catch (err) {
     return message.channel.send({embed: {
       description: 'That user does not have an active join request.',
@@ -71,7 +72,7 @@ exports.run = async (client, message, args) => {
     }
   }});
   if(client.config.logchannelid === 'false') return;
-  let logchannel = await message.guild.channels.cache.get(client.config.logchannelid);
+  let logchannel = await message.guild.channels.cache.get(process.env.logchannelid);
   logchannel.send({embed: {
     color: 2127726,
     description: `<@${message.author.id}> has denied ${username}'s join request.`,
