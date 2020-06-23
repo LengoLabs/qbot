@@ -35,7 +35,7 @@ exports.run = async (client, message, args) => {
             icon_url: message.author.displayAvatarURL()
         }
     }});
-    if(client.config.logchannelid === 'false') return;
+    if(process.env.logchannelid === 'false') return;
     let logchannel = message.guild.channels.cache.get(process.env.logchannelid);
     logchannel.send({embed: {
         color: 2127726,
