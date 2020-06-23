@@ -1,10 +1,11 @@
 const roblox = require('noblox.js');
 const chalk = require('chalk');
+require('dotenv').config();
 
 exports.run = async (client, message, args) => {
     let shout;
     try {
-        shout = await roblox.getShout(client.config.groupId);
+        shout = await roblox.getShout(Number(process.env.groupId));
     } catch (err) {
         console.log(chalk.red('An error occured when running the currentshout command: ' + err));
         return message.channel.send({embed: {
