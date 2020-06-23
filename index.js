@@ -14,7 +14,7 @@ const client = new Discord.Client();
 const roblox = require('noblox.js');
 const chalk = require('chalk');
 const figlet = require('figlet');
-const config = require('./config.json');
+require('dotenv').config();
 const fs = require('fs');
 client.config = config;
 
