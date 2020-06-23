@@ -30,7 +30,7 @@ async function onShout(){
   let shoutchannel = await client.channels.cache.get(process.env.shoutchannelid);
   if(firstshout == true){
     firstshout = false;
-    shout = await roblox.getShout(process.env.groupId);
+    shout = await roblox.getShout(Number(process.env.groupId));
     setTimeout(onShout, 30000);
   } else {
     setTimeout(onShout, 30000);
@@ -58,7 +58,7 @@ async function onShout(){
     shout = currentshout;
   }
 }
-if(config.shoutchannelid !== 'false'){
+if(process.env.shoutchannelid !== 'false'){
   setTimeout(onShout, 15000);
 }
 
