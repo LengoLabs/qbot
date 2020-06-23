@@ -16,9 +16,8 @@ const chalk = require('chalk');
 const figlet = require('figlet');
 require('dotenv').config();
 const fs = require('fs');
-client.config = config;
 
-roblox.setCookie(config.cookie).catch(async err => {
+roblox.setCookie(process.env.cookie).catch(async err => {
     console.log(chalk.red('Issue with logging in: ' + err));
 });
 
@@ -28,14 +27,14 @@ let firstshout = true;
 let shout;
 
 async function onShout(){
-  let shoutchannel = await client.channels.cache.get(config.shoutchannelid);
+  let shoutchannel = await client.channels.cache.get(process.env.shoutchannelid);
   if(firstshout == true){
     firstshout = false;
-    shout = await roblox.getShout(config.groupId);
+    shout = await roblox.getShout(process.env.groupId);
     setTimeout(onShout, 30000);
   } else {
     setTimeout(onShout, 30000);
-    let currentshout = await roblox.getShout(config.groupId);
+    let currentshout = await roblox.getShout(process.env.groupId);
     if(currentshout.body == shout.body) return;
     if(currentshout.body){
       shoutchannel.send({embed: {
@@ -100,8 +99,8 @@ client.on('ready', async () => {
 
 client.on('message', async (message) => {
     if(message.author.bot) return;
-    if(!message.content.startsWith(client.config.prefix)) return;
-    const args = message.content.slice(client.config.prefix.length).split(' ');
+    if(!message.content.startsWith(process.env.prefix)) return;
+    const args = message.content.slice(process.env.prefix.length).split(' ');
     const commandName = args[0].toLowerCase();
     args.shift();
     const command = commandlist.findIndex((cmd) => cmd.name === commandName);
@@ -109,4 +108,4 @@ client.on('message', async (message) => {
     commandlist[command].file.run(client, message, args);
 });
 
-client.login(config.token);
+client.login(process.env.token);
