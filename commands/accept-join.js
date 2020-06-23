@@ -51,7 +51,7 @@ exports.run = async (client, message, args) => {
   }
   let acceptJoinRequestResponse;
   try {
-    acceptJoinRequestResponse = await roblox.handleJoinRequest(process.env.groupId, userid, true);
+    acceptJoinRequestResponse = await roblox.handleJoinRequest(Number(process.env.groupId), userid, true);
   } catch (err) {
     return message.channel.send({embed: {
       description: 'That user does not have an active join request.',
