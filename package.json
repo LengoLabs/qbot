@@ -19,6 +19,7 @@
     "express": "^4.17.1",
     "figlet": "^1.4.0",
     "inquirer": "^7.2.0",
-    "noblox.js": "^4.6.1"
+    "noblox.js": "^4.6.1",
+    "dotenv": "^8.2.0"
   }
 }
