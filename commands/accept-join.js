@@ -51,7 +51,7 @@ exports.run = async (client, message, args) => {
   }
   let acceptJoinRequestResponse;
   try {
-    acceptJoinRequestResponse = await roblox.handleJoinRequest(client.config.groupId, userid, true);
+    acceptJoinRequestResponse = await roblox.handleJoinRequest(process.env.groupId, userid, true);
   } catch (err) {
     return message.channel.send({embed: {
       description: 'That user does not have an active join request.',
@@ -71,7 +71,7 @@ exports.run = async (client, message, args) => {
     }
   }});
   if(client.config.logchannelid === 'false') return;
-  let logchannel = await message.guild.channels.cache.get(client.config.logchannelid);
+  let logchannel = await message.guild.channels.cache.get(process.env.logchannelid);
   logchannel.send({embed: {
     color: 2127726,
     description: `<@${message.author.id}> has accepted ${username}'s join request.`,
