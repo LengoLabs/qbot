@@ -14,7 +14,7 @@ exports.run = async (client, message, args) => {
     }
     let clearShoutResponse;
     try {
-        clearShoutResponse = await roblox.shout(client.config.groupId, '');
+        clearShoutResponse = await roblox.shout(Number(process.env.groupId), '');
     } catch (err) {
         console.log(chalk.red('An error occured when running the clearshout command: ' + err));
         return message.channel.send({embed: {
@@ -35,7 +35,7 @@ exports.run = async (client, message, args) => {
         }
     }});
     if(client.config.logchannelid === 'false') return;
-    let logchannel = message.guild.channels.cache.get(client.config.logchannelid);
+    let logchannel = message.guild.channels.cache.get(process.env.logchannelid);
     logchannel.send({embed: {
         color: 2127726,
         description: `<@${message.author.id}> has cleared the group shout.`,
