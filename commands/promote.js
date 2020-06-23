@@ -1,5 +1,6 @@
 const roblox = require('noblox.js');
 const chalk = require('chalk');
+require('dotenv').config();
 
 async function getRankName(func_group, func_user){
     let rolename = await roblox.getRankNameInGroup(func_group, func_user);
@@ -55,8 +56,8 @@ exports.run = async (client, message, args) => {
             }
         }});
     }
-    let rankInGroup = await getRankID(client.config.groupId, id);
-    let rankNameInGroup = await getRankName(client.config.groupId, id);
+    let rankInGroup = await getRankID(Number(process.env.groupId), id);
+    let rankNameInGroup = await getRankName(Number(process.env.groupId), id);
     if(client.config.maximumRank <= rankInGroup){
         return message.channel.send({embed: {
             color: 16733013,
@@ -69,7 +70,7 @@ exports.run = async (client, message, args) => {
     }
     let promoteResponse;
     try {
-        promoteResponse = await roblox.promote(client.config.groupId, id);
+        promoteResponse = await roblox.promote(Number(process.env.groupId), id);
     } catch (err) {
         console.log(chalk.red('An error occured when running the promote command: ' + err));
         return message.channel.send({embed: {
@@ -81,8 +82,8 @@ exports.run = async (client, message, args) => {
             }
         }});
     }
-    let newRankName = await getRankName(client.config.groupId, id);
-    let newRank = await getRankID(client.config.groupId, id);
+    let newRankName = await getRankName(Number(process.env.groupId), id);
+    let newRank = await getRankID(Number(process.env.groupId), id);
     message.channel.send({embed: {
         color: 9240450,
         description: `**Success!** Promoted ${username} to ${promoteResponse.newRole.name} (${promoteResponse.newRole.rank})`,
@@ -92,7 +93,7 @@ exports.run = async (client, message, args) => {
         }
     }});
     if(client.config.logchannelid === 'false') return;
-    let logchannel = await message.guild.channels.cache.get(client.config.logchannelid);
+    let logchannel = await message.guild.channels.cache.get(process.env.logchannelid);
     logchannel.send({embed: {
         color: 2127726,
         description: `<@${message.author.id}> has promoted ${username} from ${rankNameInGroup} (${rankInGroup}) to ${promoteResponse.newRole.name} (${promoteResponse.newRole.rank}).`,
