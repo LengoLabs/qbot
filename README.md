@@ -11,7 +11,7 @@ There is currently 1 branches of qbot available:
 If at any time while using qbot, you need support with it, then feel free to join our support server here: https://discord.gg/J47m7t4.
 
 **Other Information**  
-qbot requires Node 12. If you are using https://glitch.com to host your bot, your server will automatically be updated to Node 12 because of it being specified in the package.json file.
+qbot can only run on Node.js v12 or higher.   
 
 License: https://github.com/yogurtsyum/qbot/blob/master/LICENSE  
 Acknowledgements: https://github.com/yogurtsyum/qbot/blob/master/acknowledgements.md  
