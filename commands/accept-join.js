@@ -1,5 +1,6 @@
 const roblox = require('noblox.js');
 const chalk = require('chalk');
+require('dotenv').config();
 
 exports.run = async (client, message, args) => {
     if(!message.member.roles.cache.some(role =>["Ranking Permissions", "Join Request Permissions"].includes(role.name))){
