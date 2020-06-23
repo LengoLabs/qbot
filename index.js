@@ -34,7 +34,7 @@ async function onShout(){
     setTimeout(onShout, 30000);
   } else {
     setTimeout(onShout, 30000);
-    let currentshout = await roblox.getShout(process.env.groupId);
+    let currentshout = await roblox.getShout(Number(process.env.groupId));
     if(currentshout.body == shout.body) return;
     if(currentshout.body){
       shoutchannel.send({embed: {
