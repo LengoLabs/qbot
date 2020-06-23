@@ -1,5 +1,6 @@
 const roblox = require('noblox.js');
 const chalk = require('chalk');
+require('dotenv').config();
 
 async function getRankName(func_group, func_user){
     let rolename = await roblox.getRankNameInGroup(func_group, func_user);
@@ -56,7 +57,7 @@ exports.run = async (client, message, args) => {
                 }
             }});
         }
-        newrank = await getRankFromName(midrank, client.config.groupId);
+        newrank = await getRankFromName(midrank, Number(process.env.groupId));
     } else {
         newrank = rank;
     }
@@ -73,8 +74,8 @@ exports.run = async (client, message, args) => {
             }
         }});
     }
-    let rankInGroup = await getRankID(client.config.groupId, id);
-    let rankNameInGroup = await getRankName(client.config.groupId, id);
+    let rankInGroup = await getRankID(Number(process.env.groupId), id);
+    let rankNameInGroup = await getRankName(Number(process.env.groupId), id);
     if(client.config.maximumRank <= rankInGroup){
         return message.channel.send({embed: {
             color: 16733013,
@@ -97,7 +98,7 @@ exports.run = async (client, message, args) => {
     }
     let setRankResponse;
     try {
-        setRankResponse = await roblox.setRank(client.config.groupId, id, newrank);
+        setRankResponse = await roblox.setRank(Number(process.env.groupId), id, newrank);
     } catch (err) {
         console.log(chalk.red('An error occured when running the setrank command: ' + err));
         return message.channel.send({embed: {
@@ -109,7 +110,7 @@ exports.run = async (client, message, args) => {
             }
         }});
     }
-    let newRankName = await getRankName(client.config.groupId, id);
+    let newRankName = await getRankName(Number(process.env.groupId), id);
     message.channel.send({embed: {
         color: 9240450,
         description: `**Success!** Ranked ${username} to ${setRankResponse.name} (${setRankResponse.rank})`,
@@ -119,7 +120,7 @@ exports.run = async (client, message, args) => {
         }
     }});
     if(client.config.logchannelid === 'false') return;
-    let logchannel = await message.guild.channels.cache.get(client.config.logchannelid);
+    let logchannel = await message.guild.channels.cache.get(process.env.logchannelid);
     logchannel.send({embed: {
         color: 2127726,
         description: `<@${message.author.id}> has ranked ${username} from ${rankNameInGroup} (${rankInGroup}) to ${setRankResponse.name} (${setRankResponse.rank}).`,
