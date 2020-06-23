@@ -1,5 +1,6 @@
 const roblox = require('noblox.js');
 const chalk = require('chalk');
+require('dotenv').config();
 
 exports.run = async (client, message, args) => {
     if(!message.member.roles.cache.some(role =>["Ranking Permissions", "Shout Permissions"].includes(role.name))){
@@ -25,7 +26,7 @@ exports.run = async (client, message, args) => {
     }
     let shoutResponse;
     try {
-        shoutResponse = await roblox.shout(client.config.groupId, msg);
+        shoutResponse = await roblox.shout(Number(process.env.groupId), msg);
     } catch (err) {
         console.log(chalk.red('An error occured when running the shout command: ' + err));
         return message.channel.send({embed: {
@@ -47,7 +48,7 @@ exports.run = async (client, message, args) => {
         }
     }});
     if(client.config.logchannelid === 'false') return;
-    let logchannel = message.guild.channels.cache.get(client.config.logchannelid);
+    let logchannel = message.guild.channels.cache.get(Number(process.env.groupId).logchannelid);
     logchannel.send({embed: {
         color: 2127726,
         description: `<@${message.author.id}> has posted a group shout:\n`
