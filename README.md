@@ -8,7 +8,7 @@ There is currently 1 branches of qbot available:
 `master` - The latest version of qbot with many features.
 
 **Support**  
-If at any time while using qbot, you need support with it, then feel free to join our support server here: https://discord.gg/J47m7t4.
+If at any time while using qbot you need support with it, then feel free to join our support server here: https://discord.gg/J47m7t4.
 
 **Other Information**  
 qbot can only run on Node.js v12 or higher.   
