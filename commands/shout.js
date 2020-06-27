@@ -48,7 +48,7 @@ exports.run = async (client, message, args) => {
         }
     }});
     if(process.env.logchannelid === 'false') return;
-    let logchannel = message.guild.channels.cache.get(Number(process.env.groupId).logchannelid);
+    let logchannel = message.guild.channels.cache.get(process.env.logchannelid);
     logchannel.send({embed: {
         color: 2127726,
         description: `<@${message.author.id}> has posted a group shout:\n`
