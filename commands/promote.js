@@ -58,7 +58,7 @@ exports.run = async (client, message, args) => {
     }
     let rankInGroup = await getRankID(Number(process.env.groupId), id);
     let rankNameInGroup = await getRankName(Number(process.env.groupId), id);
-    if(Number(process.env.maximumRank) <= rankInGroup){
+    if(Number(process.env.maximumRank) <= rankInGroup || Number(process.env.maximumRank) <= rankInGroup + 1){
         return message.channel.send({embed: {
             color: 16733013,
             description: "This rank cannot be ranked by this bot.",
