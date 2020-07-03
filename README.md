@@ -21,6 +21,6 @@ Please note we are not responsible for if anything happens to your bot account. 
 
 Please also note that Discord has a TOS for its API: https://discord.com/developers/docs/legal
 
-This TOS is being updated August 15th, 2020 and will require all bots to have a privacy policy (even if it just says you don't collect personal information). qbot does not have this built in so you will need to add this yourself. 
+This TOS is being updated August 15th, 2020 and will require all bots to have a privacy policy (even if it just says you don't collect personal information and has a way to contact you with any privacy concerns). qbot does not have this built in so you will need to add this yourself. 
 
 More info can be found on the [Discord Developers](https://discord.gg/discord-developers) server in [this](https://discord.com/channels/613425648685547541/697489244649816084/728031320625905794) message.
