@@ -23,8 +23,8 @@ roblox.setCookie(process.env.cookie).catch(async err => {
 
 let commandlist = [];
 
-let firstshout = true;
-let shout;
+var firstshout = true;
+var shout;
 
 async function onShout(){
   let shoutchannel = await client.channels.cache.get(process.env.shoutchannelid);
