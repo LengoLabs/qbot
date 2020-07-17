@@ -41,7 +41,7 @@ async function onShout(){
         color: 2127726,
         description: currentshout.body,
         author: {
-          name: shout.poster.username,
+          name: currentshout.poster.username,
           icon_url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`
         }
       }});
@@ -50,7 +50,7 @@ async function onShout(){
         color: 2127726,
           description: '*Shout cleared.*',
             author: {
-              name: shout.poster.username,
+              name: currentshout.poster.username,
               icon_url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`
             }
       }});
