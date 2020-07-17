@@ -1,7 +1,7 @@
 {
   "name": "qbot",
-  "version": "5.15.5",
-  "description": "This is a really cool roblox rank bot that I made! It is open source, so feel free to use it for your server/bot. Join the support server here: https://discord.gg/J47m7t4",
+  "version": "5.15.7",
+  "description": "qbot is an advanced, easy to setup, free, and unbranded Discord-Roblox ranking bot. If at any time during setting it up you need assistance, you can join the support server here: https://discord.gg/J47m7t4",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -19,7 +19,7 @@
     "express": "^4.17.1",
     "figlet": "^1.4.0",
     "inquirer": "^7.2.0",
-    "noblox.js": "^4.6.1",
+    "noblox.js": "^4.6.2",
     "dotenv": "^8.2.0"
   }
 }
