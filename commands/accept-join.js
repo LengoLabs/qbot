@@ -89,3 +89,9 @@ exports.run = async (client, message, args) => {
     }
   }});
 }
+
+exports.help = async() => {
+    let name = "accept-join <user>";
+    let description = "Accepts a user's join request.";
+    return `${name}|${description}`;
+}
