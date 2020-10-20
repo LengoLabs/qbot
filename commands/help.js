@@ -1,21 +1,40 @@
+const Discord = require('discord.js');
+const fs = require('fs');
+const commandList = [];
 require('dotenv').config();
+let prefix = process.env.prefix;
+
+fs.readdir('./commands', async (err, files) => {
+    if(err) throw new Error(err);
+    files.forEach(file => {
+        if(!file.endsWith('.js')) return;
+        const cmdFile = require(`../commands/${file}`);
+        commandList.push({
+            file: cmdFile
+        });
+    });
+});
+
 exports.run = async (client, message, args) => {
-    return message.channel.send({embed: {
-        color: 7948427,
-        description: `**Here are my commands:**\n`
-        + `\`${process.env.prefix}help\` - Shows this list of commands.\n`
-        + `\`${process.env.prefix}setrank <user> <rank name/number>\` - Ranks the user in the Roblox group to the specified rank number or name.\n`
-        + `\`${process.env.prefix}promote <user>\` - Moves the user 1 rank up in the Roblox group.\n`
-        + `\`${process.env.prefix}demote <user>\` - Moves the user 1 rank down in the Roblox group.\n`
-        + `\`${process.env.prefix}fire <user>\` - Moves a user to the lowest rank possible besides Guest.\n`
-        + `\`${process.env.prefix}shout <message>\` - Posts a group shout.\n`
-        + `\`${process.env.prefix}clearshout\` - Clears the group shout.\n`
-        + `\`${process.env.prefix}currentshout\` - Shows the current group shout.\n`
-        + `\`${process.env.prefix}accept-join <user>\` - Accepts a user's join request.\n`
-        + `\`${process.env.prefix}deny-join <user>\` - Denies a user's join request.`,
-        author: {
-            name: message.author.tag,
-            icon_url: message.author.displayAvatarURL()
-        }
-    }});
+    let embed = new Discord.MessageEmbed();
+    embed.setColor(7948427);
+    embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+    let embedDescription = `**Here are my commands:**\n`;
+
+    for(var i = 0; i < commandList.length; i++) {
+        let helpStrFromFile = await commandList[i].file.help();
+        let name = helpStrFromFile.substring(0, helpStrFromFile.indexOf("|"));
+        let description = helpStrFromFile.substring(helpStrFromFile.indexOf("|") + 1, helpStrFromFile.length);
+        let helpStr = `\`${prefix}${name}\` - ${description}\n`;
+        embedDescription += helpStr;
+    }
+
+    embed.setDescription(embedDescription);
+    return message.channel.send(embed);
+}
+
+exports.help = async() => {
+    let name = "help";
+    let description = "Shows this list of commands.";
+    return `${name}|${description}`;
 }
