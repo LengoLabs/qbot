@@ -110,3 +110,9 @@ exports.run = async (client, message, args) => {
         }
     }});
 }
+
+exports.help = async() => {
+    let name = "promote <user>";
+    let description = "Moves the user 1 rank up in the Roblox group.";
+    return `${name}|${description}`;
+}
