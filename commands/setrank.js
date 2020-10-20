@@ -137,3 +137,9 @@ exports.run = async (client, message, args) => {
         }
     }});
 }
+
+exports.help = async() => {
+    let name = "setrank <user> <rank name/number>";
+    let description = "Ranks the user in the Roblox group to the specified rank number or name.";
+    return `${name}|${description}`;
+}
