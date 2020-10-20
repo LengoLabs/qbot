@@ -110,3 +110,9 @@ exports.run = async (client, message, args) => {
         }
     }});
 }
+
+exports.help = async() => {
+    let name = "demote <user>";
+    let description = "Moves the user 1 rank down in the Roblox group.";
+    return `${name}|${description}`;
+}
