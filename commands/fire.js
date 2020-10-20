@@ -110,3 +110,9 @@ exports.run = async (client, message, args) => {
         }
     }});
 }
+
+exports.help = async() => {
+    let name = "fire <user>";
+    let description = "Moves a user to the lowest rank possible besides Guest.";
+    return `${name}|${description}`;
+}
