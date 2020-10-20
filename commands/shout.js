@@ -63,3 +63,9 @@ exports.run = async (client, message, args) => {
         timestamp: new Date()
     }});
 }
+
+exports.help = async() => {
+    let name = "shout <message>";
+    let description = "Posts a group shout.";
+    return `${name}|${description}`;
+}
