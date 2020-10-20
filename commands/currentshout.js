@@ -43,3 +43,9 @@ exports.run = async (client, message, args) => {
     }});
   }
 }
+
+exports.help = async() => {
+    let name = "currentshout";
+    let description = "Shows the current group shout.";
+    return `${name}|${description}`;
+}
