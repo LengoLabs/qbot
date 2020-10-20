@@ -89,3 +89,9 @@ exports.run = async (client, message, args) => {
     }
   }});
 }
+
+exports.help = async() => {
+    let name = "deny-join <user>";
+    let description = "Denies a user's join request.";
+    return `${name}|${description}`;
+}
