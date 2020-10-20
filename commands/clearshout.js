@@ -50,3 +50,9 @@ exports.run = async (client, message, args) => {
         timestamp: new Date()
     }});
 }
+
+exports.help = async() => {
+    let name = "clearshout";
+    let description = "Clears the group shout.";
+    return `${name}|${description}`;
+}
