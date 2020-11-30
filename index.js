@@ -2,11 +2,11 @@ const express = require('express');
 const app = express();
 
 app.get('/', (request, response) => {
-     response.sendStatus(200);
+    response.sendStatus(200);
 });
 
-let listener = app.listen(process.env.PORT, () => {
-     console.log('Your app is currently listening on port: ' + listener.address().port);
+const listener = app.listen(process.env.PORT, () => {
+    console.log('Your app is currently listening on port: ' + listener.address().port);
 });
 
 const Discord = require('discord.js');
@@ -14,52 +14,72 @@ const client = new Discord.Client();
 const roblox = require('noblox.js');
 const chalk = require('chalk');
 const figlet = require('figlet');
-require('dotenv').config();
 const fs = require('fs');
+const constants = require('./constants.js');
+const utils = require('./utils.js');
+require('dotenv').config();
 
 roblox.setCookie(process.env.cookie).catch(async err => {
     console.log(chalk.red('Issue with logging in: ' + err));
 });
 
-let commandlist = [];
+let commandList = [];
+client.commandList = commandList;
+client.constants = constants;
+client.utils = utils;
+client.databases = {};
+
+const Sequelize = require('sequelize');
+const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: '.data/db.sqlite',
+    logging: false
+});
+
+const xpDatabase = sequelize.define('xp', {
+    userId: Sequelize.STRING,
+    xp: Sequelize.INTEGER
+});
+xpDatabase.sync();
+client.databases.xp = xpDatabase;
 
 var firstshout = true;
 var shout;
 
-async function onShout(){
-  let shoutchannel = await client.channels.cache.get(process.env.shoutchannelid);
-  if(firstshout == true){
-    firstshout = false;
-    shout = await roblox.getShout(Number(process.env.groupId));
-    setTimeout(onShout, 30000);
-  } else {
-    setTimeout(onShout, 30000);
-    let currentshout = await roblox.getShout(Number(process.env.groupId));
-    if(currentshout.body == shout.body) return;
-    if(currentshout.body){
-      shoutchannel.send({embed: {
-        color: 2127726,
-        description: currentshout.body,
-        author: {
-          name: currentshout.poster.username,
-          icon_url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`
-        }
-      }});
+const onShout = async () => {
+    let shoutchannel = await client.channels.cache.get(process.env.shoutchannelid);
+    if(firstshout == true){
+        firstshout = false;
+        shout = await roblox.getShout(Number(process.env.groupId));
+        setTimeout(onShout, 30000);
     } else {
-      shoutchannel.send({embed: {
-        color: 2127726,
-          description: '*Shout cleared.*',
-            author: {
-              name: currentshout.poster.username,
-              icon_url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`
-            }
-      }});
+        setTimeout(onShout, 30000);
+        let currentshout = await roblox.getShout(Number(process.env.groupId));
+        if(currentshout.body == shout.body) return;
+        if(currentshout.body){
+            shoutchannel.send({embed: {
+                color: 2127726,
+                description: currentshout.body,
+                author: {
+                    name: currentshout.poster.username,
+                    icon_url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`
+                }
+            }});
+        } else {
+            shoutchannel.send({embed: {
+                color: 2127726,
+                    description: '*Shout cleared.*',
+                        author: {
+                            name: currentshout.poster.username,
+                            icon_url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`
+                        }
+            }});
+        }
+        shout = currentshout;
     }
-    shout = currentshout;
-  }
 }
 if(process.env.shoutchannelid !== 'false'){
-  setTimeout(onShout, 15000);
+    setTimeout(onShout, 15000);
 }
 
 fs.readdir('./commands/', async (err, files) => {
@@ -69,31 +89,32 @@ fs.readdir('./commands/', async (err, files) => {
     files.forEach(async (file) => {
         if(!file.endsWith('.js')) return;
         let commandFile = require(`./commands/${file}`);
-        commandlist.push({
+        commandList.push({
             file: commandFile,
-            name: file.split('.')[0]
+            name: file.split('.')[0],
+            config: commandFile.config
         });
     });
 });
 
 client.on('ready', async () => {
-  console.log(chalk.yellow(figlet.textSync('qbot', { horizontalLayout: 'full' })));
-  console.log(chalk.red(`Bot started!\n---\n`
-  + `> Channels: ${client.channels.cache.size}\n`
-  + `> Servers: ${client.guilds.cache.size}`));
-  let botstatus = fs.readFileSync('./bot-status.json');
-  botstatus = JSON.parse(botstatus);
-  if(botstatus.activity == 'false') return;
-  if(botstatus.activitytype == 'STREAMING'){
-    client.user.setActivity(botstatus.activitytext, {
-      type: botstatus.activitytype,
-      url: botstatus.activityurl
-    });
-  } else {
-    client.user.setActivity(botstatus.activitytext, {
-      type: botstatus.activitytype
-    });
-  }
+    console.log(`${chalk.hex(client.constants.colors.info)(figlet.textSync('qbot', { horizontalLayout: 'full' }))}\n`);
+    console.log(`${chalk.hex('#60bf85')('Bot started!')}\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯\n`
+    + `${chalk.hex('#ffaa2b')('>')} ${chalk.hex('#7289DA')(`Servers: ${chalk.hex('#4e5f99')(`${client.guilds.cache.size}`)}`)}\n`
+    + `${chalk.hex('#ffaa2b')('>')} ${chalk.hex('#7289DA')(`Channels: ${chalk.hex('#4e5f99')(`${client.channels.cache.size}`)}`)}`);
+    let botstatus = fs.readFileSync('./bot-status.json');
+    botstatus = JSON.parse(botstatus);
+    if(botstatus.activity == 'false') return;
+    if(botstatus.activitytype == 'STREAMING'){
+        client.user.setActivity(botstatus.activitytext, {
+            type: botstatus.activitytype,
+            url: botstatus.activityurl
+        });
+    } else {
+        client.user.setActivity(botstatus.activitytext, {
+            type: botstatus.activitytype
+        });
+    }
 });
 
 client.on('message', async (message) => {
@@ -102,9 +123,20 @@ client.on('message', async (message) => {
     const args = message.content.slice(process.env.prefix.length).split(' ');
     const commandName = args[0].toLowerCase();
     args.shift();
-    const command = commandlist.findIndex((cmd) => cmd.name === commandName);
-    if(command == -1) return;
-    commandlist[command].file.run(client, message, args);
+    const command = commandList.find((cmd) => cmd.name === commandName || cmd.config.aliases.includes(commandName));
+    if(!command) return;
+
+    if(command.config.rolesRequired.length > 0) {
+        if(!message.member.roles.cache.some(role => command.config.rolesRequired.includes(role.name))) {
+            let embed = new Discord.MessageEmbed();
+            embed.setDescription('You do not have permission to use this command.');
+            embed.setColor(client.constants.colors.error);
+            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            return message.channel.send(embed);
+        }
+    }
+
+    command.file.run(client, message, args);
 });
 
 client.login(process.env.token);
