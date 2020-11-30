@@ -4,9 +4,9 @@ const path = require('path');
 require('dotenv').config();
 
 const config = {
-    description: 'Posts a shout in the Roblox group.',
-    aliases: [],
-    usage: '<message>',
+    description: 'Clears the shout in the Roblox group.',
+    aliases: ['clearshout'],
+    usage: '',
     rolesRequired: ['Ranking Permissions', 'Shout Permissions']
 }
 
@@ -15,14 +15,6 @@ module.exports = {
     run: async (client, message, args) => {
         let embed = new Discord.MessageEmbed();
 
-        let msg = args.join(' ');
-        if(!msg) {
-            embed.setDescription(`Missing arguments.\n\nUsage: \`${process.env.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
-            embed.setColor(client.constants.colors.error);
-            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
-        }
-
         let shoutInfo = await roblox.shout(Number(process.env.groupId), msg).catch(async (err) => {
             embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
             embed.setColor(client.constants.colors.error);
@@ -30,7 +22,7 @@ module.exports = {
             return message.channel.send(embed);
         });
 
-        embed.setDescription(`**Success!** Posted a group shout with the following message:\n\`\`\`${msg}\`\`\``);
+        embed.setDescription(`**Success!** Cleared the group shout.`);
         embed.setColor(client.constants.colors.success);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
         message.channel.send(embed);
@@ -38,7 +30,7 @@ module.exports = {
         if(process.env.logChannelId !== 'false') {
             let logEmbed = new Discord.MessageEmbed();
             let logChannel = await client.channels.fetch(process.env.logChannelId);
-            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Shout\n**User:** ${username} (\`${id}\`)\n**Message:**\n\`\`\`${msg}\`\`\``);
+            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Cleared Shout\n**User:** ${username} (\`${id}\`)`);
             logEmbed.setColor(client.constants.colors.info);
             logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             logEmbed.setTimestamp();

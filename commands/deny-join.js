@@ -1,91 +1,58 @@
 const roblox = require('noblox.js');
-const chalk = require('chalk');
+const Discord = require('discord.js');
+const path = require('path');
 require('dotenv').config();
 
-exports.run = async (client, message, args) => {
-    if(!message.member.roles.cache.some(role =>["Ranking Permissions", "Join Request Permissions"].includes(role.name))){
-        return message.channel.send({embed: {
-            color: 16733013,
-            description: "You need the `Ranking Permissions` or `Join Request Permissions` role to run this command.",
-            author: {
-                name: message.author.tag,
-                icon_url: message.author.displayAvatarURL()
-            }
-        }});
+const config = {
+    description: 'Denies a user\'s join request.',
+    aliases: ['denyjoin'],
+    usage: '<username>',
+    rolesRequired: ['Ranking Permissions', 'Join Request Permissions']
+}
+
+module.exports = {
+    config,
+    run: async (client, message, args) => {
+        let embed = new Discord.MessageEmbed();
+        
+        let username = args[0];
+        if(!username) {
+            embed.setDescription(`Missing arguments.\n\nUsage: \`${process.env.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
+            embed.setColor(client.constants.colors.error);
+            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            return message.channel.send(embed);
+        }
+
+        let id = await roblox.getIdFromUsername(username).catch(async (err) => {
+            embed.setDescription(`${username} is not a Roblox user.`);
+            embed.setColor(client.constants.colors.error);
+            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            return message.channel.send(embed);
+        });
+
+        let joinRequestInfo = await roblox.handleJoinRequest(Number(process.env.groupId), id, true).catch(async (err) => {
+            embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
+            embed.setColor(client.constants.colors.error);
+            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            return message.channel.send(embed);
+        });
+
+        embed.setDescription(`**Success!** Denied ${username}'s join request.`);
+        embed.setColor(client.constants.colors.success);
+        embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+        message.channel.send(embed);
+
+        if(process.env.logChannelId !== 'false') {
+            let logEmbed = new Discord.MessageEmbed();
+            let logChannel = await client.channels.fetch(process.env.logChannelId);
+            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Denied Join Request\n**User:** ${username} (\`${id}\`)`);
+            logEmbed.setColor(client.constants.colors.info);
+            logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            logEmbed.setTimestamp();
+            logEmbed.setThumbnail(`https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${username}`);
+            return logChannel.send(logEmbed);
+        } else {
+            return;
+        }
     }
-  let username = args[0];
-  if(!username){
-    return message.channel.send({embed: {
-      description: 'Please provide a username.',
-      color: 16733013,
-      author: {
-        name: message.author.tag,
-        icon_url: message.author.displayAvatarURL()
-      }
-    }});
-  }
-  let userid;
-  try {
-    userid = await roblox.getIdFromUsername(username);
-  } catch (err) {
-    return message.channel.send({embed: {
-      description: 'That user does not exist.',
-      color: 16733013,
-      author: {
-        name: message.author.tag,
-        icon_url: message.author.displayAvatarURL()
-      }
-    }});
-  }
-  try {
-    username = await roblox.getUsernameFromId(userid);
-  } catch (err) {
-    console.log(chalk.red('An error occured when running the deny-join command: ' + err));
-    return message.channel.send({embed: {
-      description: 'Oops! An unexpected error has occured. It has been logged to the bot console.',
-      color: 16733013,
-      author: {
-        name: message.author.tag,
-        icon_url: message.author.displayAvatarURL()
-      }
-    }});
-  }
-  let denyJoinRequestResponse;
-  try {
-    denyJoinRequestResponse = await roblox.handleJoinRequest(Number(process.env.groupId), userid, false);
-  } catch (err) {
-    return message.channel.send({embed: {
-      description: 'That user does not have an active join request.',
-      color: 16733013,
-      author: {
-        name: message.author.tag,
-        icon_url: message.author.displayAvatarURL()
-      }
-    }});
-  }
-  message.channel.send({embed: {
-    color: 9240450,
-    description: `**Success!** Denied ${username}'s join request.`,
-    author: {
-      name: message.author.tag,
-      icon_url: message.author.displayAvatarURL()
-    }
-  }});
-  if(process.env.logchannelid === 'false') return;
-  let logchannel = await message.guild.channels.cache.get(process.env.logchannelid);
-  logchannel.send({embed: {
-    color: 2127726,
-    description: `<@${message.author.id}> has denied ${username}'s join request.`,
-    author: {
-      name: message.author.tag,
-      icon_url: message.author.displayAvatarURL()
-    },
-    footer: {
-      text: 'Action Logs'
-    },
-    timestamp: new Date(),
-    thumbnail: {
-      url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${username}`
-    }
-  }});
 }
