@@ -43,42 +43,35 @@ const xpDatabase = sequelize.define('xp', {
 xpDatabase.sync();
 client.databases.xp = xpDatabase;
 
-var firstshout = true;
-var shout;
+let firstShout = true;
+let shout;
 
 const onShout = async () => {
-    let shoutchannel = await client.channels.cache.get(process.env.shoutchannelid);
-    if(firstshout == true){
-        firstshout = false;
+    let embed = new Discord.MessageEmbed();
+    let shoutChannel = await client.channels.cache.get(process.env.shoutChannelId);
+    if(firstShout == true){
+        firstShout = false;
         shout = await roblox.getShout(Number(process.env.groupId));
         setTimeout(onShout, 30000);
     } else {
         setTimeout(onShout, 30000);
-        let currentshout = await roblox.getShout(Number(process.env.groupId));
-        if(currentshout.body == shout.body) return;
-        if(currentshout.body){
-            shoutchannel.send({embed: {
-                color: 2127726,
-                description: currentshout.body,
-                author: {
-                    name: currentshout.poster.username,
-                    icon_url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`
-                }
-            }});
+        let currentShout = await roblox.getShout(Number(process.env.groupId));
+        if(currentShout.body == shout.body) return;
+        if(currentShout.body){
+            embed.setDescription(`${currentShout.body}`);
+            embed.setColor(client.constants.colors.info);
+            embed.setAuthor(currentShout.poster.username, `https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`);
+            shoutChannel.send(embed);
         } else {
-            shoutchannel.send({embed: {
-                color: 2127726,
-                    description: '*Shout cleared.*',
-                        author: {
-                            name: currentshout.poster.username,
-                            icon_url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`
-                        }
-            }});
+            embed.setDescription(`*Shout cleared.*`);
+            embed.setColor(client.constants.colors.info);
+            embed.setAuthor(currentShout.poster.username, `https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`);
+            shoutChannel.send(embed);
         }
-        shout = currentshout;
+        shout = currentShout;
     }
 }
-if(process.env.shoutchannelid !== 'false'){
+if(process.env.shoutChannelId !== 'false'){
     setTimeout(onShout, 15000);
 }
 
