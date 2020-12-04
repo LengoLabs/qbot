@@ -1,24 +1,21 @@
-const roblox = require('noblox.js');
-const Discord = require('discord.js');
-const path = require('path');
 require('dotenv').config();
-
-const config = {
-    description: 'Shows a list of commands.',
-    aliases: [],
-    usage: '',
-    rolesRequired: []
-}
-
-module.exports = {
-    config,
-    run: async (client, message, args) => {
-        let embed = new Discord.MessageEmbed();
-        let commands = client.commandList;
-        let commandString = commands.map(c => `\`${c.name}${' ' + c.config.usage || ''}\` - ${c.config.description}`).join('\n');
-        embed.setDescription(`Here is a list of all bot commands:\n\n${commandString}`);
-        embed.setColor(client.constants.colors.info);
-        embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-        return message.channel.send(embed);
-    }
+exports.run = async (client, message, args) => {
+    return message.channel.send({embed: {
+        color: 7948427,
+        description: `**Here are my commands:**\n`
+        + `\`${process.env.prefix}help\` - Shows this list of commands.\n`
+        + `\`${process.env.prefix}setrank <user> <rank name/number>\` - Ranks the user in the Roblox group to the specified rank number or name.\n`
+        + `\`${process.env.prefix}promote <user>\` - Moves the user 1 rank up in the Roblox group.\n`
+        + `\`${process.env.prefix}demote <user>\` - Moves the user 1 rank down in the Roblox group.\n`
+        + `\`${process.env.prefix}fire <user>\` - Moves a user to the lowest rank possible besides Guest.\n`
+        + `\`${process.env.prefix}shout <message>\` - Posts a group shout.\n`
+        + `\`${process.env.prefix}clearshout\` - Clears the group shout.\n`
+        + `\`${process.env.prefix}currentshout\` - Shows the current group shout.\n`
+        + `\`${process.env.prefix}accept-join <user>\` - Accepts a user's join request.\n`
+        + `\`${process.env.prefix}deny-join <user>\` - Denies a user's join request.`,
+        author: {
+            name: message.author.tag,
+            icon_url: message.author.displayAvatarURL()
+        }
+    }});
 }

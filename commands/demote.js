@@ -1,110 +1,112 @@
 const roblox = require('noblox.js');
-const Discord = require('discord.js');
-const path = require('path');
+const chalk = require('chalk');
 require('dotenv').config();
 
-const config = {
-    description: 'Demotes a user in the Roblox group.',
-    aliases: [],
-    usage: '<username>',
-    rolesRequired: ['Ranking Permissions']
+async function getRankName(func_group, func_user){
+    let rolename = await roblox.getRankNameInGroup(func_group, func_user);
+    return rolename;
 }
 
-module.exports = {
-    config,
-    run: async (client, message, args) => {
-        let embed = new Discord.MessageEmbed();
+async function getRankID(func_group, func_user){
+    let role = await roblox.getRankInGroup(func_group, func_user);
+    return role;
+}
 
-        let username = args[0];
-        if(!username) {
-            embed.setDescription(`Missing arguments.\n\nUsage: \`${process.env.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
-            embed.setColor(client.constants.colors.error);
-            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
-        }
-
-        let id = await roblox.getIdFromUsername(username).catch(async (err) => {
-            embed.setDescription(`${username} is not a Roblox user.`);
-            embed.setColor(client.constants.colors.error);
-            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
-        });
-
-        let rankInGroup = await roblox.getRankInGroup(Number(process.env.groupId), id);
-        let rankingTo = rankInGroup - 1;
-        if(Number(process.env.maximumRank) <= rankInGroup) {
-            embed.setDescription('This bot cannot rank this user due to the maximum rank configured.');
-            embed.setColor(client.constants.colors.error);
-            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
-        }
-
-        if(rankInGroup === 0){
-            embed.setDescription('That user is not in the group.');
-            embed.setColor(client.constants.colors.error);
-            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
-        }
-
-        if(process.env.verificationChecks === 'true') {
-            let linkedUser = await client.utils.getLinkedUser(message.author.id, message.guild.id);
-            if(!linkedUser) {
-                embed.setDescription('You must be verified on either of the sites below to use this command.\n\n**Bloxlink:** https://blox.link\n**RoVer:** https://verify.eryn.io');
-                embed.setColor(client.constants.colors.error);
-                embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
-            }
-
-            if(linkedUser === 'RATE_LIMITS') {
-                embed.setDescription('Verification checks are currently on cooldown.');
-                embed.setColor(client.constants.colors.error);
-                embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
-            }
-
-            if(linkedUser === id) {
-                embed.setDescription('You can\'t rank yourself!');
-                embed.setColor(client.constants.colors.error);
-                embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
-            }
-
-            let linkedUserRankInGroup = await roblox.getRankInGroup(Number(process.env.groupId), linkedUser);
-            if(rankInGroup >= linkedUserRankInGroup) {
-                embed.setDescription('You can only rank people with a rank lower than yours, to a rank that is also lower than yours.');
-                embed.setColor(client.constants.colors.error);
-                embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
-            }
-        }
-
-        let rankNameInGroup = await roblox.getRankNameInGroup(Number(process.env.groupId), id);
-        let rankingInfo;
-        try {
-            rankingInfo = await roblox.demote(Number(process.env.groupId), id);
-        } catch (err) {
-            embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
-            embed.setColor(client.constants.colors.error);
-            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
-        }
-
-        embed.setDescription(`**Success!** Demoted ${username} to ${rankingInfo.newRole.name} (${rankingInfo.newRole.rank}).`);
-        embed.setColor(client.constants.colors.success);
-        embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-        message.channel.send(embed);
-
-        if(process.env.logChannelId !== 'false') {
-            let logEmbed = new Discord.MessageEmbed();
-            let logChannel = await client.channels.fetch(process.env.logChannelId);
-            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Demotion\n**User:** ${username} (\`${id}\`)\n**Rank Change:** ${rankNameInGroup} (${rankInGroup}) -> ${rankingInfo.newRole.name} (${rankingInfo.newRole.rank})`);
-            logEmbed.setColor(client.constants.colors.info);
-            logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            logEmbed.setTimestamp();
-            logEmbed.setThumbnail(`https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${username}`);
-            return logChannel.send(logEmbed);
-        } else {
-            return;
-        }
+async function getRankFromName(func_rankname, func_group){
+    let roles = await roblox.getRoles(func_group);
+    let role = await roles.find(rank => rank.name == func_rankname);
+    if(!role){
+        return 'NOT_FOUND';
     }
+    return role.rank;
+}
+
+exports.run = async (client, message, args) => {
+    if(!message.member.roles.cache.some(role =>["Ranking Permissions"].includes(role.name))){
+        return message.channel.send({embed: {
+            color: 16733013,
+            description: "You need the `Ranking Permissions` role to run this command.",
+            author: {
+                name: message.author.tag,
+                icon_url: message.author.displayAvatarURL()
+            }
+        }})
+    }
+    let username = args[0];
+    if(!username){
+        return message.channel.send({embed: {
+            color: 16733013,
+            description: "The username argument is required.",
+            author: {
+                name: message.author.tag,
+                icon_url: message.author.displayAvatarURL()
+            }
+        }});
+    }
+    let id;
+    try {
+        id = await roblox.getIdFromUsername(username);
+    } catch {
+        return message.channel.send({embed: {
+            color: 16733013,
+            description: `Oops! ${username} is not a Roblox user. Perhaps you misspelled?`,
+            author: {
+                name: message.author.tag,
+                icon_url: message.author.displayAvatarURL()
+            }
+        }});
+    }
+    let rankInGroup = await getRankID(Number(process.env.groupId), id);
+    let rankNameInGroup = await getRankName(Number(process.env.groupId), id);
+    if(Number(process.env.maximumRank) <= rankInGroup){
+        return message.channel.send({embed: {
+            color: 16733013,
+            description: "This rank cannot be ranked by this bot.",
+            author: {
+                name: message.author.tag,
+                icon_url: message.author.displayAvatarURL()
+            }
+        }});
+    }
+    let demoteResponse;
+    try {
+        demoteResponse = await roblox.demote(Number(process.env.groupId), id);
+    } catch (err) {
+        console.log(chalk.red('An error occured when running the demote command: ' + err));
+        return message.channel.send({embed: {
+            color: 16733013,
+            description: `Oops! An unexpected error has occured. It has been logged to the bot console.`,
+            author: {
+                name: message.author.tag,
+                icon_url: message.author.displayAvatarURL()
+            }
+        }});
+    }
+    let newRankName = await getRankName(Number(process.env.groupId), id);
+    let newRank = await getRankID(Number(process.env.groupId), id);
+    message.channel.send({embed: {
+        color: 9240450,
+        description: `**Success!** Demoted ${username} to ${demoteResponse.newRole.name} (${demoteResponse.newRole.rank})`,
+        author: {
+            name: message.author.tag,
+            icon_url: message.author.displayAvatarURL()
+        }
+    }});
+    if(process.env.logchannelid === 'false') return;
+    let logchannel = await message.guild.channels.cache.get(process.env.logchannelid);
+    logchannel.send({embed: {
+        color: 2127726,
+        description: `<@${message.author.id}> has demoted ${username} from ${rankNameInGroup} (${rankInGroup}) to ${demoteResponse.newRole.name} (${demoteResponse.newRole.rank}).`,
+        author: {
+            name: message.author.tag,
+            icon_url: message.author.displayAvatarURL()
+        },
+        footer: {
+            text: 'Action Logs'
+        },
+        timestamp: new Date(),
+        thumbnail: {
+            url: `http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${username}`
+        }
+    }});
 }
