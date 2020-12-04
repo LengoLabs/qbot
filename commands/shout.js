@@ -1,65 +1,54 @@
 const roblox = require('noblox.js');
-const chalk = require('chalk');
+const Discord = require('discord.js');
+const path = require('path');
 require('dotenv').config();
 
-exports.run = async (client, message, args) => {
-    if(!message.member.roles.cache.some(role =>["Ranking Permissions", "Shout Permissions"].includes(role.name))){
-        return message.channel.send({embed: {
-            color: 16733013,
-            description: "You need the `Ranking Permissions` or `Shout Permissions` role to run this command.",
-            author: {
-                name: message.author.tag,
-                icon_url: message.author.displayAvatarURL()
-            }
-        }});
-    }
-    let msg = args.join(' ');
-    if(!msg){
-        return message.channel.send({embed: {
-            color: 16733013,
-            description: `The message argument is required.`,
-            author: {
-                name: message.author.tag,
-                icon_url: message.author.displayAvatarURL()
-            }
-        }});
-    }
-    let shoutResponse;
-    try {
-        shoutResponse = await roblox.shout(Number(process.env.groupId), msg);
-    } catch (err) {
-        console.log(chalk.red('An error occured when running the shout command: ' + err));
-        return message.channel.send({embed: {
-            color: 16733013,
-            description: `Oops! An unexpected error has occured. It has been logged to the bot console.`,
-            author: {
-                name: message.author.tag,
-                icon_url: message.author.displayAvatarURL()
-            }
-        }});
-    }
-    message.channel.send({embed: {
-        color: 9240450,
-        description: `**Success!** Posted group shout:\n`
-        + `\`\`\`${msg}\`\`\``,
-        author: {
-            name: message.author.tag,
-            icon_url: message.author.displayAvatarURL()
+const config = {
+    description: 'Posts a shout in the Roblox group.',
+    aliases: [],
+    usage: '<message>',
+    rolesRequired: ['Ranking Permissions', 'Shout Permissions']
+}
+
+module.exports = {
+    config,
+    run: async (client, message, args) => {
+        let embed = new Discord.MessageEmbed();
+
+        let msg = args.join(' ');
+        if(!msg) {
+            embed.setDescription(`Missing arguments.\n\nUsage: \`${process.env.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
+            embed.setColor(client.constants.colors.error);
+            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            return message.channel.send(embed);
         }
-    }});
-    if(process.env.logchannelid === 'false') return;
-    let logchannel = message.guild.channels.cache.get(process.env.logchannelid);
-    logchannel.send({embed: {
-        color: 2127726,
-        description: `<@${message.author.id}> has posted a group shout:\n`
-        + `\`\`\`${msg}\`\`\``,
-        author: {
-            name: message.author.tag,
-            icon_url: message.author.displayAvatarURL()
-        },
-        footer: {
-            text: 'Action Logs'
-        },
-        timestamp: new Date()
-    }});
+
+        let shoutInfo;
+        try {
+            shoutInfo = await roblox.shout(Number(process.env.groupId), msg);
+        } catch (err) {
+            embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
+            embed.setColor(client.constants.colors.error);
+            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            return message.channel.send(embed);
+        }
+
+        embed.setDescription(`**Success!** Posted a group shout with the following message:\n\`\`\`${msg}\`\`\``);
+        embed.setColor(client.constants.colors.success);
+        embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+        message.channel.send(embed);
+
+        if(process.env.logChannelId !== 'false') {
+            let logEmbed = new Discord.MessageEmbed();
+            let logChannel = await client.channels.fetch(process.env.logChannelId);
+            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Shout\n**Message:**\n\`\`\`${msg}\`\`\``);
+            logEmbed.setColor(client.constants.colors.info);
+            logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            logEmbed.setTimestamp();
+            logEmbed.setThumbnail(`https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${username}`);
+            return logChannel.send(logEmbed);
+        } else {
+            return;
+        }
+    }
 }

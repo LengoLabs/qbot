@@ -4,8 +4,8 @@ const path = require('path');
 require('dotenv').config();
 
 const config = {
-    description: 'Denies a user\'s join request.',
-    aliases: ['denyjoin'],
+    description: 'Approves a user\'s join request.',
+    aliases: ['approvejoin', 'accept-join', 'acceptjoin'],
     usage: '<username>',
     rolesRequired: ['Ranking Permissions', 'Join Request Permissions']
 }
@@ -32,7 +32,7 @@ module.exports = {
 
         let joinRequestInfo;
         try {
-            joinRequestInfo = await roblox.handleJoinRequest(Number(process.env.groupId), id, false);
+            joinRequestInfo = await roblox.handleJoinRequest(Number(process.env.groupId), id, true);
         } catch (err) {
             embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
             embed.setColor(client.constants.colors.error);
@@ -40,7 +40,7 @@ module.exports = {
             return message.channel.send(embed);
         }
 
-        embed.setDescription(`**Success!** Denied ${username}'s join request.`);
+        embed.setDescription(`**Success!** Approved ${username}'s join request.`);
         embed.setColor(client.constants.colors.success);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
         message.channel.send(embed);
@@ -48,7 +48,7 @@ module.exports = {
         if(process.env.logChannelId !== 'false') {
             let logEmbed = new Discord.MessageEmbed();
             let logChannel = await client.channels.fetch(process.env.logChannelId);
-            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Denied Join Request\n**User:** ${username} (\`${id}\`)`);
+            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Approve Join Request\n**User:** ${username} (\`${id}\`)`);
             logEmbed.setColor(client.constants.colors.info);
             logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             logEmbed.setTimestamp();
