@@ -37,7 +37,7 @@ module.exports = {
             return message.channel.send(embed);
         });
 
-        let rankInGroup = await roblox.getRankInGroup(Number(process.env.group.id), id);
+        let rankInGroup = await roblox.getRankInGroup(Number(process.env.groupId), id);
 
         if(process.env.verificationChecks === 'true') {
             let linkedUser = await client.utils.getLinkedUser(message.author.id, message.guild.id);
@@ -62,7 +62,7 @@ module.exports = {
                 return message.channel.send(embed);
             }
 
-            let linkedUserRankInGroup = await roblox.getRankInGroup(Number(process.env.group.id), linkedUser);
+            let linkedUserRankInGroup = await roblox.getRankInGroup(Number(process.env.groupId), linkedUser);
             if(rankInGroup >= linkedUserRankInGroup) {
                 embed.setDescription('You can only change the XP count of people with a rank lower than yours.');
                 embed.setColor(client.constants.colors.error);

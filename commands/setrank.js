@@ -49,13 +49,14 @@ module.exports = {
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 return message.channel.send(embed);
             }
-            let rankSearch = await getRankFromName(rankArgs);
+            let rankSearch = await getRankFromName(rankArgs, Number(process.env.groupId));
             if(!rankSearch) {
                 embed.setDescription('The specified rank does not exist.');
                 embed.setColor(client.constants.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 return message.channel.send(embed);
             }
+            rank = rankSearch;
         }
 
         let id = await roblox.getIdFromUsername(username).catch(async (err) => {
@@ -114,12 +115,15 @@ module.exports = {
         }
 
         let rankNameInGroup = await roblox.getRankNameInGroup(Number(process.env.groupId), id);
-        let rankingInfo = await roblox.setRank(Number(process.env.groupId), id, Number(rank)).catch(async (err) => {
+        let rankingInfo;
+        try {
+            rankingInfo = await roblox.setRank(Number(process.env.groupId), id, Number(rank));
+        } catch (err) {
             embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
             embed.setColor(client.constants.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
-        });
+        }
 
         embed.setDescription(`**Success!** Ranked ${username} to ${rankingInfo.name} (${rankingInfo.rank}).`);
         embed.setColor(client.constants.colors.success);

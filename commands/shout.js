@@ -23,12 +23,15 @@ module.exports = {
             return message.channel.send(embed);
         }
 
-        let shoutInfo = await roblox.shout(Number(process.env.groupId), msg).catch(async (err) => {
+        let shoutInfo;
+        try {
+            shoutInfo = await roblox.shout(Number(process.env.groupId), msg);
+        } catch (err) {
             embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
             embed.setColor(client.constants.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
-        });
+        }
 
         embed.setDescription(`**Success!** Posted a group shout with the following message:\n\`\`\`${msg}\`\`\``);
         embed.setColor(client.constants.colors.success);
@@ -38,7 +41,7 @@ module.exports = {
         if(process.env.logChannelId !== 'false') {
             let logEmbed = new Discord.MessageEmbed();
             let logChannel = await client.channels.fetch(process.env.logChannelId);
-            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Shout\n**User:** ${username} (\`${id}\`)\n**Message:**\n\`\`\`${msg}\`\`\``);
+            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Shout\n**Message:**\n\`\`\`${msg}\`\`\``);
             logEmbed.setColor(client.constants.colors.info);
             logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             logEmbed.setTimestamp();
