@@ -30,12 +30,16 @@ module.exports = {
             return message.channel.send(embed);
         });
 
-        let joinRequestInfo = await roblox.handleJoinRequest(Number(process.env.groupId), id, true).catch(async (err) => {
+        let joinRequestInfo;
+        try {
+            joinRequestInfo = await roblox.handleJoinRequest(Number(process.env.groupId), id, false);
+        } catch (err) {
+            console.log(`Error: ${err}`);
             embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
             embed.setColor(client.constants.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
-        });
+        }
 
         embed.setDescription(`**Success!** Denied ${username}'s join request.`);
         embed.setColor(client.constants.colors.success);
