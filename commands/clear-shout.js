@@ -15,12 +15,16 @@ module.exports = {
     run: async (client, message, args) => {
         let embed = new Discord.MessageEmbed();
 
-        let shoutInfo = await roblox.shout(Number(process.env.groupId), msg).catch(async (err) => {
+        let shoutInfo;
+        try {
+            shoutInfo = await roblox.shout(Number(process.env.groupId), '');
+        } catch (err) {
+            console.log(`Error: ${err}`);
             embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
             embed.setColor(client.constants.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
-        });
+        }
 
         embed.setDescription(`**Success!** Cleared the group shout.`);
         embed.setColor(client.constants.colors.success);
@@ -30,11 +34,10 @@ module.exports = {
         if(process.env.logChannelId !== 'false') {
             let logEmbed = new Discord.MessageEmbed();
             let logChannel = await client.channels.fetch(process.env.logChannelId);
-            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Cleared Shout\n**User:** ${username} (\`${id}\`)`);
+            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Cleared Shout`);
             logEmbed.setColor(client.constants.colors.info);
             logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             logEmbed.setTimestamp();
-            logEmbed.setThumbnail(`https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${username}`);
             return logChannel.send(logEmbed);
         } else {
             return;
