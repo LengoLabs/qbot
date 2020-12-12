@@ -108,16 +108,12 @@ module.exports = {
 
             if(collected.first().emoji.name === '✅'){
                 msg.reactions.removeAll();
-                
-                let rankingInfo;
-                try {
-                    rankingInfo = await roblox.setRank(Number(process.env.groupId), id, Number(rank));
-                } catch (err) {
+                let rankingInfo = await roblox.setRank(Number(process.env.groupId), id, rank).catch(async (err) => {
                     embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
                     embed.setColor(client.constants.colors.error);
                     embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                    return message.channel.send(embed);
-                }
+                    return msg.edit(embed);
+                });
         
                 embed.setDescription(`**Success!** Ranked ${username} to ${rankingInfo.name} (${rankingInfo.rank})`);
                 embed.setColor(client.constants.colors.success);

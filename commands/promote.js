@@ -79,15 +79,13 @@ module.exports = {
         }
 
         let rankNameInGroup = await roblox.getRankNameInGroup(process.env.groupId, id);
-        let rankingInfo;
-        try {
-            rankingInfo = await roblox.promote(Number(process.env.groupId), id);
-        } catch (err) {
+        let rankingInfo = await roblox.promote(Number(process.env.groupId), id).catch(async (err) => {
             embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
             embed.setColor(client.constants.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
-        }
+        });
+
         embed.setDescription(`**Success!** Promoted ${username} to ${rankingInfo.newRole.name} (${rankingInfo.newRole.rank}).`);
         embed.setColor(client.constants.colors.success);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
