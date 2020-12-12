@@ -37,7 +37,7 @@ module.exports = {
             return message.channel.send(embed);
         });
 
-        let rankInGroup = await roblox.getRankInGroup(Number(process.env.group.id), id);
+        let rankInGroup = await roblox.getRankInGroup(Number(process.env.groupId), id);
 
         if(process.env.verificationChecks === 'true') {
             let linkedUser = await client.utils.getLinkedUser(message.author.id, message.guild.id);
@@ -62,7 +62,7 @@ module.exports = {
                 return message.channel.send(embed);
             }
 
-            let linkedUserRankInGroup = await roblox.getRankInGroup(Number(process.env.group.id), linkedUser);
+            let linkedUserRankInGroup = await roblox.getRankInGroup(Number(process.env.groupId), linkedUser);
             if(rankInGroup >= linkedUserRankInGroup) {
                 embed.setDescription('You can only change the XP count of people with a rank lower than yours.');
                 embed.setColor(client.constants.colors.error);
@@ -89,12 +89,12 @@ module.exports = {
             }
         });
 
-        let beforeChangeXP = xpInfo.xp;
-
+        let beforeChangeXP = xpInfo[0].dataValues.xp;
         xpInfo[0].decrement('xp', { by: decrement });
+        let afterChangeXP = xpInfo[0].dataValues.xp - decrement;
 
         let displayUsername = await roblox.getUsernameFromId(id);
-        embed.setDescription(`Removed \`${decrement}xp\` from ${displayUsername}'s XP count. They now have \`${xpInfo[0].dataValues.xp}xp\`.`);
+        embed.setDescription(`Removed \`${decrement}xp\` from ${displayUsername}'s XP count. They now have \`${afterChangeXP}xp\`.`);
         embed.setColor(client.constants.colors.success);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
         message.channel.send(embed);
@@ -102,7 +102,7 @@ module.exports = {
         if(process.env.logChannelId !== 'false') {
             let logEmbed = new Discord.MessageEmbed();
             let logChannel = await client.channels.fetch(process.env.logChannelId);
-            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Remove XP\n**User:** ${username} (\`${id}\`)\n**XP Change:** ${beforeChangeXP} -> ${xpInfo.xp} (removed ${decrement})`);
+            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Remove XP\n**User:** ${username} (\`${id}\`)\n**XP Change:** ${beforeChangeXP} -> ${afterChangeXP} (removed ${decrement})`);
             logEmbed.setColor(client.constants.colors.info);
             logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             logEmbed.setTimestamp();
