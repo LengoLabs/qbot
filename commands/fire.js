@@ -86,12 +86,16 @@ module.exports = {
         }
 
         let rankNameInGroup = await roblox.getRankNameInGroup(process.env.groupId, id);
-        let rankingInfo = await roblox.setRank(Number(process.env.groupId), id, client.constants.firedRank).catch(async (err) => {
+        let rankingInfo;
+        try {
+            rankingInfo = await roblox.setRank(Number(process.env.groupId), id, client.constants.firedRank);
+        } catch (err) {
+            console.log(`Error: ${err}`);
             embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
             embed.setColor(client.constants.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
-        });
+        }
 
         embed.setDescription(`**Success!** Fired ${username} to ${rankingInfo.name} (${rankingInfo.rank}).`);
         embed.setColor(client.constants.colors.success);
