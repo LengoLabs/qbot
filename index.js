@@ -29,6 +29,8 @@ client.constants = constants;
 client.utils = utils;
 client.databases = {};
 
+const cooldowns = new Discord.Collection();
+
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize({
     dialect: 'sqlite',
@@ -123,6 +125,24 @@ client.on('message', async (message) => {
         if(!message.member.roles.cache.some(role => command.config.rolesRequired.includes(role.name))) {
             let embed = new Discord.MessageEmbed();
             embed.setDescription('You do not have permission to use this command.');
+            embed.setColor(client.constants.colors.error);
+            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            return message.channel.send(embed);
+        }
+    }
+
+    if(!cooldowns.has(command.name)) {
+        cooldowns.set(command.name, new Discord.Collection());
+    }
+    let currentDate = Date.now();
+    let userCooldowns = cooldowns.get(command.name);
+    let cooldownAmount = (command.cooldown || 3) * 1000;
+    if(userCooldowns.has(message.author.id)) {
+        let expirationDate = timestamps.get(message.author.id) + cooldownAmount;
+        if(currentDate < expirationDate) {
+            let timeLeft = (expirationTime - currentDate) / 1000;
+            let embed = new Discord.MessageEmbed();
+            embed.setDescription(`This command is currently on cooldown. Please try again in ${timeLeft.toString()}`);
             embed.setColor(client.constants.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
