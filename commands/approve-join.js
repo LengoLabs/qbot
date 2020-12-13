@@ -23,12 +23,15 @@ module.exports = {
             return message.channel.send(embed);
         }
 
-        let id = await roblox.getIdFromUsername(username).catch(async (err) => {
+        let id;
+        try {
+            id = await roblox.getIdFromUsername(username);
+        } catch (err) {
             embed.setDescription(`${username} is not a Roblox user.`);
             embed.setColor(client.constants.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
-        });
+        }
 
         let joinRequestInfo;
         try {
