@@ -7,7 +7,8 @@ const config = {
     description: 'Approves a user\'s join request.',
     aliases: ['approvejoin', 'accept-join', 'acceptjoin'],
     usage: '<username>',
-    rolesRequired: ['Ranking Permissions', 'Join Request Permissions']
+    rolesRequired: ['Ranking Permissions', 'Join Request Permissions'],
+    category: 'Join Requests'
 }
 
 module.exports = {
