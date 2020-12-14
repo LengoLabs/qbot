@@ -27,6 +27,16 @@ module.exports = {
                 return null;
             }
         }
+    },
+    getGroup: async (groupId) => {
+        let groupInfo = await fetch(`https://groups.roblox.com/v1/groups/${groupId}`);
+        let groupJSON = await groupInfo.json();
+        return groupJSON;
+    },
+    getUser: async (id) => {
+        let userInfo = await fetch(`https://api.roblox.com/users/${id}`);
+        let userJSON = await userInfo.json();
+        return userJSON;
     }
 }
 
