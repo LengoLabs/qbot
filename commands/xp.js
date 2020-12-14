@@ -7,7 +7,8 @@ const config = {
     description: 'Views a user\'s XP.',
     aliases: [],
     usage: '<username (optional if verified)>',
-    rolesRequired: []
+    rolesRequired: [],
+    category: 'XP System'
 }
 
 module.exports = {
