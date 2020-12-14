@@ -7,7 +7,8 @@ const config = {
     description: 'Clears the shout in the Roblox group.',
     aliases: ['clearshout'],
     usage: '',
-    rolesRequired: ['Ranking Permissions', 'Shout Permissions']
+    rolesRequired: ['Ranking Permissions', 'Shout Permissions'],
+    category: 'Group Shouts'
 }
 
 module.exports = {
