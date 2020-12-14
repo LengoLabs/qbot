@@ -7,7 +7,8 @@ const config = {
     description: 'Views the first page of join requests.',
     aliases: ['joinrequests'],
     usage: '',
-    rolesRequired: ['Ranking Permissions', 'Join Requests Permissions']
+    rolesRequired: ['Ranking Permissions', 'Join Requests Permissions'],
+    category: 'Join Requests'
 }
 
 module.exports = {
