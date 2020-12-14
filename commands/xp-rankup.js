@@ -7,7 +7,8 @@ const config = {
     description: 'Ranks a user based on their current XP.',
     aliases: [],
     usage: '',
-    rolesRequired: []
+    rolesRequired: [],
+    category: 'XP System'
 }
 
 let getRoleNameFromRank = async (func_rank, func_group) => {
