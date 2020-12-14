@@ -7,7 +7,8 @@ const config = {
     description: 'Denies a user\'s join request.',
     aliases: ['denyjoin'],
     usage: '<username>',
-    rolesRequired: ['Ranking Permissions', 'Join Request Permissions']
+    rolesRequired: ['Ranking Permissions', 'Join Request Permissions'],
+    category: 'Join Requests'
 }
 
 module.exports = {
