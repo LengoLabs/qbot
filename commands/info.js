@@ -7,7 +7,8 @@ const config = {
     description: 'Shows group info or user info.',
     aliases: [],
     usage: '[username/user id]',
-    rolesRequired: []
+    rolesRequired: [],
+    category: 'Info'
 }
 
 module.exports = {
