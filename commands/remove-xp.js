@@ -7,7 +7,8 @@ const config = {
     description: 'Decreases a user\'s XP count.',
     aliases: ['removexp'],
     usage: '<username> <decrement>',
-    rolesRequired: ['Ranking Permissions', 'XP Permissions']
+    rolesRequired: ['Ranking Permissions', 'XP Permissions'],
+    category: 'XP System'
 }
 
 module.exports = {
