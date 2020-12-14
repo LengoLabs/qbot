@@ -7,7 +7,7 @@ require('dotenv').config();
 const config = {
     description: 'Shows a list of commands.',
     aliases: [],
-    usage: '',
+    usage: '[command name]',
     rolesRequired: [],
     category: 'Info'
 }
