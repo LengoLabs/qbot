@@ -6,7 +6,7 @@ require('dotenv').config();
 const config = {
     description: 'Shows group info or user info.',
     aliases: [],
-    usage: '[username/user id]',
+    usage: '[username/user id] [--id]',
     rolesRequired: [],
     category: 'Info'
 }
