@@ -28,7 +28,7 @@ module.exports = {
         try {
             id = await roblox.getIdFromUsername(username);
         } catch (err) {
-            embed.setDescription(`${username} is not a Roblox user.`);
+            embed.setDescription(`${userQuery} is not a Roblox user.`);
             embed.setColor(client.constants.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
@@ -38,7 +38,7 @@ module.exports = {
         try {
             user = await client.utils.getUser(id);
         } catch (err) {
-            embed.setDescription(`${username} is not a Roblox user.`);
+            embed.setDescription(`${userQuery} is not a Roblox user.`);
             embed.setColor(client.constants.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
