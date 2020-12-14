@@ -7,7 +7,8 @@ const config = {
     description: 'Increases a user\'s XP count.',
     aliases: ['addxp'],
     usage: '<username> <increment>',
-    rolesRequired: ['Ranking Permissions', 'XP Permissions']
+    rolesRequired: ['Ranking Permissions', 'XP Permissions'],
+    category: 'XP System'
 }
 
 module.exports = {
