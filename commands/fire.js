@@ -7,7 +7,8 @@ const config = {
     description: 'Demotes a user in the Roblox group.',
     aliases: [],
     usage: '<username>',
-    rolesRequired: ['Ranking Permissions']
+    rolesRequired: ['Ranking Permissions'],
+    category: 'Ranking'
 }
 
 module.exports = {
