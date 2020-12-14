@@ -7,7 +7,8 @@ const config = {
     description: 'Ranks a user in the Roblox group.',
     aliases: [],
     usage: '<username> <role name/rank>',
-    rolesRequired: ['Ranking Permissions']
+    rolesRequired: ['Ranking Permissions'],
+    category: 'Ranking'
 }
 
 let getRankFromName = async (func_rankname, func_group) => {
