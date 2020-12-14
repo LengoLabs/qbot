@@ -7,7 +7,8 @@ const config = {
     description: 'Posts a shout in the Roblox group.',
     aliases: [],
     usage: '<message>',
-    rolesRequired: ['Ranking Permissions', 'Shout Permissions']
+    rolesRequired: ['Ranking Permissions', 'Shout Permissions'],
+    category: 'Group Shouts'
 }
 
 module.exports = {
