@@ -26,7 +26,7 @@ module.exports = {
 
         let id;
         try {
-            id = await roblox.getIdFromUsername(username);
+            id = await roblox.getIdFromUsername(userQuery);
         } catch (err) {
             embed.setDescription(`${userQuery} is not a Roblox user.`);
             embed.setColor(client.constants.colors.error);
