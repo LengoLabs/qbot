@@ -131,13 +131,13 @@ client.on('message', async (message) => {
         }
     }
     
-    if(command.cooldown) {
+    if(command.config.cooldown) {
         if(!cooldowns.has(command.name)) {
             cooldowns.set(command.name, new Discord.Collection());
         }
         let currentDate = Date.now();
         let userCooldowns = cooldowns.get(command.name);
-        let cooldownAmount = (command.cooldown || 3) * 1000;
+        let cooldownAmount = (command.config.cooldown || 3) * 1000;
         if(userCooldowns.has(message.author.id)) {
             let expirationDate = timestamps.get(message.author.id) + cooldownAmount;
             if(currentDate < expirationDate) {
