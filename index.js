@@ -147,7 +147,11 @@ client.on('message', async (message) => {
                 embed.setColor(client.constants.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 return message.channel.send(embed);
+            } else {
+                userCooldowns.set(message.author.id, currentDate);
             }
+        } else {
+            userCooldowns.set(message.author.id, currentDate);
         }
     }
 

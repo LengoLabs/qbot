@@ -25,13 +25,17 @@ module.exports = {
         }
 
         let id;
-        try {
-            id = await roblox.getIdFromUsername(userQuery);
-        } catch (err) {
-            embed.setDescription(`${userQuery} is not a Roblox user.`);
-            embed.setColor(client.constants.colors.error);
-            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+        if(args[1] === '--id' || args[1] === '-id') {
+            id = args[1];
+        } else {
+            try {
+                id = await roblox.getIdFromUsername(userQuery);
+            } catch (err) {
+                embed.setDescription(`${userQuery} is not a Roblox user.`);
+                embed.setColor(client.constants.colors.error);
+                embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+                return message.channel.send(embed);
+            }
         }
 
         let user;
