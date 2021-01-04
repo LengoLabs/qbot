@@ -21,7 +21,11 @@ module.exports = {
         if(commandQuery) {
             let command = client.commandList.find(c => c.name.toLowerCase() === commandQuery.toLowerCase() || c.config.aliases.map(a => a.toLowerCase()).includes(commandQuery.toLowerCase()));
             if(command) {
-                embed.setDescription(`**${command.name} - Command Info**\n\nAliases: ${command.config.aliases.join(', ')}\nUsage: ${command.usage}\nCategory: ${command.category}\nRoles Required: ${command.rolesRequired.join(', ')}`);
+                embed.setDescription(`**${command.name} - Command Info**`);
+                embed.addField('Aliases', command.aliases.join(', '));
+                embed.addField('Usage', command.config.usage, true);
+                embed.addField('Category', command.config.category, true);
+                embed.addField('Roles Required', command.rolesRequired.join(', '), true);
                 embed.setColor(client.constants.colors.info);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 return message.channel.send(embed);
