@@ -143,7 +143,7 @@ client.on('message', async (message) => {
             if(currentDate < expirationDate) {
                 let timeLeft = Math.round((expirationDate - currentDate) / 1000);
                 let embed = new Discord.MessageEmbed();
-                embed.setDescription(`This command is currently on cooldown. Please try again in ${timeLeft.toString()}`);
+                embed.setDescription(`This command is currently on cooldown. Please try again in ${timeLeft.toString()} seconds.`);
                 embed.setColor(client.constants.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 return message.channel.send(embed);
