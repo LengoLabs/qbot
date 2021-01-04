@@ -22,11 +22,10 @@ module.exports = {
             let command = client.commandList.find(c => c.name.toLowerCase() === commandQuery.toLowerCase() || c.config.aliases.map(a => a.toLowerCase()).includes(commandQuery.toLowerCase()));
             if(command) {
                 embed.setDescription(`**${command.name} - Command Info**`);
-                if(command.config.aliases.length === 0) embed.addField('Aliases', command.config.aliases.join(', '));
-                embed.addField('Usage', `\`${process.env.prefix}${command.name}${c.config.usage ? ` ${c.config.usage}` : ''}`, true);
+                if(command.config.aliases.length !== 0) embed.addField('Aliases', command.config.aliases.join(', '));
+                embed.addField('Usage', `\`${process.env.prefix}${command.name}${command.config.usage ? ` ${command.config.usage}` : ''}\``, true);
                 embed.addField('Category', command.config.category, true);
-                embed.addField('Roles Required', command.rolesRequired.join(', '), true);
-                if(command.config.rolesRequired.length === 0) embed.setColor(client.constants.colors.info);
+                if(command.config.rolesRequired.length !== 0) embed.addField('Roles Required', command.rolesRequired.join(', '), true);
                 embed.setColor(client.constants.colors.info);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 return message.channel.send(embed);
