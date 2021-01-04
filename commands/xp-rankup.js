@@ -87,6 +87,14 @@ module.exports = {
         let rank = rankingTo.rank;
         let rankingToName = await getRoleNameFromRank(rank, Number(process.env.groupId));
         let rankInGroup = await roblox.getRankInGroup(Number(process.env.groupId), id);
+
+        if(rankInGroup === 0){
+            embed.setDescription('The target user is not in the group.');
+            embed.setColor(client.constants.colors.error);
+            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            return message.channel.send(embed);
+        }
+
         let rankNameInGroup = await roblox.getRankNameInGroup(Number(process.env.groupId), id);
 
         let filter = (reaction, user) => ['✅', '❌'].includes(reaction.emoji.name) && user.id === message.author.id;
