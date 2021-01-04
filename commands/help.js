@@ -23,7 +23,7 @@ module.exports = {
             if(command) {
                 embed.setDescription(`**${command.name} - Command Info**`);
                 if(command.config.aliases.length === 0) embed.addField('Aliases', command.config.aliases.join(', '));
-                embed.addField('Usage', command.config.usage, true);
+                embed.addField('Usage', `\`${process.env.prefix}${command.name}${c.config.usage ? ` ${c.config.usage}` : ''}`, true);
                 embed.addField('Category', command.config.category, true);
                 embed.addField('Roles Required', command.rolesRequired.join(', '), true);
                 if(command.config.rolesRequired.length === 0) embed.setColor(client.constants.colors.info);
