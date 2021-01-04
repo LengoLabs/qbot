@@ -22,7 +22,7 @@ module.exports = {
             let command = client.commandList.find(c => c.name.toLowerCase() === commandQuery.toLowerCase() || c.config.aliases.map(a => a.toLowerCase()).includes(commandQuery.toLowerCase()));
             if(command) {
                 embed.setDescription(`**${command.name} - Command Info**`);
-                embed.addField('Aliases', command.aliases.join(', '));
+                embed.addField('Aliases', command.config.aliases.join(', '));
                 embed.addField('Usage', command.config.usage, true);
                 embed.addField('Category', command.config.category, true);
                 embed.addField('Roles Required', command.rolesRequired.join(', '), true);
