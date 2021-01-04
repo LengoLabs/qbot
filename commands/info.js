@@ -26,7 +26,7 @@ module.exports = {
 
         let id;
         if(args[1] === '--id' || args[1] === '-id') {
-            id = args[1];
+            id = args[0];
         } else {
             try {
                 id = await roblox.getIdFromUsername(userQuery);
