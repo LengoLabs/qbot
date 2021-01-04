@@ -93,7 +93,7 @@ module.exports = {
             }
         });
 
-        let beforeChangeXP = xpInfo[0].dataValues.xp;
+        let beforeChangeXP = Number(xpInfo[0].dataValues.xp);
         xpInfo[0].increment('xp', { by: increment });
         let afterChangeXP = Number(xpInfo[0].dataValues.xp) + Number(increment);
 
