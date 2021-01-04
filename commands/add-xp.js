@@ -95,7 +95,7 @@ module.exports = {
 
         let beforeChangeXP = xpInfo[0].dataValues.xp;
         xpInfo[0].increment('xp', { by: increment });
-        let afterChangeXP = xpInfo[0].dataValues.xp + increment;
+        let afterChangeXP = Number(xpInfo[0].dataValues.xp) + Number(increment);
 
         let displayUsername = await roblox.getUsernameFromId(id);
         embed.setDescription(`Added \`${increment}xp\` to ${displayUsername}'s XP count. They now have \`${afterChangeXP}xp\`.`);
