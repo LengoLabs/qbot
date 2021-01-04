@@ -95,7 +95,7 @@ module.exports = {
 
         let beforeChangeXP = xpInfo[0].dataValues.xp;
         xpInfo[0].decrement('xp', { by: decrement });
-        let afterChangeXP = xpInfo[0].dataValues.xp - decrement;
+        let afterChangeXP = Number(xpInfo[0].dataValues.xp) - Number(decrement);
 
         let displayUsername = await roblox.getUsernameFromId(id);
         embed.setDescription(`Removed \`${decrement}xp\` from ${displayUsername}'s XP count. They now have \`${afterChangeXP}xp\`.`);
