@@ -25,7 +25,7 @@ module.exports = {
                 if(command.config.aliases.length !== 0) embed.addField('Aliases', command.config.aliases.join(', '));
                 embed.addField('Usage', `\`${process.env.prefix}${command.name}${command.config.usage ? ` ${command.config.usage}` : ''}\``, true);
                 embed.addField('Category', command.config.category, true);
-                if(command.config.rolesRequired.length !== 0) embed.addField('Roles Required', command.rolesRequired.join(', '), true);
+                if(command.config.rolesRequired.length !== 0) embed.addField('Roles Required', command.config.rolesRequired.join(', '), true);
                 embed.setColor(client.constants.colors.info);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 return message.channel.send(embed);
