@@ -19,7 +19,31 @@ const constants = require('./constants.js');
 const utils = require('./utils.js');
 require('dotenv').config();
 
-roblox.setCookie(process.env.cookie).catch(async err => {
+roblox.setCookie(process.env.cookie).then((botAccount) => {
+    roblox.onAuditLog(process.env.groupId).on('data', async (data) => {
+        let auditLogChannel = await client.channels.fetch(process.env.auditLogChannelId);
+        if(data.actor.user.userId === botAccount.UserID) return;
+        let embed = new Discord.MessageEmbed();
+        if(data.actionType === 'Change Rank') {
+            let roles = await roblox.getRoles(process.env.groupId);
+            data.description.OldRoleSetRank = (roles.find(r => r.ID === data.description.OldRoleSetId)).rank;
+            data.description.NewRoleSetRank = (roles.find(r => r.ID === data.description.NewRoleSetId)).rank;
+            embed.setAuthor(data.actor.user.displayName, `https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${data.actor.user.username}`);
+            embed.setDescription(`**Moderator:** ${data.actor.user.displayName} (\`${data.actor.user.userId}\`)\n**Action:** Manual Ranking\n**User:** ${data.description.TargetName} (\`${data.description.TargetId}\`)\n**Rank Change:** ${data.description.OldRoleSetName} (${data.description.OldRoleSetRank}) -> ${data.description.NewRoleSetName} (${data.description.NewRoleSetRank})`);
+            embed.setThumbnail(`https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${data.description.TargetName}`);
+            embed.setTimestamp();
+            embed.setColor(client.constants.colors.info);
+            return auditLogChannel.send(embed);
+        }
+        if(data.actionType === 'Post Status') {
+            embed.setAuthor(data.actor.user.displayName, `https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${data.actor.user.username}`);
+            embed.setDescription(`**Poster:** ${data.actor.user.displayName} (\`${data.actor.user.userId}\`)\n**Action:** Manual Shout\n**Message:**\n\`\`\`${data.description.Text}\`\`\``);
+            embed.setTimestamp();
+            embed.setColor(client.constants.colors.info);
+            return auditLogChannel.send(embed);
+        }
+    });
+}).catch(async err => {
     console.log(chalk.red('Issue with logging in: ' + err));
 });
 
