@@ -16,9 +16,9 @@ module.exports = {
     run: async (client, message, args) => {
         let embed = new Discord.MessageEmbed();
 
-        if(!client.constants.xpRankup.enabled) {
+        if(!client.config.xpRankup.enabled) {
             embed.setDescription(`The XP Rankup system must be enabled in the bot configuration.`);
-            embed.setColor(client.constants.colors.error);
+            embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
         }
@@ -30,14 +30,14 @@ module.exports = {
 
             if(linkedUser === 'RATE_LIMITS') {
                 embed.setDescription('Verification checks are currently on cooldown.');
-                embed.setColor(client.constants.colors.error);
+                embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 return message.channel.send(embed);
             }
 
             if(!linkedUser) {
-                embed.setDescription(`Missing arguments.\n\nUsage: \`${process.env.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
-                embed.setColor(client.constants.colors.error);
+                embed.setDescription(`Missing arguments.\n\nUsage: \`${client.config.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
+                embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 return message.channel.send(embed);
             } else {
@@ -48,7 +48,7 @@ module.exports = {
                 id = await roblox.getIdFromUsername(username);
             } catch (err) {
                 embed.setDescription(`${username} is not a Roblox user.`);
-                embed.setColor(client.constants.colors.error);
+                embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 return message.channel.send(embed);
             }
@@ -66,7 +66,7 @@ module.exports = {
 
         let displayUsername = await roblox.getUsernameFromId(id);
         embed.setDescription(`${displayUsername} has \`${xpInfo[0].dataValues.xp}xp\`.`);
-        embed.setColor(client.constants.colors.info);
+        embed.setColor(client.config.colors.info);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
         return message.channel.send(embed);
     }

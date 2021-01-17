@@ -18,33 +18,33 @@ module.exports = {
 
         let msg = args.join(' ');
         if(!msg) {
-            embed.setDescription(`Missing arguments.\n\nUsage: \`${process.env.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
-            embed.setColor(client.constants.colors.error);
+            embed.setDescription(`Missing arguments.\n\nUsage: \`${client.config.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
+            embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
         }
 
         let shoutInfo;
         try {
-            shoutInfo = await roblox.shout(Number(process.env.groupId), msg);
+            shoutInfo = await roblox.shout(client.config.groupId, msg);
         } catch (err) {
             console.log(`Error: ${err}`);
             embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
-            embed.setColor(client.constants.colors.error);
+            embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
         }
 
         embed.setDescription(`**Success!** Posted a group shout with the following message:\n\`\`\`${msg}\`\`\``);
-        embed.setColor(client.constants.colors.success);
+        embed.setColor(client.config.colors.success);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
         message.channel.send(embed);
 
-        if(process.env.logChannelId !== 'false') {
+        if(client.config.logChannelId !== 'false') {
             let logEmbed = new Discord.MessageEmbed();
-            let logChannel = await client.channels.fetch(process.env.logChannelId);
+            let logChannel = await client.channels.fetch(client.config.logChannelId);
             logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Shout\n**Message:**\n\`\`\`${msg}\`\`\``);
-            logEmbed.setColor(client.constants.colors.info);
+            logEmbed.setColor(client.config.colors.info);
             logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             logEmbed.setTimestamp();
             return logChannel.send(logEmbed);
