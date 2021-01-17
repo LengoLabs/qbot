@@ -11,6 +11,7 @@ module.exports = {
         neutral: '#f2f255',
         success: '#43d177'
     },
+    verificationChecks: false,
     firedRank: 1,
     xpRankup: {
         enabled: false,
