@@ -15,7 +15,12 @@ module.exports = {
     firedRank: 1,
     xpRankup: {
         enabled: false,
-        roles: []
+        roles: [
+            // Example: {
+            //     rank: 2,
+            //     xpNeeded: 10
+            // }
+        ]
     },
     memberCount: {
         enabled: false,
