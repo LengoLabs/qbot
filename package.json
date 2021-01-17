@@ -1,5 +1,5 @@
 {
-  "name": "qbot-beta",
+  "name": "qbot",
   "version": "6.0.0",
   "description": "qbot is an advanced, easy to setup, free, and unbranded Discord-Roblox ranking bot. If at any time during setting it up you need assistance, you can join the support server here: https://discord.gg/J47m7t4",
   "main": "index.js",
@@ -18,7 +18,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "figlet": "^1.5.0",
-    "noblox.js": "^4.7.3",
+    "lodash": "^4.17.20",
+    "noblox.js": "^4.8.2",
     "node-fetch": "^2.6.1",
     "sequelize": "^6.3.5",
     "sqlite3": "^5.0.0"
