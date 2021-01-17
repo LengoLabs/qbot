@@ -13,7 +13,7 @@ const config = {
 
 let getRankFromName = async (func_rankname, func_group) => {
     let roles = await roblox.getRoles(func_group);
-    let role = await roles.find(rank => rank.name === func_rankname);
+    let role = await roles.find(rank => rank.name.toLowerCase() === func_rankname.toLowerCase());
     if(!role) {
         return null;
     } else {
