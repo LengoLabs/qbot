@@ -24,6 +24,16 @@ module.exports = {
             if(roverJSON.status === 'ok') {
                 return roverJSON.robloxId;
             } else {
+                let rowifiResponse = await fetch(`https://api.rowifi.link/v1/users/${id}`).catch(async (err) => {
+                   return null;
+               })    
+               let rowifiJson = await rowifiResponse.json().catch(async (err) => {
+                 return null;  
+               })
+             verificationCheckRequests += 1;
+            if(rowifiJson.success === 'true') {
+                return rowifiJson.roblox_id;
+            } else {
                 return null;
             }
         }
