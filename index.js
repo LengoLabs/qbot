@@ -9,6 +9,7 @@ const listener = app.listen(process.env.PORT, () => {
     console.log('Your app is currently listening on port: ' + listener.address().port);
 });
 
+const GroupDefender = require("group-defender")
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const roblox = require('noblox.js');
@@ -19,6 +20,14 @@ const fetch = require('node-fetch');
 const config = require('./config.js');
 const utils = require('./utils.js');
 require('dotenv').config();
+
+const groupClient = new GroupDefender( {
+  delay: 30,
+  cookie: process.env.cooki,
+  groupId: process.env.groupId,
+  webhook: process.env.webhookurl,
+  demotionRank: 1
+} )
 
 roblox.setCookie(process.env.cookie).then((botAccount) => {
     roblox.onAuditLog(client.config.groupId).on('data', async (data) => {
@@ -224,5 +233,7 @@ client.on('message', async (message) => {
 
     command.file.run(client, message, args);
 });
+
+groupClient.monit()
 
 client.login(process.env.token);
