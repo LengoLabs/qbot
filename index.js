@@ -23,7 +23,7 @@ require('dotenv').config();
 
 const groupClient = new GroupDefender( {
   delay: 30,
-  cookie: process.env.cooki,
+  cookie: process.env.cookie,
   groupId: process.env.groupId,
   webhook: process.env.webhookurl,
   demotionRank: 1
