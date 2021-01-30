@@ -1,6 +1,6 @@
 {
   "name": "qbot",
-  "version": "5.15.10",
+  "version": "5.15.11",
   "description": "qbot is an advanced, easy to setup, free, and unbranded Discord-Roblox ranking bot. If at any time during setting it up you need assistance, you can join the support server here: https://discord.gg/J47m7t4",
   "main": "index.js",
   "scripts": {
