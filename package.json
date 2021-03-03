@@ -21,6 +21,7 @@
     "lodash": "^4.17.20",
     "noblox.js": "^4.8.3",
     "node-fetch": "^2.6.1",
+    "path": "^0.12.7",
     "sequelize": "^6.3.5",
     "sqlite3": "^5.0.0"
   }
