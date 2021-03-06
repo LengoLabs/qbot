@@ -18,7 +18,12 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 const config = require('./config.js');
 const utils = require('./utils.js');
+let commandList = [];
 require('dotenv').config();
+client.commandList = commandList;
+client.config = config;
+client.utils = utils;
+client.databases = {};
 
 roblox.setCookie(process.env.cookie).then((botAccount) => {
     roblox.onAuditLog(client.config.groupId).on('data', async (data) => {
@@ -53,12 +58,6 @@ roblox.setCookie(process.env.cookie).then((botAccount) => {
 }).catch(async err => {
     console.log(chalk.red('Issue with logging in: ' + err));
 });
-
-let commandList = [];
-client.commandList = commandList;
-client.config = config;
-client.utils = utils;
-client.databases = {};
 
 const cooldowns = new Discord.Collection();
 
