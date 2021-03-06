@@ -16,6 +16,7 @@ const chalk = require('chalk');
 const figlet = require('figlet');
 const fs = require('fs');
 const fetch = require('node-fetch');
+const path = require('path');
 const config = require('./config.js');
 const utils = require('./utils.js');
 let commandList = [];
@@ -143,20 +144,29 @@ let refreshCount = async () => {
 
 if(client.config.memberCount.enabled) refreshCount();
 
-fs.readdir('./commands/', async (err, files) => {
-    if(err){
-        return console.log(chalk.red('An error occured when checking the commands folder for commands to load: ' + err));
-    }
-    files.forEach(async (file) => {
-        if(!file.endsWith('.js')) return;
-        let commandFile = require(`./commands/${file}`);
-        commandList.push({
-            file: commandFile,
-            name: file.split('.')[0],
-            config: commandFile.config
-        });
+function registerCommands(dir) {
+    fs.readdir(dir, async (err, files) => {
+        if(err){
+            return console.log(chalk.red('An error occured when checking the commands folder for commands to load: ' + err));
+        }
+        files.forEach(async (file) => {
+            fs.stat(path.join(dir, file), (err, stat) => {
+                if(stat.isDirectory()) {
+                    registerCommands(path.join(dir, file));
+                } else {
+                    if(!file.endsWith('.js')) return;
+                    let commandFile = require(path.join(__dirname, dir, file));
+                    commandList.push({
+                        file: commandFile,
+                        name: file.split('.')[0]
+                    });
+                }
+            })
+        })
     });
-});
+}
+registerCommands("./commands/")
+setTimeout(() => console.log(commandList), 3000)
 
 client.on('ready', async () => {
     console.log(`${chalk.hex(client.config.colors.info)(figlet.textSync('qbot', { horizontalLayout: 'full' }))}\n`);
