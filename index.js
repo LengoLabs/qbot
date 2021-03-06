@@ -166,7 +166,6 @@ function registerCommands(dir) {
     });
 }
 registerCommands("./commands/")
-setTimeout(() => console.log(commandList), 3000)
 
 client.on('ready', async () => {
     console.log(`${chalk.hex(client.config.colors.info)(figlet.textSync('qbot', { horizontalLayout: 'full' }))}\n`);
