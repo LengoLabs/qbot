@@ -95,8 +95,15 @@ module.exports = {
             return message.channel.send(embed);
         }
 
-        if(rankInGroup === 0){
+        if(rankInGroup === 0) {
             embed.setDescription('The target user is not in the group.');
+            embed.setColor(client.config.colors.error);
+            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            return message.channel.send(embed);
+        }
+
+        if(rank === rankInGroup) {
+            embed.setDescription('You are already at the rank you can rank up to.');
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
@@ -138,7 +145,7 @@ module.exports = {
                     return message.channel.send(embed);
                 }
         
-                embed.setDescription(`**Success!** Ranked ${username} to ${rankingInfo.name} (${rankingInfo.rank})`);
+                embed.setDescription(`**Success!** Ranked ${displayUsername} to ${rankingInfo.name} (${rankingInfo.rank})`);
                 embed.setColor(client.config.colors.success);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 msg.edit(embed);
@@ -146,7 +153,7 @@ module.exports = {
                 if(client.config.logChannelId !== 'false') {
                     let logEmbed = new Discord.MessageEmbed();
                     let logChannel = await client.channels.fetch(client.config.logChannelId);
-                    logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** XP Rankup\n**User:** ${username} (\`${id}\`)\n**Rank Change:** ${rankNameInGroup} (${rankInGroup}) -> ${rankingInfo.name} (${rankingInfo.rank})\n**XP:** ${xpInfo[0].dataValues.xp}`);
+                    logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** XP Rankup\n**User:** ${displayUsername} (\`${id}\`)\n**Rank Change:** ${rankNameInGroup} (${rankInGroup}) -> ${rankingInfo.name} (${rankingInfo.rank})\n**XP:** ${xpInfo[0].dataValues.xp}`);
                     logEmbed.setColor(client.config.colors.info);
                     logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                     logEmbed.setTimestamp();
