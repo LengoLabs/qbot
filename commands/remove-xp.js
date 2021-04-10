@@ -82,6 +82,12 @@ module.exports = {
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
         }
+        if(isNaN(decrement)) {
+            embed.setDescription(`Invalid arguments.\n\nUsage: \`${client.config.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
+            embed.setColor(client.config.colors.error);
+            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            return message.channel.send(embed);
+        }
 
         let xpInfo = await client.databases.xp.findOrCreate({
             where: {
