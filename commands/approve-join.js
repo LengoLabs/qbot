@@ -39,7 +39,7 @@ module.exports = {
             joinRequestInfo = await roblox.handleJoinRequest(client.config.groupId, id, true);
         } catch (err) {
             console.log(`Error: ${err}`);
-            embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
+            embed.setDescription('There was an error handling that join request. Maybe it doesn\'t exist?');
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
