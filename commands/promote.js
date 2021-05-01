@@ -50,7 +50,7 @@ module.exports = {
             return message.channel.send(embed);
         }
 
-        if(client.config.verificationChecks === 'true') {
+        if(client.config.verificationChecks === true) {
             let linkedUser = await client.utils.getLinkedUser(message.author.id, message.guild.id);
             if(!linkedUser) {
                 embed.setDescription('You must be verified on either of the sites below to use this command.\n\n**Bloxlink:** https://blox.link\n**RoVer:** https://verify.eryn.io');
