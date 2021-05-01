@@ -43,7 +43,7 @@ module.exports = {
 
         let rankInGroup = await roblox.getRankInGroup(client.config.groupId, id);
 
-        if(client.config.verificationChecks === 'true') {
+        if(client.config.verificationChecks === true) {
             let linkedUser = await client.utils.getLinkedUser(message.author.id, message.guild.id);
             if(!linkedUser) {
                 embed.setDescription('You must be verified on either of the sites below to use this command.\n\n**Bloxlink:** https://blox.link\n**RoVer:** https://verify.eryn.io');
@@ -60,7 +60,7 @@ module.exports = {
             }
 
             if(linkedUser === id) {
-                embed.setDescription('You can\'t rank yourself!');
+                embed.setDescription('You can\'t remove XP from yourself!');
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 return message.channel.send(embed);
