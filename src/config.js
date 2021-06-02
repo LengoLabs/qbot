@@ -32,8 +32,8 @@ module.exports = {
         enabled: true,
         bypassRank: 255,
         duration: 120,
-        threshold: 1,
+        threshold: 5,
         actionRank: null,
-        actionLogChannel: '746108849551048788'
+        actionLogChannel: ''
     }
 }

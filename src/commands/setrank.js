@@ -135,11 +135,14 @@ module.exports = {
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
         message.channel.send(embed);
 
-        await client.recordRankEvent({
-            userId: linkedUser,
-            username: username,
-            rank: rankingTo
-        });
+        if(linkedUser) {
+            let linkedUserName = await roblox.getUsernameFromId(linkedUser);
+            await client.recordRankEvent({
+                userId: linkedUser,
+                username: linkedUserName,
+                rank: rankingTo
+            });
+        }
 
         if(client.config.logChannelId !== 'false') {
             let logEmbed = new Discord.MessageEmbed();

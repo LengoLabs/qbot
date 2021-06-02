@@ -36,21 +36,21 @@ const recordRankEvent = async (data) => {
         rankData[data.userId] = 1;
     }
 
-    if(rankData[data.userId] > client.config.threshold) {
-        if(client.config.actionRank) {
+    if(rankData[data.userId] > client.config.antiAbuse.threshold) {
+        if(client.config.antiAbuse.actionRank) {
             let rankInGroup = await roblox.getRankInGroup(client.config.groupId, data.userId);
             let rankNameInGroup = await roblox.getRankNameInGroup(client.config.groupId, data.userId);
             try {
-                rankingInfo = await roblox.setRank(client.config.groupId, data.userId, client.config.actionRank);
+                rankingInfo = await roblox.setRank(client.config.groupId, data.userId, client.config.antiAbuse.actionRank);
             } catch (err) {
                 console.log(`Error with anti abuse action: ${err}`);
             }
-            if(client.config.logChannel && client.config.logChannel !== 'false') {
+            if(client.config.antiAbuse.actionLogChannel && client.config.antiAbuse.actionLogChannel !== 'false') {
                 let logEmbed = new Discord.MessageEmbed();
                 let logChannel = await client.channels.fetch(client.config.antiAbuse.actionLogChannel);
                 logEmbed.setDescription(`**Moderator:** *Automated action*\n**Action:** Anti-Abuse Action\n**User:** ${data.username} (\`${data.userId}\`)\n**Rank Change:** ${rankNameInGroup} (${rankInGroup}) -> ${rankingInfo.name} (${rankingInfo.rank})`);
                 logEmbed.setColor(client.config.colors.info);
-                logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+                logEmbed.setAuthor(`${client.user.tag} [auto]`, client.user.displayAvatarURL());
                 logEmbed.setTimestamp();
                 logEmbed.setThumbnail(`https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${data.username}`);
                 return logChannel.send(logEmbed);
@@ -75,7 +75,7 @@ roblox.setCookie(process.env.cookie).then((botAccount) => {
             await recordRankEvent({
                 userId: data.actor.user.userId,
                 username: data.actor.user.username,
-                rank: data.actor.user.role.rank
+                rank: data.description.NewRoleSetRank
             });
             embed.setAuthor(data.actor.user.username, `https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${data.actor.user.username}`);
             embed.setDescription(`**Moderator:** ${data.actor.user.username} (\`${data.actor.user.userId}\`)\n**Action:** Manual Ranking\n**User:** ${data.description.TargetName} (\`${data.description.TargetId}\`)\n**Rank Change:** ${data.description.OldRoleSetName} (${data.description.OldRoleSetRank}) -> ${data.description.NewRoleSetName} (${data.description.NewRoleSetRank})`);
