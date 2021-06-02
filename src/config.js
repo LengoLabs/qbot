@@ -1,25 +1,25 @@
 module.exports = {
-    groupId: 3281575,
-    maximumRank: 255,
+    groupId: 0,
+    maximumRank: 0,
     prefix: 'q!',
-    logChannelId: '746108849551048788',
-    shoutChannelId: '746108849551048788',
-    auditLogChannelId: '746108849551048788',
+    logChannelId: '',
+    shoutChannelId: '',
+    auditLogChannelId: '',
     colors: {
         info: '#5b57d9',
         error: '#de554e',
         neutral: '#f2f255',
         success: '#43d177'
     },
-    verificationChecks: true,
+    verificationChecks: false,
     firedRank: 1,
     xpRankup: {
-        enabled: true,
+        enabled: false,
         roles: [
-            {
-                rank: 2,
-                xpNeeded: 10
-            }
+            // Example: {
+            //     rank: 2,
+            //     xpNeeded: 10
+            // }
         ]
     },
     memberCount: {
@@ -29,7 +29,7 @@ module.exports = {
         milestones: []
     },
     antiAbuse: {
-        enabled: true,
+        enabled: false,
         bypassRank: 255,
         duration: 120,
         threshold: 5,
