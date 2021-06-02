@@ -4,24 +4,17 @@ const path = require('path');
 require('dotenv').config();
 
 const config = {
-    description: 'Decreases a user\'s XP count.',
-    aliases: ['removexp'],
-    usage: '<username> <decrement>',
-    rolesRequired: ['Ranking Permissions', 'XP Permissions'],
-    category: 'XP System'
+    description: 'Demotes a user in the Roblox group.',
+    aliases: [],
+    usage: '<username>',
+    rolesRequired: ['Ranking Permissions'],
+    category: 'Ranking'
 }
 
 module.exports = {
     config,
     run: async (client, message, args) => {
         let embed = new Discord.MessageEmbed();
-
-        if(!client.config.xpRankup.enabled) {
-            embed.setDescription(`The XP Rankup system must be enabled in the bot configuration.`);
-            embed.setColor(client.config.colors.error);
-            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
-        }
 
         let username = args[0];
         if(!username) {
@@ -30,7 +23,7 @@ module.exports = {
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
         }
-        
+
         let id;
         try {
             id = await roblox.getIdFromUsername(username);
@@ -42,9 +35,23 @@ module.exports = {
         }
 
         let rankInGroup = await roblox.getRankInGroup(client.config.groupId, id);
+        let rankingTo = rankInGroup - 1;
+        if(client.config.maximumRank <= rankInGroup) {
+            embed.setDescription('This bot cannot rank this user due to the maximum rank configured.');
+            embed.setColor(client.config.colors.error);
+            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            return message.channel.send(embed);
+        }
 
+        if(rankInGroup === 0){
+            embed.setDescription('That user is not in the group.');
+            embed.setColor(client.config.colors.error);
+            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            return message.channel.send(embed);
+        }
+
+        let linkedUser = await client.utils.getLinkedUser(message.author.id, message.guild.id);
         if(client.config.verificationChecks === true) {
-            let linkedUser = await client.utils.getLinkedUser(message.author.id, message.guild.id);
             if(!linkedUser) {
                 embed.setDescription('You must be verified on either of the sites below to use this command.\n\n**Bloxlink:** https://blox.link\n**RoVer:** https://verify.eryn.io');
                 embed.setColor(client.config.colors.error);
@@ -59,8 +66,8 @@ module.exports = {
                 return message.channel.send(embed);
             }
 
-            if(linkedUser === id) {
-                embed.setDescription('You can\'t remove XP from yourself!');
+            if(linkedUser == id) {
+                embed.setDescription('You can\'t rank yourself!');
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 return message.channel.send(embed);
@@ -68,51 +75,40 @@ module.exports = {
 
             let linkedUserRankInGroup = await roblox.getRankInGroup(client.config.groupId, linkedUser);
             if(rankInGroup >= linkedUserRankInGroup) {
-                embed.setDescription('You can only change the XP count of people with a rank lower than yours.');
+                embed.setDescription('You can only rank people with a rank lower than yours, to a rank that is also lower than yours.');
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 return message.channel.send(embed);
             }
         }
 
-        let decrement = args[1];
-        if(!decrement) {
-            embed.setDescription(`Missing arguments.\n\nUsage: \`${client.config.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
+        let rankNameInGroup = await roblox.getRankNameInGroup(client.config.groupId, id);
+        let rankingInfo;
+        try {
+            rankingInfo = await roblox.demote(client.config.groupId, id);
+        } catch (err) {
+            console.log(`Error: ${err}`);
+            embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
         }
-        if(isNaN(decrement)) {
-            embed.setDescription(`Invalid arguments.\n\nUsage: \`${client.config.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
-            embed.setColor(client.config.colors.error);
-            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
-        }
 
-        let xpInfo = await client.databases.xp.findOrCreate({
-            where: {
-                userId: id
-            },
-            defaults: {
-                userId: id,
-                xp: 0
-            }
-        });
-
-        let beforeChangeXP = Number(xpInfo[0].dataValues.xp);
-        xpInfo[0].decrement('xp', { by: decrement });
-        let afterChangeXP = beforeChangeXP - Number(decrement);
-
-        let displayUsername = await roblox.getUsernameFromId(id);
-        embed.setDescription(`Removed \`${decrement}xp\` from ${displayUsername}'s XP count. They now have \`${afterChangeXP}xp\`.`);
+        embed.setDescription(`**Success!** Demoted ${username} to ${rankingInfo.newRole.name} (${rankingInfo.newRole.rank}).`);
         embed.setColor(client.config.colors.success);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
         message.channel.send(embed);
 
+        await client.recordRankEvent({
+            userId: linkedUser,
+            username: username,
+            rank: rankingTo
+        });
+
         if(client.config.logChannelId !== 'false') {
             let logEmbed = new Discord.MessageEmbed();
             let logChannel = await client.channels.fetch(client.config.logChannelId);
-            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Remove XP\n**User:** ${username} (\`${id}\`)\n**XP Change:** ${beforeChangeXP} -> ${afterChangeXP} (removed ${decrement})`);
+            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Demotion\n**User:** ${username} (\`${id}\`)\n**Rank Change:** ${rankNameInGroup} (${rankInGroup}) -> ${rankingInfo.newRole.name} (${rankingInfo.newRole.rank})`);
             logEmbed.setColor(client.config.colors.info);
             logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             logEmbed.setTimestamp();

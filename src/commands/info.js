@@ -18,7 +18,7 @@ module.exports = {
         let userQuery = args[0];
         if(!userQuery) {
             let group = await client.utils.getGroup(client.config.groupId);
-            embed.setDescription(`**${group.name} - Group Info**\n\nID: \`${group.id}\`\nOwner: ${group.owner.username} (\`${group.owner.userId}\`)\nMember Count: ${group.memberCount}\n\n${group.publicEntryAllowed ? `[Join Group](https://roblox.com/groups/${group.id})` : `[Request to Join Group](https://roblox.com/groups/${group.id})`}`);
+            embed.setDescription(`**${group.name} - Group Info**\n\nID: \`${group.id}\`\nOwner: ${group.owner.username} (\`${group.owner.userId}\`)\nMember Count: ${group.memberCount}\nShout:\n> ${group.shout || '*There is no shout.*'}\n\n${group.publicEntryAllowed ? `[Join Group](https://roblox.com/groups/${group.id})` : `[Request to Join Group](https://roblox.com/groups/${group.id})`}`);
             embed.setColor(client.config.colors.info);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);

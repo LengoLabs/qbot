@@ -59,7 +59,7 @@ module.exports = {
                 return message.channel.send(embed);
             }
 
-            if(linkedUser === id) {
+            if(linkedUser == id) {
                 embed.setDescription('You can\'t give yourself XP!');
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
