@@ -45,9 +45,9 @@ const recordRankEvent = async (data) => {
             } catch (err) {
                 console.log(`Error with anti abuse action: ${err}`);
             }
-            if(client.config.antiAbuse.actionLogChannel && client.config.antiAbuse.actionLogChannel !== 'false') {
+            if(client.config.antiAbuse.actionLogChannelId && client.config.antiAbuse.actionLogChannelId !== 'false') {
                 let logEmbed = new Discord.MessageEmbed();
-                let logChannel = await client.channels.fetch(client.config.antiAbuse.actionLogChannel);
+                let logChannel = await client.channels.fetch(client.config.antiAbuse.actionLogChannelId);
                 logEmbed.setDescription(`**Moderator:** *Automated action*\n**Action:** Anti-Abuse Action\n**User:** ${data.username} (\`${data.userId}\`)\n**Rank Change:** ${rankNameInGroup} (${rankInGroup}) -> ${rankingInfo.name} (${rankingInfo.rank})`);
                 logEmbed.setColor(client.config.colors.info);
                 logEmbed.setAuthor(`${client.user.tag} [auto]`, client.user.displayAvatarURL());
