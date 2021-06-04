@@ -34,6 +34,6 @@ module.exports = {
         duration: 120,
         threshold: 5,
         actionRank: null,
-        actionLogChannel: ''
+        actionLogChannelId: ''
     }
 }
