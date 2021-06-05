@@ -4,7 +4,7 @@ const path = require('path');
 require('dotenv').config();
 
 const config = {
-    description: 'Demotes a user in the Roblox group.',
+    description: 'Fires a user in the Roblox group.',
     aliases: [],
     usage: '<username>',
     rolesRequired: ['Ranking Permissions'],
@@ -57,8 +57,8 @@ module.exports = {
             return message.channel.send(embed);
         }
 
+        let linkedUser = await client.utils.getLinkedUser(message.author.id, message.guild.id);
         if(client.config.verificationChecks === true) {
-            let linkedUser = await client.utils.getLinkedUser(message.author.id, message.guild.id);
             if(!linkedUser) {
                 embed.setDescription('You must be verified on either of the sites below to use this command.\n\n**Bloxlink:** https://blox.link\n**RoVer:** https://verify.eryn.io');
                 embed.setColor(client.config.colors.error);
