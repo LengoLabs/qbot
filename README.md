@@ -2,7 +2,7 @@
 ![description](https://i.gyazo.com/0926bf0ae23fb20f4449b6d5445fc4d8.png)
 
 **Getting Started**  
-qbot is an advanced, easy to setup, free, and unbranded Discord-Roblox ranking bot. The instructions to set it up and host it are available here: https://github.com/yogurtsyum/qbot/wiki/setup
+qbot is an advanced, easy to setup, free, and unbranded Discord-Roblox ranking bot. The instructions to set it up and host it are available here: https://docs.lengolabs.com/qbot/setup
 
 There are currently 2 branches of qbot available:  
 `master` - The latest version of qbot.
@@ -14,8 +14,9 @@ If at any time while using qbot you need support with it, then feel free to join
 **Other Information**  
 qbot can only run on Node.js v12 or higher.   
 
+Please note that when you install the required packages in qbot v6, you might notice that npm detects vulnerabilities in the "keyv" and "@keyv/sqlite" package. The functions with the vulnerabilities are not used by this package according to the package creator, so you shouldn't need to worry.
+
 License: https://github.com/yogurtsyum/qbot/blob/master/LICENSE  
-Acknowledgements: https://github.com/yogurtsyum/qbot/blob/master/acknowledgements.md  
 Contributors: https://github.com/yogurtsyum/qbot/graphs/contributors   
 
 Please note we are not responsible for if anything happens to your bot account. It is your responsibility to keep the cookie and token away from anyone you don't trust. qbot uses noblox.js to interact with Roblox API with your bot cookie, and discord.js to interact with the Discord API with your bot token. Do not share your config.json file with anyone once filled out.
