@@ -64,40 +64,42 @@ setTimeout(() => {
 }, client.config.duration);
 
 roblox.setCookie(process.env.cookie).then((botAccount) => {
-    roblox.onAuditLog(client.config.groupId).on('data', async (data) => {
-        let auditLogChannel = await client.channels.fetch(client.config.auditLogChannelId);
-        if(data.actor.user.userId === botAccount.UserID) return;
-        let embed = new Discord.MessageEmbed();
-        if(data.actionType === 'Change Rank') {
-            let roles = await roblox.getRoles(client.config.groupId);
-            data.description.OldRoleSetRank = (roles.find(r => r.ID === data.description.OldRoleSetId)).rank;
-            data.description.NewRoleSetRank = (roles.find(r => r.ID === data.description.NewRoleSetId)).rank;
-            await recordRankEvent({
-                userId: data.actor.user.userId,
-                username: data.actor.user.username,
-                rank: data.description.NewRoleSetRank
-            });
-            embed.setAuthor(data.actor.user.username, `https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${data.actor.user.username}`);
-            embed.setDescription(`**Moderator:** ${data.actor.user.username} (\`${data.actor.user.userId}\`)\n**Action:** Manual Ranking\n**User:** ${data.description.TargetName} (\`${data.description.TargetId}\`)\n**Rank Change:** ${data.description.OldRoleSetName} (${data.description.OldRoleSetRank}) -> ${data.description.NewRoleSetName} (${data.description.NewRoleSetRank})`);
-            embed.setThumbnail(`https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${data.description.TargetName}`);
-            embed.setTimestamp();
-            embed.setColor(client.config.colors.info);
-            return auditLogChannel.send(embed);
-        }
-        if(data.actionType === 'Post Status') {
-            embed.setAuthor(data.actor.user.username, `https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${data.actor.user.username}`);
-            embed.setDescription(`**Poster:** ${data.actor.user.username} (\`${data.actor.user.userId}\`)\n${
-                data.description.Text !== '' ? `**Action:** Manual Shout\n**Message:**\n\`\`\`${data.description.Text}\`\`\`` : `**Action:** Manual Clear Shout`
-            }`);
-            embed.setTimestamp();
-            embed.setColor(client.config.colors.info);
-            return auditLogChannel.send(embed);
-        }
-    });
+    if(client.config.auditLogChannelId !== 'false') {
+        roblox.onAuditLog(client.config.groupId).on('data', async (data) => {
+            let auditLogChannel = await client.channels.fetch(client.config.auditLogChannelId);
+            if(data.actor.user.userId === botAccount.UserID) return;
+            let embed = new Discord.MessageEmbed();
+            if(data.actionType === 'Change Rank') {
+                let roles = await roblox.getRoles(client.config.groupId);
+                data.description.OldRoleSetRank = (roles.find(r => r.ID === data.description.OldRoleSetId)).rank;
+                data.description.NewRoleSetRank = (roles.find(r => r.ID === data.description.NewRoleSetId)).rank;
+                await recordRankEvent({
+                    userId: data.actor.user.userId,
+                    username: data.actor.user.username,
+                    rank: data.description.NewRoleSetRank
+                });
+                embed.setAuthor(data.actor.user.username, `https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${data.actor.user.username}`);
+                embed.setDescription(`**Moderator:** ${data.actor.user.username} (\`${data.actor.user.userId}\`)\n**Action:** Manual Ranking\n**User:** ${data.description.TargetName} (\`${data.description.TargetId}\`)\n**Rank Change:** ${data.description.OldRoleSetName} (${data.description.OldRoleSetRank}) -> ${data.description.NewRoleSetName} (${data.description.NewRoleSetRank})`);
+                embed.setThumbnail(`https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${data.description.TargetName}`);
+                embed.setTimestamp();
+                embed.setColor(client.config.colors.info);
+                return auditLogChannel.send(embed);
+            }
+            if(data.actionType === 'Post Status') {
+                embed.setAuthor(data.actor.user.username, `https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${data.actor.user.username}`);
+                embed.setDescription(`**Poster:** ${data.actor.user.username} (\`${data.actor.user.userId}\`)\n${
+                    data.description.Text !== '' ? `**Action:** Manual Shout\n**Message:**\n\`\`\`${data.description.Text}\`\`\`` : `**Action:** Manual Clear Shout`
+                }`);
+                embed.setTimestamp();
+                embed.setColor(client.config.colors.info);
+                return auditLogChannel.send(embed);
+            }
+        });
 
-    roblox.onAuditLog(client.config.groupId).on('error', (err) => {
-        console.log(`Error with group audit log integration: ${err}`);
-    });
+        roblox.onAuditLog(client.config.groupId).on('error', (err) => {
+            console.log(`Error with group audit log integration: ${err}`);
+        });
+    }
 }).catch(async err => {
     console.log(chalk.red('Issue with logging in: ' + err));
 });
