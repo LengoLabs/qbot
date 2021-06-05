@@ -157,7 +157,7 @@ module.exports = {
                     logEmbed.setColor(client.config.colors.info);
                     logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                     logEmbed.setTimestamp();
-                    logEmbed.setThumbnail(`https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${username}`);
+                    logEmbed.setThumbnail(`https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${displayUsername}`);
                     return logChannel.send(logEmbed);
                 } else {
                     return;
