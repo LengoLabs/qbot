@@ -5,7 +5,7 @@
 qbot is an advanced, easy to setup, free, and unbranded Discord-Roblox ranking bot. The instructions to set it up and host it are available here: https://docs.lengolabs.com/qbot/setup
 
 There are currently 2 branches of qbot available:  
-`master` - The latest version of qbot.
+`master` - The latest version of qbot.   
 `v6-beta` - The beta version with lots of new improvements, but possibly some small bugs.
 
 **Support**  
