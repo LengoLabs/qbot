@@ -232,7 +232,15 @@ client.on('message', async (message) => {
     const command = commandList.find((cmd) => cmd.name === commandName || cmd.config.aliases.includes(commandName));
     if(!command) return;
 
-    if(command.config.rolesRequired.length > 0) {
+    let isContentNull = false;
+
+    command.config.rolesRequired.forEach(function(value, _) {
+        if (value === null) {
+            isContentNull = true
+        };
+    })
+
+    if(isContentNull = false && command.config.rolesRequired.length > 0) {
         if(!message.member.roles.cache.some(role => command.config.rolesRequired.includes(role.name))) {
             let embed = new Discord.MessageEmbed();
             embed.setDescription('You do not have permission to use this command.');
