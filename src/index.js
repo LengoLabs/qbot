@@ -234,13 +234,11 @@ client.on('message', async (message) => {
 
     let isContentNull = false;
 
-    command.config.rolesRequired.forEach(function(value, _) {
-        if (value === null) {
-            isContentNull = true
-        };
-    })
+    function isContentNull(array) {
+        return array.some(v => v === null);
+    }
 
-    if(isContentNull = false && command.config.rolesRequired.length > 0) {
+    if(isContentNull === false) {
         if(!message.member.roles.cache.some(role => command.config.rolesRequired.includes(role.name))) {
             let embed = new Discord.MessageEmbed();
             embed.setDescription('You do not have permission to use this command.');
