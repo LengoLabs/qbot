@@ -235,7 +235,7 @@ client.on('message', async (message) => {
     let isContentNull = false;
 
     function isContentNull(array) {
-        return array.some(v => v === null);
+        isContentNull = array.some(v => v === null);
     }
 
     if(isContentNull === false) {
