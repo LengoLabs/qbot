@@ -14,7 +14,7 @@ const config = {
 let getRoleNameFromRank = async (func_rank, func_group) => {
     let roles = await roblox.getRoles(func_group);
     let role = await roles.find(role => role.rank === func_rank);
-    if(!role) {
+    if (!role) {
         return null;
     } else {
         return role.name;
@@ -28,17 +28,17 @@ module.exports = {
 
         let username = args[0];
         let id;
-        if(!username){
+        if (!username) {
             let linkedUser = await client.utils.getLinkedUser(message.author.id, message.guild.id);
 
-            if(linkedUser === 'RATE_LIMITS') {
+            if (linkedUser === 'RATE_LIMITS') {
                 embed.setDescription('Verification checks are currently on cooldown.');
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 return message.channel.send(embed);
             }
 
-            if(!linkedUser) {
+            if (!linkedUser) {
                 embed.setDescription(`Missing arguments.\n\nUsage: \`${client.config.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
@@ -47,7 +47,7 @@ module.exports = {
                 id = linkedUser;
             }
         } else {
-            if(!message.member.roles.cache.some(role => ['Ranking Permissions', 'XP Permissions'].includes(role.name))) {
+            if (!message.member.roles.cache.some(role => ['Ranking Permissions', 'XP Permissions'].includes(role.name))) {
                 let embed = new Discord.MessageEmbed();
                 embed.setDescription('You do not have permission to use this command.');
                 embed.setColor(client.config.colors.error);
@@ -64,7 +64,7 @@ module.exports = {
                 }
             }
         }
-        
+
         let displayUsername = await roblox.getUsernameFromId(id);
 
         let xpInfo = await client.databases.xp.findOrCreate({
@@ -77,8 +77,8 @@ module.exports = {
             }
         });
 
-        let rankingTo = client.config.xpRankup.roles.reverse().find(role => xpInfo[0].dataValues.xp > role.rank);
-        if(!rankingTo) {
+        let rankingTo = client.config.xpRankup.roles.reverse().find(role => xpInfo[0].dataValues.xp >= role.xpNeeded);
+        if (!rankingTo) {
             embed.setDescription(`${displayUsername} is not eligible to rank up to any xp roles.`);
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
@@ -88,21 +88,21 @@ module.exports = {
         let rankingToName = await getRoleNameFromRank(rank, client.config.groupId);
         let rankInGroup = await roblox.getRankInGroup(client.config.groupId, id);
 
-        if(client.config.maximumRank <= rankInGroup || client.config.maximumRank <= rank) {
+        if (client.config.maximumRank <= rankInGroup || client.config.maximumRank <= rank) {
             embed.setDescription('This bot cannot rank this user due to the maximum rank configured.');
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
         }
 
-        if(rankInGroup === 0) {
+        if (rankInGroup === 0) {
             embed.setDescription('The target user is not in the group.');
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             return message.channel.send(embed);
         }
 
-        if(rank === rankInGroup) {
+        if (rank === rankInGroup) {
             embed.setDescription('You are already at the rank you can rank up to.');
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
@@ -119,21 +119,21 @@ module.exports = {
         await msg.react('✅');
         await msg.react('❌');
         msg.awaitReactions(filter, { max: 1, time: 60000 }).then(async (collected) => {
-            if(collected.size === 0) {
+            if (collected.size === 0) {
                 msg.reactions.removeAll();
                 embed.setDescription('Confirmation prompt timed out.');
                 return msg.edit(embed);
             }
-            
-            if(collected.first().emoji.name === '❌'){
+
+            if (collected.first().emoji.name === '❌') {
                 msg.reactions.removeAll();
                 embed.setDescription('Cancelled.');
                 return msg.edit(embed);
             }
 
-            if(collected.first().emoji.name === '✅'){
+            if (collected.first().emoji.name === '✅') {
                 msg.reactions.removeAll();
-                
+
                 let rankingInfo;
                 try {
                     rankingInfo = await roblox.setRank(client.config.groupId, id, Number(rank));
@@ -144,13 +144,13 @@ module.exports = {
                     embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                     return message.channel.send(embed);
                 }
-        
+
                 embed.setDescription(`**Success!** Ranked ${displayUsername} to ${rankingInfo.name} (${rankingInfo.rank})`);
                 embed.setColor(client.config.colors.success);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 msg.edit(embed);
-        
-                if(client.config.logChannelId !== 'false') {
+
+                if (client.config.logChannelId !== 'false') {
                     let logEmbed = new Discord.MessageEmbed();
                     let logChannel = await client.channels.fetch(client.config.logChannelId);
                     logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** XP Rankup\n**User:** ${displayUsername} (\`${id}\`)\n**Rank Change:** ${rankNameInGroup} (${rankInGroup}) -> ${rankingInfo.name} (${rankingInfo.rank})\n**XP:** ${xpInfo[0].dataValues.xp}`);
