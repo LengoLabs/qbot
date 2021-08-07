@@ -118,7 +118,7 @@ module.exports = {
         let msg = await message.channel.send({embeds: [embed] });
         await msg.react('✅');
         await msg.react('❌');
-        msg.awaitReactions(filter, { max: 1, time: 60000 }).then(async (collected) => {
+        msg.awaitReactions({ filter, max: 1, time: 60000 }).then(async (collected) => {
             if (collected.size === 0) {
                 msg.reactions.removeAll();
                 embed.setDescription('Confirmation prompt timed out.');
