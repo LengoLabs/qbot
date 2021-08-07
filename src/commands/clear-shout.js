@@ -24,13 +24,13 @@ module.exports = {
             embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
 
         embed.setDescription(`**Success!** Cleared the group shout.`);
         embed.setColor(client.config.colors.success);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-        message.channel.send(embed);
+        message.channel.send({embeds: [embed] });
 
         if(client.config.logChannelId !== 'false') {
             let logEmbed = new Discord.MessageEmbed();
@@ -39,7 +39,7 @@ module.exports = {
             logEmbed.setColor(client.config.colors.info);
             logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             logEmbed.setTimestamp();
-            return logChannel.send(logEmbed);
+            return logChannel.send({embeds: [logEmbed] });
         } else {
             return;
         }

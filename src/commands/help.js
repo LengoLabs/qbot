@@ -29,7 +29,7 @@ module.exports = {
                 if(command.config.rolesRequired.length !== 0) embed.addField('Roles Required', command.config.rolesRequired.join(', '), true);
                 embed.setColor(client.config.colors.info);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
+                return message.channel.send({embeds: [embed] });
             }
         }
 
@@ -42,6 +42,6 @@ module.exports = {
         embed.setDescription('Here is a list of the bot commands:');
         embed.setColor(client.config.colors.info);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-        return message.channel.send(embed);
+        return message.channel.send({embeds: [embed] });
     }
 }

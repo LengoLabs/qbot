@@ -10,7 +10,13 @@ const listener = app.listen(process.env.PORT || 3000, () => {
 });
 
 const Discord = require('discord.js');
-const client = new Discord.Client({ allowedMentions: { parse: [] } });
+const client = new Discord.Client({
+    allowedMentions: { parse: [] },
+    intents: [
+        Discord.FLAGS.GUILD_MESSAGES,
+        Discord.FLAGS.GUILD_MESSAGE_REACTIONS
+    ]
+});
 const roblox = require('noblox.js');
 const chalk = require('chalk');
 const figlet = require('figlet');
@@ -53,7 +59,7 @@ const recordRankEvent = async (data) => {
                 logEmbed.setAuthor(`${client.user.tag} [auto]`, client.user.displayAvatarURL());
                 logEmbed.setTimestamp();
                 logEmbed.setThumbnail(`https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${data.username}`);
-                return logChannel.send(logEmbed);
+                return logChannel.send({ embeds: [logEmbed] });
             }
         }
     }
@@ -83,7 +89,7 @@ roblox.setCookie(process.env.cookie).then((botAccount) => {
                 embed.setThumbnail(`https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${data.description.TargetName}`);
                 embed.setTimestamp();
                 embed.setColor(client.config.colors.info);
-                return auditLogChannel.send(embed);
+                return auditLogChannel.send({ embeds: [embed] });
             }
             if(data.actionType === 'Post Status') {
                 embed.setAuthor(data.actor.user.username, `https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${data.actor.user.username}`);
@@ -92,7 +98,7 @@ roblox.setCookie(process.env.cookie).then((botAccount) => {
                 }`);
                 embed.setTimestamp();
                 embed.setColor(client.config.colors.info);
-                return auditLogChannel.send(embed);
+                return auditLogChannel.send({ embeds: [embed] });
             }
         });
 
@@ -138,12 +144,12 @@ const onShout = async () => {
             embed.setDescription(`${currentShout.body}`);
             embed.setColor(client.config.colors.info);
             embed.setAuthor(currentShout.poster.username, `https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`);
-            shoutChannel.send(embed);
+            shoutChannel.send({ embeds: [embed] });
         } else {
             embed.setDescription(`*Shout cleared.*`);
             embed.setColor(client.config.colors.info);
             embed.setAuthor(currentShout.poster.username, `https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`);
-            shoutChannel.send(embed);
+            shoutChannel.send({ embeds: [embed] });
         }
         shout = currentShout;
     }
@@ -172,14 +178,14 @@ let refreshCount = async () => {
         embed.setTitle('🎉 Milestone Reached!');
         embed.setDescription(`${groupBody.name} just hit the ${milestoneReached} group member count milestone!`);
         embed.setColor(client.config.colors.success);
-        return channel.send(embed);
+        return channel.send({ embeds: [embed]});
     }
     if(newCount !== currentMemberCount) {
         if(newCount > currentMemberCount) {
-            channel.send(`⬆️ The group member count has increased! It is now at ${newCount}.`);
+            channel.send({ content: `⬆️ The group member count has increased! It is now at ${newCount}.` });
         }
         if(newCount < currentMemberCount) {
-            channel.send(`⬇️ The group member count has decreased! It is now at ${newCount}.`);
+            channel.send({content: `⬇️ The group member count has decreased! It is now at ${newCount}.` });
         }
     }
     currentMemberCount = newCount;
@@ -223,7 +229,7 @@ client.on('ready', async () => {
     }
 });
 
-client.on('message', async (message) => {
+client.on('messageCreate', async (message) => {
     if(message.author.bot) return;
     if(!message.content.startsWith(client.config.prefix)) return;
     const args = message.content.slice(client.config.prefix.length).split(' ');
@@ -238,7 +244,7 @@ client.on('message', async (message) => {
             embed.setDescription('You do not have permission to use this command.');
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({ embeds: [embed] });
         }
     }
     
@@ -257,7 +263,7 @@ client.on('message', async (message) => {
                 embed.setDescription(`This command is currently on cooldown. Please try again in ${timeLeft.toString()} seconds.`);
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
+                return message.channel.send({ embeds: [embed] });
             } else {
                 userCooldowns.set(message.author.id, currentDate);
             }

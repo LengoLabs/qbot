@@ -20,7 +20,7 @@ module.exports = {
             embed.setDescription(`The XP Rankup system must be enabled in the bot configuration.`);
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
 
         let username = args[0];
@@ -28,7 +28,7 @@ module.exports = {
             embed.setDescription(`Missing arguments.\n\nUsage: \`${client.config.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
         
         let id;
@@ -38,7 +38,7 @@ module.exports = {
             embed.setDescription(`${username} is not a Roblox user.`);
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
 
         let rankInGroup = await roblox.getRankInGroup(client.config.groupId, id);
@@ -49,21 +49,21 @@ module.exports = {
                 embed.setDescription('You must be verified on either of the sites below to use this command.\n\n**Bloxlink:** https://blox.link\n**RoVer:** https://verify.eryn.io');
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
+                return message.channel.send({embeds: [embed] });
             }
 
             if(linkedUser === 'RATE_LIMITS') {
                 embed.setDescription('Verification checks are currently on cooldown.');
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
+                return message.channel.send({embeds: [embed] });
             }
 
             if(linkedUser == id) {
                 embed.setDescription('You can\'t remove XP from yourself!');
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
+                return message.channel.send({embeds: [embed] });
             }
 
             let linkedUserRankInGroup = await roblox.getRankInGroup(client.config.groupId, linkedUser);
@@ -71,7 +71,7 @@ module.exports = {
                 embed.setDescription('You can only change the XP count of people with a rank lower than yours.');
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
+                return message.channel.send({embeds: [embed] });
             }
         }
 
@@ -80,13 +80,13 @@ module.exports = {
             embed.setDescription(`Missing arguments.\n\nUsage: \`${client.config.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
         if(isNaN(decrement)) {
             embed.setDescription(`Invalid arguments.\n\nUsage: \`${client.config.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
 
         let xpInfo = await client.databases.xp.findOrCreate({
@@ -117,7 +117,7 @@ module.exports = {
             logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             logEmbed.setTimestamp();
             logEmbed.setThumbnail(`https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${username}`);
-            return logChannel.send(logEmbed);
+            return logChannel.send({embeds: [logEmbed] });
         } else {
             return;
         }

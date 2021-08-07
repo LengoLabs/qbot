@@ -21,7 +21,7 @@ module.exports = {
             embed.setDescription(`**${group.name} - Group Info**\n\nID: \`${group.id}\`\nOwner: ${group.owner.username} (\`${group.owner.userId}\`)\nMember Count: ${group.memberCount}\nShout:\n> ${group.shout.body || '*There is no shout.*'}\n\n${group.publicEntryAllowed ? `[Join Group](https://roblox.com/groups/${group.id})` : `[Request to Join Group](https://roblox.com/groups/${group.id})`}`);
             embed.setColor(client.config.colors.info);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
 
         let id;
@@ -34,7 +34,7 @@ module.exports = {
                 embed.setDescription(`${userQuery} is not a Roblox user.`);
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
+                return message.channel.send({embeds: [embed] });
             }
         }
 
@@ -45,13 +45,13 @@ module.exports = {
             embed.setDescription(`${userQuery} is not a Roblox user.`);
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
         if(user.errors) {
             embed.setDescription(`${userQuery} is not a Roblox user.`);
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
 
         let rankInGroup = await roblox.getRankInGroup(client.config.groupId, id);
@@ -59,6 +59,6 @@ module.exports = {
         embed.setDescription(`**${user.Username} - User Info**\n\nID: \`${user.Id}\`\nGroup Rank: ${rankNameInGroup} (\`${rankInGroup}\`)\n\n[Roblox Profile](https://roblox.com/users/${user.Id}/profile)`);
         embed.setColor(client.config.colors.info);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-        return message.channel.send(embed);
+        return message.channel.send({embeds: [embed] });
     }
 }

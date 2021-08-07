@@ -35,14 +35,14 @@ module.exports = {
                 embed.setDescription('Verification checks are currently on cooldown.');
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
+                return message.channel.send({embeds: [embed] });
             }
 
             if (!linkedUser) {
                 embed.setDescription(`Missing arguments.\n\nUsage: \`${client.config.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
+                return message.channel.send({embeds: [embed] });
             } else {
                 id = linkedUser;
             }
@@ -52,7 +52,7 @@ module.exports = {
                 embed.setDescription('You do not have permission to use this command.');
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
+                return message.channel.send({embeds: [embed] });
             } else {
                 try {
                     id = await roblox.getIdFromUsername(username);
@@ -60,7 +60,7 @@ module.exports = {
                     embed.setDescription(`${username} is not a Roblox user.`);
                     embed.setColor(client.config.colors.error);
                     embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                    return message.channel.send(embed);
+                    return message.channel.send({embeds: [embed] });
                 }
             }
         }
@@ -82,7 +82,7 @@ module.exports = {
             embed.setDescription(`${displayUsername} is not eligible to rank up to any xp roles.`);
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
         let rank = rankingTo.rank;
         let rankingToName = await getRoleNameFromRank(rank, client.config.groupId);
@@ -92,21 +92,21 @@ module.exports = {
             embed.setDescription('This bot cannot rank this user due to the maximum rank configured.');
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
 
         if (rankInGroup === 0) {
             embed.setDescription('The target user is not in the group.');
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
 
         if (rank === rankInGroup) {
             embed.setDescription('You are already at the rank you can rank up to.');
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
 
         let rankNameInGroup = await roblox.getRankNameInGroup(client.config.groupId, id);
@@ -115,7 +115,7 @@ module.exports = {
         embed.setDescription(`Are you sure you would like to rank ${displayUsername} to ${rankingToName} (${rank})?`);
         embed.setColor(client.config.colors.neutral);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-        let msg = await message.channel.send(embed);
+        let msg = await message.channel.send({embeds: [embed] });
         await msg.react('✅');
         await msg.react('❌');
         msg.awaitReactions(filter, { max: 1, time: 60000 }).then(async (collected) => {
@@ -142,7 +142,7 @@ module.exports = {
                     embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
                     embed.setColor(client.config.colors.error);
                     embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                    return message.channel.send(embed);
+                    return message.channel.send({embeds: [embed] });
                 }
 
                 embed.setDescription(`**Success!** Ranked ${displayUsername} to ${rankingInfo.name} (${rankingInfo.rank})`);
@@ -158,7 +158,7 @@ module.exports = {
                     logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                     logEmbed.setTimestamp();
                     logEmbed.setThumbnail(`https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${displayUsername}`);
-                    return logChannel.send(logEmbed);
+                    return logChannel.send({embeds: [logEmbed] });
                 } else {
                     return;
                 }
