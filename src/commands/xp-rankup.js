@@ -5,8 +5,8 @@ require('dotenv').config();
 
 const config = {
     description: 'Ranks a user based on their current XP.',
-    aliases: [],
-    usage: '',
+    aliases: ['xprankup'],
+    usage: '[username]',
     rolesRequired: [],
     category: 'XP System'
 }
@@ -122,13 +122,13 @@ module.exports = {
             if (collected.size === 0) {
                 msg.reactions.removeAll();
                 embed.setDescription('Confirmation prompt timed out.');
-                return msg.edit(embed);
+                return msg.edit({embeds: [embed] });
             }
 
             if (collected.first().emoji.name === '❌') {
                 msg.reactions.removeAll();
                 embed.setDescription('Cancelled.');
-                return msg.edit(embed);
+                return msg.edit({embeds: [embed] });
             }
 
             if (collected.first().emoji.name === '✅') {
@@ -148,7 +148,7 @@ module.exports = {
                 embed.setDescription(`**Success!** Ranked ${displayUsername} to ${rankingInfo.name} (${rankingInfo.rank})`);
                 embed.setColor(client.config.colors.success);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                msg.edit(embed);
+                msg.edit({embeds: [embed] });
 
                 if (client.config.logChannelId !== 'false') {
                     let logEmbed = new Discord.MessageEmbed();

@@ -107,7 +107,7 @@ module.exports = {
         embed.setDescription(`Removed \`${decrement}xp\` from ${displayUsername}'s XP count. They now have \`${afterChangeXP}xp\`.`);
         embed.setColor(client.config.colors.success);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-        message.channel.send(embed);
+        message.channel.send({embeds: [embed] });
 
         if(client.config.logChannelId !== 'false') {
             let logEmbed = new Discord.MessageEmbed();
