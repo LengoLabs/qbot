@@ -20,8 +20,6 @@
     "figlet": "^1.5.0",
     "lodash": "^4.17.21",
     "noblox.js": "^4.8.5",
-    "node-fetch": "^2.6.1",
-    "sequelize": "^6.6.2",
-    "sqlite3": "^5.0.2"
+    "node-fetch": "^2.6.1"
   }
 }
