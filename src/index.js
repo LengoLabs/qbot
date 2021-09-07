@@ -113,19 +113,19 @@ roblox.setCookie(process.env.cookie).then((botAccount) => {
 
 const cooldowns = new Discord.Collection();
 
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: '.data/db.sqlite',
-    logging: false
-});
+// const Sequelize = require('sequelize');
+// const sequelize = new Sequelize({
+//     dialect: 'sqlite',
+//     storage: '.data/db.sqlite',
+//     logging: false
+// });
 
-const xpDatabase = sequelize.define('xp', {
-    userId: Sequelize.STRING,
-    xp: Sequelize.INTEGER
-});
-xpDatabase.sync();
-client.databases.xp = xpDatabase;
+// const xpDatabase = sequelize.define('xp', {
+//     userId: Sequelize.STRING,
+//     xp: Sequelize.INTEGER
+// });
+// xpDatabase.sync();
+// client.databases.xp = xpDatabase;
 
 let firstShout = true;
 let shout;
