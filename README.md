@@ -11,7 +11,7 @@ There are currently 2 branches of Qbot available:
 If at any time while using qbot you need support with it, then feel free to join our support server here: https://discord.gg/J47m7t4.
 
 **Other Information**  
-Qbot can only run on Node.js v12 or higher.   
+Qbot can only run on Node.js v16 or higher.   
 
 Please note that when you install the required packages in Qbot v6, you might notice that npm detects vulnerabilities in the "keyv" and "@keyv/sqlite" package. The functions with the vulnerabilities are not used by this package according to the package creator, so you shouldn't need to worry.
 
