@@ -23,13 +23,13 @@ module.exports = {
             embed.setDescription(`Found \`${joinRequests.length}\` join requests.\n\n${displayString}`);
             embed.setColor(client.config.colors.info);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
 
         embed.setDescription(`Found \`${joinRequests.length}\` join requests.\n\n${joinRequests.map(r => `${r.requester.username}`).join('\n')}`);
         embed.setColor(client.config.colors.info);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
 
-        return message.channel.send(embed);
+        return message.channel.send({embeds: [embed] });
     }
 }

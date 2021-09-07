@@ -21,7 +21,7 @@ module.exports = {
             embed.setDescription(`Missing arguments.\n\nUsage: \`${client.config.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
 
         let id;
@@ -31,7 +31,7 @@ module.exports = {
             embed.setDescription(`${username} is not a Roblox user.`);
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
 
         let joinRequestInfo;
@@ -42,13 +42,13 @@ module.exports = {
             embed.setDescription('There was an error handling that join request. Maybe it doesn\'t exist?');
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
 
         embed.setDescription(`**Success!** Denied ${username}'s join request.`);
         embed.setColor(client.config.colors.success);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-        message.channel.send(embed);
+        message.channel.send({embeds: [embed] });
 
         if(client.config.logChannelId !== 'false') {
             let logEmbed = new Discord.MessageEmbed();
@@ -58,7 +58,7 @@ module.exports = {
             logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             logEmbed.setTimestamp();
             logEmbed.setThumbnail(`https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${username}`);
-            return logChannel.send(logEmbed);
+            return logChannel.send({embeds: [logEmbed] });
         } else {
             return;
         }

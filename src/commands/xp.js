@@ -20,7 +20,7 @@ module.exports = {
             embed.setDescription(`The XP Rankup system must be enabled in the bot configuration.`);
             embed.setColor(client.config.colors.error);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed] });
         }
 
         let username = args[0];
@@ -32,14 +32,14 @@ module.exports = {
                 embed.setDescription('Verification checks are currently on cooldown.');
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
+                return message.channel.send({embeds: [embed] });
             }
 
             if(!linkedUser) {
                 embed.setDescription(`Missing arguments.\n\nUsage: \`${client.config.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
+                return message.channel.send({embeds: [embed] });
             } else {
                 id = linkedUser;
             }
@@ -50,7 +50,7 @@ module.exports = {
                 embed.setDescription(`${username} is not a Roblox user.`);
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-                return message.channel.send(embed);
+                return message.channel.send({embeds: [embed] });
             }
         }
 
@@ -68,6 +68,6 @@ module.exports = {
         embed.setDescription(`${displayUsername} has \`${xpInfo[0].dataValues.xp}xp\`.`);
         embed.setColor(client.config.colors.info);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-        return message.channel.send(embed);
+        return message.channel.send({embeds: [embed] });
     }
 }
