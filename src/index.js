@@ -229,8 +229,9 @@ client.on('ready', async () => {
     }
 });
 
-client.on('messageCreate', async (message) => {
+client.on('messageCreate', (message) => {
     if(message.author.bot) return;
+    if(!client.config.legacyCommands) return;
     if(!message.content.startsWith(client.config.prefix)) return;
     const args = message.content.slice(client.config.prefix.length).split(' ');
     const commandName = args[0].toLowerCase();
@@ -273,6 +274,51 @@ client.on('messageCreate', async (message) => {
     }
 
     command.file.run(client, message, args);
+});
+
+client.on('interactionCreate', (interaction) => {
+    if(!interaction.isCommand()) return; // since we dont really have a use for components yet
+    const command = commandList.find((cmd) => cmd.name === interaction.command.name);
+    if(!command) return interaction.respond({ content: '**Error:** The command could not be found on the system.' });
+    if(command.config.rolesRequired.length > 0) {
+        if(!message.member.roles.cache.some(role => command.config.rolesRequired.includes(role.name))) {
+            let embed = new Discord.MessageEmbed();
+            embed.setDescription('You do not have permission to use this command.');
+            embed.setColor(client.config.colors.error);
+            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            return interaction.reply({ embeds: [embed] });
+        }
+    }
+
+    if(command.config.cooldown) {
+        if(!cooldowns.has(command.name)) {
+            cooldowns.set(command.name, new Discord.Collection());
+        }
+        let currentDate = Date.now();
+        let userCooldowns = cooldowns.get(command.name);
+        let cooldownAmount = (command.config.cooldown || 3) * 1000;
+        if(userCooldowns.has(message.author.id)) {
+            let expirationDate = userCooldowns.get(message.author.id) + cooldownAmount;
+            if(currentDate < expirationDate) {
+                let timeLeft = Math.round((expirationDate - currentDate) / 1000);
+                let embed = new Discord.MessageEmbed();
+                embed.setDescription(`This command is currently on cooldown. Please try again in ${timeLeft.toString()} seconds.`);
+                embed.setColor(client.config.colors.error);
+                embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+                return interaction.reply({ embeds: [embed] });
+            } else {
+                userCooldowns.set(message.author.id, currentDate);
+            }
+        } else {
+            userCooldowns.set(message.author.id, currentDate);
+        }
+    }
+
+    let args = {};
+    interaction.options.data.forEach(option => {
+        args[option.name] = option.value;
+    });
+    interaction.runInteraction(client, interaction, args);
 });
 
 client.login(process.env.token);

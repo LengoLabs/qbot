@@ -23,13 +23,32 @@ module.exports = {
             embed.setDescription(`Found \`${joinRequests.length}\` join requests.\n\n${displayString}`);
             embed.setColor(client.config.colors.info);
             embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-            return message.channel.send({embeds: [embed] });
+            return message.channel.send({ embeds: [embed] });
         }
 
         embed.setDescription(`Found \`${joinRequests.length}\` join requests.\n\n${joinRequests.map(r => `${r.requester.username}`).join('\n')}`);
         embed.setColor(client.config.colors.info);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
 
-        return message.channel.send({embeds: [embed] });
+        return message.channel.send({ embeds: [embed] });
+    },
+    runInteraction: async (client, interaction, args) => {
+        let embed = new Discord.MessageEmbed();
+    
+        let joinRequests = await roblox.getJoinRequests(client.config.groupId);
+        joinRequests = joinRequests.data;
+        if(joinRequests.length <= 5) {
+            let displayString = joinRequests.map(r => `${r.requester.username}`).join('\n');
+            embed.setDescription(`Found \`${joinRequests.length}\` join requests.\n\n${displayString}`);
+            embed.setColor(client.config.colors.info);
+            embed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
+            return interaction.reply({ embeds: [embed] });
+        }
+    
+        embed.setDescription(`Found \`${joinRequests.length}\` join requests.\n\n${joinRequests.map(r => `${r.requester.username}`).join('\n')}`);
+        embed.setColor(client.config.colors.info);
+        embed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
+    
+        return interaction.reply({ embeds: [embed] });
     }
 }
