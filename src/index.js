@@ -228,6 +228,18 @@ client.on('ready', async () => {
             type: botstatus.activitytype
         });
     }
+    let slashCommands = [];
+    commands.forEach((cmd) => {
+        slashCommands.push(cmd.config.slashInfo);
+    });
+    const currentCommands = require('./resources/commands.json');
+    if(arraysEqual(currentCommands, slashCommands)) {
+        console.log('Slash commands are already synced.');
+    } else {
+        console.log('Slash commands have been synced!');
+        writeFileSync('./src/resources/commands.json', JSON.stringify(slashCommands), 'utf-8');
+        client.application.commands.set(slashCommands);
+    }
 });
 
 client.on('messageCreate', (message) => {
