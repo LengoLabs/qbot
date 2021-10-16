@@ -5,7 +5,11 @@ require('dotenv').config();
 
 const config = {
     description: 'Ranks a user based on their current XP.',
+<<<<<<< HEAD:src/commands/xp-rankup.js
     aliases: [],
+=======
+    aliases: ['xprankup'],
+>>>>>>> db8fd4a4a8d6e209fbab7708c52d5db2d1f32c09:src/commands/disabled-xp-rankup.txt
     usage: '[username]',
     rolesRequired: [],
     category: 'XP System',
@@ -142,12 +146,20 @@ module.exports = {
         msg.awaitMessageComponent({ filter, max: 1, time: 60000 }).then(async (collected) => {
             if (collected.size === 0) {
                 embed.setDescription('Confirmation prompt timed out.');
+<<<<<<< HEAD:src/commands/xp-rankup.js
                 return collected.first().update({ embeds: [embed] });
+=======
+                return msg.edit({embeds: [embed] });
+>>>>>>> db8fd4a4a8d6e209fbab7708c52d5db2d1f32c09:src/commands/disabled-xp-rankup.txt
             }
 
             if (collected.first().label === 'No') {
                 embed.setDescription('Cancelled.');
+<<<<<<< HEAD:src/commands/xp-rankup.js
                 return collected.first().update({ embeds: [embed] });
+=======
+                return msg.edit({embeds: [embed] });
+>>>>>>> db8fd4a4a8d6e209fbab7708c52d5db2d1f32c09:src/commands/disabled-xp-rankup.txt
             }
 
             if (collected.first().label === 'Yes') {
@@ -315,7 +327,11 @@ module.exports = {
                 embed.setDescription(`**Success!** Ranked ${displayUsername} to ${rankingInfo.name} (${rankingInfo.rank})`);
                 embed.setColor(client.config.colors.success);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+<<<<<<< HEAD:src/commands/xp-rankup.js
                 interaction.reply({ embeds: [embed] });
+=======
+                msg.edit({embeds: [embed] });
+>>>>>>> db8fd4a4a8d6e209fbab7708c52d5db2d1f32c09:src/commands/disabled-xp-rankup.txt
 
                 if (client.config.logChannelId !== 'false') {
                     let logEmbed = new Discord.MessageEmbed();

@@ -13,8 +13,9 @@ const Discord = require('discord.js');
 const client = new Discord.Client({
     allowedMentions: { parse: [] },
     intents: [
-        Discord.FLAGS.GUILD_MESSAGES,
-        Discord.FLAGS.GUILD_MESSAGE_REACTIONS
+        Discord.Intents.FLAGS.GUILDS,
+        Discord.Intents.FLAGS.GUILD_MESSAGES,
+        Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS
     ]
 });
 const roblox = require('noblox.js');
@@ -143,12 +144,12 @@ const onShout = async () => {
         if(currentShout.body){
             embed.setDescription(`${currentShout.body}`);
             embed.setColor(client.config.colors.info);
-            embed.setAuthor(currentShout.poster.username, `https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`);
+            embed.setAuthor(currentShout.poster.username, `https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${currentShout.poster.username}`);
             shoutChannel.send({ embeds: [embed] });
         } else {
             embed.setDescription(`*Shout cleared.*`);
             embed.setColor(client.config.colors.info);
-            embed.setAuthor(currentShout.poster.username, `https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${shout.poster.username}`);
+            embed.setAuthor(currentShout.poster.username, `https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${currentShout.poster.username}`);
             shoutChannel.send({ embeds: [embed] });
         }
         shout = currentShout;

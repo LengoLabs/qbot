@@ -1,27 +1,22 @@
 {
-  "name": "qbot",
-  "version": "6.0.0",
-  "description": "qbot is an advanced, easy to setup, free, and unbranded Discord-Roblox ranking bot. If at any time during setting it up you need assistance, you can join the support server here: https://discord.gg/ANr7Qs3",
+  "name": "Qbot",
+  "version": "6.1.0",
+  "description": "Qbot is an advanced, easy to setup, free, and unbranded Discord-Roblox ranking bot. If at any time during setting it up you need assistance, you can join the support server here: https://discord.gg/ANr7Qs3",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js"
-  },
-  "engines": {
-    "node": "12.0.0"
   },
   "keywords": [],
   "author": "yogurtsyum",
   "license": "MIT",
   "dependencies": {
     "chalk": "^4.1.0",
-    "discord.js": "^12.5.3",
+    "discord.js": "^13.1.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "figlet": "^1.5.0",
     "lodash": "^4.17.21",
-    "noblox.js": "^4.8.5",
-    "node-fetch": "^2.6.1",
-    "sequelize": "^6.6.2",
-    "sqlite3": "^5.0.2"
+    "noblox.js": "^4.9.0",
+    "node-fetch": "^2.6.1"
   }
 }
