@@ -215,6 +215,22 @@ client.on('ready', async () => {
     console.log(`${chalk.hex('#60bf85')('Bot started!')}\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯\n`
     + `${chalk.hex('#ffaa2b')('>')} ${chalk.hex('#7289DA')(`Servers: ${chalk.hex('#4e5f99')(`${client.guilds.cache.size}`)}`)}\n`
     + `${chalk.hex('#ffaa2b')('>')} ${chalk.hex('#7289DA')(`Channels: ${chalk.hex('#4e5f99')(`${client.channels.cache.size}`)}`)}`);
+    let slashCommands = [];
+    commandList.forEach((cmd) => {
+        slashCommands.push({
+            name: cmd.name,
+            description: cmd.config.description,
+            options: cmd.config.slashOptions
+        });
+    });
+    const currentCommands = require('./resources/commands.json');
+    if(JSON.stringify(currentCommands) === JSON.stringify(slashCommands)) {
+        console.log('Slash commands are already synced.');
+    } else {
+        console.log('Slash commands have been synced!');
+        fs.writeFileSync('./src/resources/commands.json', JSON.stringify(slashCommands), 'utf-8');
+        client.application.commands.set(slashCommands);
+    }
     let botstatus = fs.readFileSync('./src/bot-status.json');
     botstatus = JSON.parse(botstatus);
     if(botstatus.activity == 'false') return;
@@ -227,18 +243,6 @@ client.on('ready', async () => {
         client.user.setActivity(botstatus.activitytext, {
             type: botstatus.activitytype
         });
-    }
-    let slashCommands = [];
-    commands.forEach((cmd) => {
-        slashCommands.push(cmd.config.slashInfo);
-    });
-    const currentCommands = require('./resources/commands.json');
-    if(arraysEqual(currentCommands, slashCommands)) {
-        console.log('Slash commands are already synced.');
-    } else {
-        console.log('Slash commands have been synced!');
-        writeFileSync('./src/resources/commands.json', JSON.stringify(slashCommands), 'utf-8');
-        client.application.commands.set(slashCommands);
     }
 });
 
@@ -291,7 +295,7 @@ client.on('messageCreate', (message) => {
 
 client.on('interactionCreate', (interaction) => {
     if(!interaction.isCommand()) return; // since we dont really have a use for components yet
-    const command = commandList.find((cmd) => cmd.name === interaction.command.name);
+    const command = commandList.find((cmd) => cmd.name === interaction.commandName);
     if(!command) return interaction.respond({ content: '**Error:** The command could not be found on the system.' });
     if(command.config.rolesRequired.length > 0) {
         if(!message.member.roles.cache.some(role => command.config.rolesRequired.includes(role.name))) {
@@ -331,7 +335,7 @@ client.on('interactionCreate', (interaction) => {
     interaction.options.data.forEach(option => {
         args[option.name] = option.value;
     });
-    interaction.runInteraction(client, interaction, args);
+    command.file.runInteraction(client, interaction, args);
 });
 
 client.login(process.env.token);
