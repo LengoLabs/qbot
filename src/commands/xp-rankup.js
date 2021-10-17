@@ -288,7 +288,7 @@ module.exports = {
                     ])
             ]
         });
-        let filter = (interaction) => (interaction.customId === `xp-rankup-confirm-${msg.id}` || interaction.customId === `xp-rankup-cancel-${msg.id}`) && interaction.user.id === message.author.id;
+        let filter = (buttonInteraction) => (buttonInteraction.customId === `xp-rankup-confirm-${msg.id}` || buttonInteraction.customId === `xp-rankup-cancel-${msg.id}`) && buttonInteraction.user.id === interaction.user.id;
         msg.awaitMessageComponent({ filter, max: 1, time: 60000 }).then(async (collected) => {
             if (collected.size === 0) {
                 embed.setDescription('Confirmation prompt timed out.');
