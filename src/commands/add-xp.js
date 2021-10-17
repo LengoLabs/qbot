@@ -8,7 +8,21 @@ const config = {
     aliases: ['addxp'],
     usage: '<username> <increment>',
     rolesRequired: ['Ranking Permissions', 'XP Permissions'],
-    category: 'XP System'
+    category: 'XP System',
+    slashOptions: [
+        {
+            type: 'STRING',
+            name: 'username',
+            description: 'The username of whose XP you want to add.',
+            required: true
+        },
+        {
+            type: 'NUMBER',
+            name: 'increment',
+            description: 'How much XP do you want to add?',
+            required: true
+        }
+    ]
 }
 
 module.exports = {
