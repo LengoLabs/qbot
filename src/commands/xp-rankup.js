@@ -13,7 +13,7 @@ const config = {
         {
             type: 'STRING',
             name: 'username',
-            description: 'The username of the user who you want to rank up. This is optional and defaults to yourself if you are verified.',
+            description: 'The username of the user who you want to rank up.',
             required: false
         }
     ]
