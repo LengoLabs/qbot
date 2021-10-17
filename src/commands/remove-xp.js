@@ -64,7 +64,6 @@ module.exports = {
                 embed.setColor(client.config.colors.error);
                 embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
                 return message.channel.send({ embeds: [embed] });
-            }
 
             if(linkedUser === 'RATE_LIMITS') {
                 embed.setDescription('Verification checks are currently on cooldown.');

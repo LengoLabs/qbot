@@ -140,6 +140,7 @@ const onShout = async () => {
     } else {
         setTimeout(onShout, 30000);
         let currentShout = await roblox.getShout(client.config.groupId);
+        if(!currentShout || typeof currentShout !== 'object' || !currentShout.hasOwnProperty('body')) return;
         if(currentShout.body == shout.body) return;
         if(currentShout.body){
             embed.setDescription(`${currentShout.body}`);
