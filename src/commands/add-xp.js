@@ -167,7 +167,7 @@ module.exports = {
         let rankInGroup = await roblox.getRankInGroup(client.config.groupId, id);
     
         if(client.config.verificationChecks === true) {
-            let linkedUser = await client.utils.getLinkedUser(interaction.user.id, message.guild.id);
+            let linkedUser = await client.utils.getLinkedUser(interaction.user.id, interaction.guild.id);
             if(!linkedUser) {
                 embed.setDescription('You must be verified on either of the sites below to use this command.\n\n**Bloxlink:** https://blox.link\n**RoVer:** https://verify.eryn.io');
                 embed.setColor(client.config.colors.error);
