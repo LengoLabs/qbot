@@ -63,7 +63,7 @@ module.exports = {
     runInteraction: async (client, interaction, args) => {
         let embed = new Discord.MessageEmbed();
 
-        let msg = args.message;
+        let msg = args[0];
         if(!msg) {
             embed.setDescription(`Missing arguments.\n\nUsage: \`${client.config.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
             embed.setColor(client.config.colors.error);

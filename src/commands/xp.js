@@ -88,7 +88,7 @@ module.exports = {
             return interaction.reply({ embeds: [embed] });
         }
 
-        let username = args.username;
+        let username = args[0];
         let id;
         if(!username){
             let linkedUser = await client.utils.getLinkedUser(interaction.user.id, interaction.guild.id);

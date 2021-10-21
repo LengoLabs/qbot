@@ -185,7 +185,7 @@ module.exports = {
     runInteraction: async (client, interaction, args) => {
         let embed = new Discord.MessageEmbed();
 
-        let username = args.username;
+        let username = args[0];
         let id;
         if (!username) {
             let linkedUser = await client.utils.getLinkedUser(interaction.user.id, interaction.guild.id);

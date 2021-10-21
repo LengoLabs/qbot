@@ -146,7 +146,7 @@ module.exports = {
             return interaction.reply({ embeds: [embed] });
         }
 
-        let username = args.username;
+        let username = args[0];
         if(!username) {
             embed.setDescription(`Missing arguments.\n\nUsage: \`${client.config.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
             embed.setColor(client.config.colors.error);
@@ -198,7 +198,7 @@ module.exports = {
             }
         }
 
-        let decrement = args.decrement;
+        let decrement = args[1];
         if(!decrement) {
             embed.setDescription(`Missing arguments.\n\nUsage: \`${client.config.prefix}${path.basename(__filename).split('.')[0]}${' ' + config.usage || ''}\``);
             embed.setColor(client.config.colors.error);
