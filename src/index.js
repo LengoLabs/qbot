@@ -299,11 +299,11 @@ client.on('interactionCreate', (interaction) => {
     const command = commandList.find((cmd) => cmd.name === interaction.commandName);
     if(!command) return interaction.respond({ content: '**Error:** The command could not be found on the system.' });
     if(command.config.rolesRequired.length > 0) {
-        if(!message.member.roles.cache.some(role => command.config.rolesRequired.includes(role.name))) {
+        if(!interaction.member.roles.cache.some(role => command.config.rolesRequired.includes(role.name))) {
             let embed = new Discord.MessageEmbed();
             embed.setDescription('You do not have permission to use this command.');
             embed.setColor(client.config.colors.error);
-            embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            embed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
             return interaction.reply({ embeds: [embed] });
         }
     }
@@ -315,14 +315,14 @@ client.on('interactionCreate', (interaction) => {
         let currentDate = Date.now();
         let userCooldowns = cooldowns.get(command.name);
         let cooldownAmount = (command.config.cooldown || 3) * 1000;
-        if(userCooldowns.has(message.author.id)) {
-            let expirationDate = userCooldowns.get(message.author.id) + cooldownAmount;
+        if(userCooldowns.has(interaction.user.id)) {
+            let expirationDate = userCooldowns.get(interaction.user.id) + cooldownAmount;
             if(currentDate < expirationDate) {
                 let timeLeft = Math.round((expirationDate - currentDate) / 1000);
                 let embed = new Discord.MessageEmbed();
                 embed.setDescription(`This command is currently on cooldown. Please try again in ${timeLeft.toString()} seconds.`);
                 embed.setColor(client.config.colors.error);
-                embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+                embed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
                 return interaction.reply({ embeds: [embed] });
             } else {
                 userCooldowns.set(message.author.id, currentDate);
