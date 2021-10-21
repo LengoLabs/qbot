@@ -78,7 +78,7 @@ module.exports = {
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
         return message.channel.send({ embeds: [embed] });
     },
-    runInteraction: async (interaction, args) => {
+    runInteraction: async (client, interaction, args) => {
         let embed = new Discord.MessageEmbed();
 
         if(!client.config.xpRankup.enabled) {
