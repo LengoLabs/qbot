@@ -332,10 +332,7 @@ client.on('interactionCreate', (interaction) => {
         }
     }
 
-    let args = {};
-    interaction.options.data.forEach(option => {
-        args[option.name] = option.value;
-    });
+    const args = interaction.options.data.map((arg) => arg.value);
     command.file.runInteraction(client, interaction, args);
 });
 
