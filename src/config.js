@@ -5,6 +5,7 @@ module.exports = {
     logChannelId: '',
     shoutChannelId: '',
     auditLogChannelId: '',
+    legacyCommands: true,
     colors: {
         info: '#5b57d9',
         error: '#de554e',
