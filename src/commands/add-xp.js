@@ -230,7 +230,7 @@ module.exports = {
         embed.setDescription(`Added \`${increment}xp\` to ${displayUsername}'s XP count. They now have \`${afterChangeXP}xp\`.`);
         embed.setColor(client.config.colors.success);
         embed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
-        interaction.reply(embed);
+        interaction.reply({ embeds: [embed] });
     
         if(client.config.logChannelId !== 'false') {
             let logEmbed = new Discord.MessageEmbed();
