@@ -1,10 +1,10 @@
 ![Marketing Banner](https://i.gyazo.com/5f7d15ac56be78b2c294e0fa1f9d4b10.png)
 <p align="center">
-  <img alt="License" href="https://github.com/yogurtsyum/qbot/blob/master/LICENSE" src="https://img.shields.io/github/license/yogurtsyum/qbot?color=E76F51">
-  <img alt="Checks" href="https://github.com/yogurtsyum/qbot/commits/master" src="https://img.shields.io/github/checks-status/yogurtsyum/qbot/master?color=F4A261">
-  <img alt="Discord" href="https://discord.gg/GkUNhZmenn" src="https://img.shields.io/badge/chat-on%20discord-E9C46A">
-  <img alt="Contributors" href="https://github.com/yogurtsyum/qbot/graphs/contributors" src="https://img.shields.io/github/contributors/yogurtsyum/qbot?color=2A9D8F">
-  <img alt="Stars" href="https://github.com/yogurtsyum/qbot/stargazers" src="https://img.shields.io/github/stars/yogurtsyum/qbot?color=264653">
+  <a href="https://github.com/yogurtsyum/qbot/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/yogurtsyum/qbot?color=E76F51"></a>
+  <a href="https://github.com/yogurtsyum/qbot/commits/master"><img alt="Checks" src="https://img.shields.io/github/checks-status/yogurtsyum/qbot/master?color=F4A261"></a>
+  <a href="https://discord.gg/GkUNhZmenn"><img alt="Discord" src="https://img.shields.io/badge/chat-on%20discord-E9C46A"></a>
+  <a href="https://github.com/yogurtsyum/qbot/graphs/contributors"><img alt="Contributors" src="https://img.shields.io/github/contributors/yogurtsyum/qbot?color=2A9D8F"></a>
+  <a href="https://github.com/yogurtsyum/qbot/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/yogurtsyum/qbot?color=264653"></a>
 </p>
 An advanced, easy to setup, free, and unbranded Discord-Roblox ranking bot. With powerful features and modular infrastructure, Qbot is the last bot you'll ever need to manage your group.
 
