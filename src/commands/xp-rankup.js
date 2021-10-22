@@ -122,7 +122,8 @@ module.exports = {
         embed.setDescription(`Are you sure you would like to rank ${displayUsername} to ${rankingToName} (${rank})?`);
         embed.setColor(client.config.colors.neutral);
         embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
-        let msg = await message.channel.send({
+        let msg = await message.channel.send({ content: 'Loading...' });
+        await msg.edit({
             embeds: [embed],
             components: [
                 new Discord.MessageActionRow()
@@ -272,7 +273,8 @@ module.exports = {
         embed.setDescription(`Are you sure you would like to rank ${displayUsername} to ${rankingToName} (${rank})?`);
         embed.setColor(client.config.colors.neutral);
         embed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
-        let msg = await interaction.reply({
+        let msg = await interaction.deferReply({ fetchReply: true });
+        await interaction.editReply({
             embeds: [embed],
             components: [
                 new Discord.MessageActionRow()
@@ -289,18 +291,13 @@ module.exports = {
             ]
         });
         let filter = (buttonInteraction) => (buttonInteraction.customId === `xp-rankup-confirm-${msg.id}` || buttonInteraction.customId === `xp-rankup-cancel-${msg.id}`) && buttonInteraction.user.id === interaction.user.id;
-        msg.awaitMessageComponent({ filter, max: 1, time: 60000 }).then(async (collected) => {
-            if (collected.size === 0) {
-                embed.setDescription('Confirmation prompt timed out.');
-                return collected.first().update({ embeds: [embed] });
-            }
-
-            if (collected.first().label === 'No') {
+        msg.awaitMessageComponent({ filter, time: 60000 }).then(async (buttonInteraction) => {
+            if (buttonInteraction.customId === `xp-rankup-cancel-${msg.id}`) {
                 embed.setDescription('Cancelled.');
-                return collected.first().update({ embeds: [embed] });
+                return buttonInteraction.update({ embeds: [embed], components: [] });
             }
 
-            if (collected.first().label === 'Yes') {
+            if (buttonInteraction.customId === `xp-rankup-confirm-${msg.id}`) {
                 let rankingInfo;
                 try {
                     rankingInfo = await roblox.setRank(client.config.groupId, id, Number(rank));
@@ -309,13 +306,13 @@ module.exports = {
                     embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
                     embed.setColor(client.config.colors.error);
                     embed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
-                    return interaction.reply({ embeds: [embed] });
+                    return buttonInteraction.update({ embeds: [embed], components: [] });
                 }
 
                 embed.setDescription(`**Success!** Ranked ${displayUsername} to ${rankingInfo.name} (${rankingInfo.rank})`);
                 embed.setColor(client.config.colors.success);
                 embed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
-                interaction.reply({ embeds: [embed] });
+                buttonInteraction.update({ embeds: [embed], components: [] });
 
                 if (client.config.logChannelId !== 'false') {
                     let logEmbed = new Discord.MessageEmbed();
@@ -330,6 +327,9 @@ module.exports = {
                     return;
                 }
             }
+        }).catch((error) => {
+            embed.setDescription('Confirmation prompt timed out.');
+            return interaction.update({ embeds: [embed] });
         });
     }
 }
