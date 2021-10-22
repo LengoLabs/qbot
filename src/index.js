@@ -216,6 +216,22 @@ client.on('ready', async () => {
     console.log(`${chalk.hex('#60bf85')('Bot started!')}\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯\n`
     + `${chalk.hex('#ffaa2b')('>')} ${chalk.hex('#7289DA')(`Servers: ${chalk.hex('#4e5f99')(`${client.guilds.cache.size}`)}`)}\n`
     + `${chalk.hex('#ffaa2b')('>')} ${chalk.hex('#7289DA')(`Channels: ${chalk.hex('#4e5f99')(`${client.channels.cache.size}`)}`)}`);
+    let slashCommands = [];
+    commandList.forEach((cmd) => {
+        slashCommands.push({
+            name: cmd.name,
+            description: cmd.config.description,
+            options: cmd.config.slashOptions
+        });
+    });
+    const currentCommands = require('./resources/commands.json');
+    if(JSON.stringify(currentCommands) === JSON.stringify(slashCommands)) {
+        console.log('Slash commands are already synced.');
+    } else {
+        console.log('Slash commands have been synced!');
+        fs.writeFileSync('./src/resources/commands.json', JSON.stringify(slashCommands), 'utf-8');
+        client.application.commands.set(slashCommands);
+    }
     let botstatus = fs.readFileSync('./src/bot-status.json');
     botstatus = JSON.parse(botstatus);
     if(botstatus.activity == 'false') return;
@@ -231,8 +247,9 @@ client.on('ready', async () => {
     }
 });
 
-client.on('messageCreate', async (message) => {
+client.on('messageCreate', (message) => {
     if(message.author.bot) return;
+    if(!client.config.legacyCommands) return;
     if(!message.content.startsWith(client.config.prefix)) return;
     const args = message.content.slice(client.config.prefix.length).split(' ');
     const commandName = args[0].toLowerCase();
@@ -275,6 +292,48 @@ client.on('messageCreate', async (message) => {
     }
 
     command.file.run(client, message, args);
+});
+
+client.on('interactionCreate', (interaction) => {
+    if(!interaction.isCommand()) return; // since we dont really have a use for components yet
+    const command = commandList.find((cmd) => cmd.name === interaction.commandName);
+    if(!command) return interaction.respond({ content: '**Error:** The command could not be found on the system.' });
+    if(command.config.rolesRequired.length > 0) {
+        if(!interaction.member.roles.cache.some(role => command.config.rolesRequired.includes(role.name))) {
+            let embed = new Discord.MessageEmbed();
+            embed.setDescription('You do not have permission to use this command.');
+            embed.setColor(client.config.colors.error);
+            embed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
+            return interaction.reply({ embeds: [embed] });
+        }
+    }
+
+    if(command.config.cooldown) {
+        if(!cooldowns.has(command.name)) {
+            cooldowns.set(command.name, new Discord.Collection());
+        }
+        let currentDate = Date.now();
+        let userCooldowns = cooldowns.get(command.name);
+        let cooldownAmount = (command.config.cooldown || 3) * 1000;
+        if(userCooldowns.has(interaction.user.id)) {
+            let expirationDate = userCooldowns.get(interaction.user.id) + cooldownAmount;
+            if(currentDate < expirationDate) {
+                let timeLeft = Math.round((expirationDate - currentDate) / 1000);
+                let embed = new Discord.MessageEmbed();
+                embed.setDescription(`This command is currently on cooldown. Please try again in ${timeLeft.toString()} seconds.`);
+                embed.setColor(client.config.colors.error);
+                embed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
+                return interaction.reply({ embeds: [embed] });
+            } else {
+                userCooldowns.set(message.author.id, currentDate);
+            }
+        } else {
+            userCooldowns.set(message.author.id, currentDate);
+        }
+    }
+
+    const args = interaction.options.data.map((arg) => arg.value);
+    command.file.runInteraction(client, interaction, args);
 });
 
 client.login(process.env.token);

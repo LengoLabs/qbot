@@ -1,29 +1,36 @@
-![banner](https://i.gyazo.com/d1e27498ee65b42783f302aaeddf29b2.png)
-![description](https://i.gyazo.com/0926bf0ae23fb20f4449b6d5445fc4d8.png)
+![Marketing Banner](https://i.gyazo.com/5f7d15ac56be78b2c294e0fa1f9d4b10.png)
+<p align="center">
+  <a href="https://github.com/yogurtsyum/qbot/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/yogurtsyum/qbot?color=E76F51"></a>
+  <a href="https://github.com/yogurtsyum/qbot/commits/master"><img alt="Checks" src="https://img.shields.io/github/checks-status/yogurtsyum/qbot/master?color=F4A261"></a>
+  <a href="https://discord.gg/GkUNhZmenn"><img alt="Discord" src="https://img.shields.io/badge/chat-on%20discord-E9C46A"></a>
+  <a href="https://github.com/yogurtsyum/qbot/graphs/contributors"><img alt="Contributors" src="https://img.shields.io/github/contributors/yogurtsyum/qbot?color=2A9D8F"></a>
+  <a href="https://github.com/yogurtsyum/qbot/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/yogurtsyum/qbot?color=264653"></a>
+</p>
+An advanced, easy to setup, free, and unbranded Discord-Roblox ranking bot. With powerful features and modular infrastructure, Qbot is the last bot you'll ever need to manage your group.
 
-**Getting Started**  
-Qbot is an advanced, easy to setup, free, and unbranded Discord-Roblox ranking bot. The instructions to set it up and host it are available here: https://docs.lengolabs.com/qbot/setup
+## Installation
+Setup instructions are available at https://docs.lengolabs.com/qbot/setup. This project can be hosted on shared hosts, such as Replit, as well as any Linux distribution that supports Node.js v16 or higher.
 
-There are currently 2 branches of Qbot available:  
-`master` - The latest version of Qbot.
+If you run into any problems while configuring Qbot, please do not hesitate to join our [community Discord server](https://discord.gg/GkUNhZmenn)! Our volunteer support team is happy to assist you to make sure that you have the best experience possible, and that the setup process goes smoothly.
 
-**Support**  
-If at any time while using qbot you need support with it, then feel free to join our support server here: https://discord.gg/J47m7t4.
+## License
+We use the MIT License, due to its permissive structure and the piece of mind it provides for contributors. We highly recommend you read the license before maintaining this project, so you have an idea of what is allowed, and what is not allowed.
 
-**Other Information**  
-Qbot can only run on Node.js v16 or higher.   
+> You can read the license here: https://github.com/yogurtsyum/qbot/blob/master/LICENSE  
 
-The XP Rankup feature is temporarily disabled due to issues with a dependency.
+## Note on Discord API
+Please note that the Discord has separate terms of conditions for bots running on Discord's API. Please review that here before installing the bot: https://discord.com/developers/docs/legal
 
-License: https://github.com/yogurtsyum/qbot/blob/master/LICENSE  
-Contributors: https://github.com/yogurtsyum/qbot/graphs/contributors   
+Specifically, this is something very relevant to hosting Qbot:
 
-Please note we are not responsible for if anything happens to your bot account. It is your responsibility to keep the cookie and token away from anyone you don't trust. qbot uses noblox.js to interact with Roblox API with your bot cookie, and discord.js to interact with the Discord API with your bot token. Do not share your config.json file with anyone once filled out.
+> You will comply with all applicable privacy laws and regulations including those applying to personally identifiable information ("PII"). You will provide and adhere to a privacy policy for your application that uses the API (your “API Client”) that clearly and accurately describes to users of your API Client what user information you collect and how you use and share such information with Discord and third parties. ([jump to section](https://discord.com/developers/docs/legal#a-implement-good-privacy-practices))
 
-Please also note that Discord has a TOS for its API: https://discord.com/developers/docs/legal
+It is your responsibility to implement a privacy policy, as mentioned in this quote from the API above. We recommend you join the [Discord Developers](https://discord.gg/discord-developers) server if you have any questions about this policy.
 
-This TOS is being updated August 15th, 2020 and will require all bots to have a privacy policy (even if it just says you don't collect personal information and has a way to contact you with any privacy concerns). Qbot does not have this built in so you will need to add this yourself. 
+## Have feedback? Suggestions?
+We'd be thrilled to hear them! You can utilize the [#feedback](https://discord.gg/vtbdakK), or [#suggestions](https://discord.gg/5RnAPvrYTU) channel on our Discord server for this. Alternatively, you can [open an issue](https://github.com/yogurtsyum/qbot/issues) on this repository.
 
-More info can be found on the [Discord Developers](https://discord.gg/discord-developers) server in [this](https://discord.com/channels/613425648685547541/697489244649816084/728031320625905794) message.
+## Contributing
+First of all, thank you for looking into contributing to Qbot! We greatly appreciate all pull requests and issues, as they help us provide a better experience to the thousands of Qbot users. We recommend you join our [community Discord server](https://discord.gg/GkUNhZmenn) if you are looking to contribute, because you can talk with the developers of this project, and get feedback on potential pull requests before starting to work on them.
 
-It is your responsibility to make sure your use of Qbot is not against the TOS of any services it uses.
+Upon finding a topic, feel free to get started coding it! When you are done, please thoroughly test this on your own bot. Then, [submit a pull request](https://github.com/yogurtsyum/qbot/compare)! If your pull request gets approved, you will be listed as a contributor on this Github page, and will receive the shiny Contributor role if you are in our Discord server.
