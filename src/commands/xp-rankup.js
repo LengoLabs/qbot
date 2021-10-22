@@ -272,7 +272,7 @@ module.exports = {
         embed.setDescription(`Are you sure you would like to rank ${displayUsername} to ${rankingToName} (${rank})?`);
         embed.setColor(client.config.colors.neutral);
         embed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
-        let msg = await message.channel.send({
+        let msg = await interaction.reply({
             embeds: [embed],
             components: [
                 new Discord.MessageActionRow()
@@ -308,21 +308,21 @@ module.exports = {
                     console.log(`Error: ${err}`);
                     embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
                     embed.setColor(client.config.colors.error);
-                    embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+                    embed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
                     return interaction.reply({ embeds: [embed] });
                 }
 
                 embed.setDescription(`**Success!** Ranked ${displayUsername} to ${rankingInfo.name} (${rankingInfo.rank})`);
                 embed.setColor(client.config.colors.success);
-                embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+                embed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
                 interaction.reply({ embeds: [embed] });
 
                 if (client.config.logChannelId !== 'false') {
                     let logEmbed = new Discord.MessageEmbed();
                     let logChannel = await client.channels.fetch(client.config.logChannelId);
-                    logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** XP Rankup\n**User:** ${displayUsername} (\`${id}\`)\n**Rank Change:** ${rankNameInGroup} (${rankInGroup}) -> ${rankingInfo.name} (${rankingInfo.rank})\n**XP:** ${xpInfo[0].dataValues.xp}`);
+                    logEmbed.setDescription(`**Moderator:** <@${interaction.user.id}> (\`${interaction.user.id}\`)\n**Action:** XP Rankup\n**User:** ${displayUsername} (\`${id}\`)\n**Rank Change:** ${rankNameInGroup} (${rankInGroup}) -> ${rankingInfo.name} (${rankingInfo.rank})\n**XP:** ${xpInfo[0].dataValues.xp}`);
                     logEmbed.setColor(client.config.colors.info);
-                    logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+                    logEmbed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
                     logEmbed.setTimestamp();
                     logEmbed.setThumbnail(`https://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&format=png&username=${displayUsername}`);
                     return logChannel.send({ embeds: [logEmbed] });
