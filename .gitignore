@@ -1,3 +1,5 @@
 node_modules
+src/resources/commands.json
+src/config.js
 .env
 .data
