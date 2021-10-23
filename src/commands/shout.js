@@ -90,9 +90,9 @@ module.exports = {
         if(client.config.logChannelId !== 'false') {
             let logEmbed = new Discord.MessageEmbed();
             let logChannel = await client.channels.fetch(client.config.logChannelId);
-            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Shout\n**Message:**\n\`\`\`${msg}\`\`\``);
+            logEmbed.setDescription(`**Moderator:** <@${interaction.user.id}> (\`${interaction.user.id}\`)\n**Action:** Shout\n**Message:**\n\`\`\`${msg}\`\`\``);
             logEmbed.setColor(client.config.colors.info);
-            logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
+            logEmbed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
             logEmbed.setTimestamp();
             return logChannel.send({ embeds: [logEmbed] });
         } else {
