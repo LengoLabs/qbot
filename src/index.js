@@ -297,7 +297,7 @@ client.on('messageCreate', (message) => {
 client.on('interactionCreate', (interaction) => {
     if(!interaction.isCommand()) return; // since we dont really have a use for components yet
     const command = commandList.find((cmd) => cmd.name === interaction.commandName);
-    if(!command) return interaction.respond({ content: '**Error:** The command could not be found on the system.' });
+    if(!command) return interaction.reply({ content: '**Error:** The command could not be found on the system.' });
     if(command.config.rolesRequired.length > 0) {
         if(!interaction.member.roles.cache.some(role => command.config.rolesRequired.includes(role.name))) {
             let embed = new Discord.MessageEmbed();
