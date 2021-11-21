@@ -34,3 +34,7 @@ We'd be thrilled to hear them! You can utilize the [#feedback](https://discord.g
 First of all, thank you for looking into contributing to Qbot! We greatly appreciate all pull requests and issues, as they help us provide a better experience to the thousands of Qbot users. We recommend you join our [community Discord server](https://discord.gg/GkUNhZmenn) if you are looking to contribute, because you can talk with the developers of this project, and get feedback on potential pull requests before starting to work on them.
 
 Upon finding a topic, feel free to get started coding it! When you are done, please thoroughly test this on your own bot. Then, [submit a pull request](https://github.com/yogurtsyum/qbot/compare)! If your pull request gets approved, you will be listed as a contributor on this Github page, and will receive the shiny Contributor role if you are in our Discord server. Please note that it is up to the developers to choose if you get the contributor role.
+
+## Extra Notes
+* Qbot is not affiliated with Discord, Inc.
+* Qbot is not affiliated with Roblox Corporation.
