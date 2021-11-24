@@ -93,7 +93,7 @@ module.exports = {
         let rankNameInGroup = await roblox.getRankNameInGroup(client.config.groupId, id);
         let rankingInfo;
         try {
-            rankingInfo = await roblox.setRank(client.config.groupId, id, client.config.firedRank);
+            rankingInfo = await roblox.exile(client.config.groupId, id);
         } catch (err) {
             console.log(`Error: ${err}`);
             embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
