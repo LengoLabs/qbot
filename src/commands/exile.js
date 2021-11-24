@@ -119,7 +119,7 @@ module.exports = {
         if(client.config.logChannelId !== 'false') {
             let logEmbed = new Discord.MessageEmbed();
             let logChannel = await client.channels.fetch(client.config.logChannelId);
-            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Fire\n**User:** ${username} (\`${id}\`)\n**Rank Change:** ${rankNameInGroup} (${rankInGroup}) -> ${rankingInfo.name} (${rankingInfo.rank})`);
+            logEmbed.setDescription(`**Moderator:** <@${message.author.id}> (\`${message.author.id}\`)\n**Action:** Exile\n**User:** ${username} (\`${id}\`)`);
             logEmbed.setColor(client.config.colors.info);
             logEmbed.setAuthor(message.author.tag, message.author.displayAvatarURL());
             logEmbed.setTimestamp();
@@ -151,14 +151,7 @@ module.exports = {
         }
     
         let rankInGroup = await roblox.getRankInGroup(client.config.groupId, id);
-        if(rankInGroup === client.config.firedRank) {
-            embed.setDescription(`That user has already been fired.`);
-            embed.setColor(client.config.colors.error);
-            embed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
-            return interaction.reply({ embeds: [embed] });
-        }
-    
-        let rankingTo = client.config.firedRank;
+        let rankingTo = 0;
         if(client.config.maximumRank <= rankInGroup) {
             embed.setDescription('This bot cannot rank this user due to the maximum rank configured.');
             embed.setColor(client.config.colors.error);
@@ -208,7 +201,7 @@ module.exports = {
         let rankNameInGroup = await roblox.getRankNameInGroup(client.config.groupId, id);
         let rankingInfo;
         try {
-            rankingInfo = await roblox.setRank(client.config.groupId, id, client.config.firedRank);
+            rankingInfo = await roblox.exile(client.config.groupId, id);
         } catch (err) {
             console.log(`Error: ${err}`);
             embed.setDescription('Oops! An unexpected error has occured. The bot owner can check the bot logs for more information.');
@@ -217,7 +210,7 @@ module.exports = {
             return interaction.reply({ embeds: [embed] });
         }
     
-        embed.setDescription(`**Success!** Fired ${username} to ${rankingInfo.name} (${rankingInfo.rank}).`);
+        embed.setDescription(`**Success!** Exiled ${username} from the group.`);
         embed.setColor(client.config.colors.success);
         embed.setAuthor(interaction.user.tag, interaction.user.displayAvatarURL());
         interaction.reply({ embeds: [embed] });
