@@ -36,5 +36,8 @@ module.exports = {
         threshold: 5,
         actionRank: null,
         actionLogChannelId: ''
+    },
+    updateSettings: {
+        exclusions: ["src/config.js", "package.json"]
     }
 }

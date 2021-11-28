@@ -4,7 +4,8 @@
   "description": "Qbot is an advanced, easy to setup, free, and unbranded Discord-Roblox ranking bot. If at any time during setting it up you need assistance, you can join the support server here: https://discord.gg/ANr7Qs3",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "update": "node src/update.js"
   },
   "keywords": [],
   "author": "yogurtsyum",
