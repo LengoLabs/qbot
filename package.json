@@ -1,24 +1,23 @@
 {
-  "name": "Qbot",
-  "version": "6.2.0",
-  "description": "Qbot is an advanced, easy to setup, free, and unbranded Discord-Roblox ranking bot. If at any time during setting it up you need assistance, you can join the support server here: https://discord.gg/ANr7Qs3",
-  "main": "src/index.js",
+  "name": "qbot",
+  "version": "7.0.0",
+  "description": "The most advanced Discord to Roblox ranking bot available, open source and free, without any branding.",
+  "main": "src/main.ts",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "ts-node src/main.ts",
+    "dev": "nodemon src/main.ts --ignore ./src/resources/commands.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "yogurtsyum",
+  "author": "LengoLabs",
   "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^16.11.11",
+    "nodemon": "^2.0.15",
+    "typescript": "^4.5.2"
+  },
   "dependencies": {
-    "chalk": "^4.1.0",
-    "discord.js": "^13.1.0",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "figlet": "^1.5.0",
-    "lodash": "^4.17.21",
-    "noblox.js": "^4.9.0",
-    "node-fetch": "^2.6.1",
-    "sequelize": "^6.6.5",
-    "sqlite3": "^5.0.2"
+    "bloxy": "^5.7.3",
+    "discord.js": "^13.3.1",
+    "dotenv": "^10.0.0"
   }
 }

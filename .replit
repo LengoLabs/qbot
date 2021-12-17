@@ -1,2 +1,0 @@
-run = "node src/index.js"
-language = "nix"
