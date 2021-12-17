@@ -6,9 +6,13 @@ require('dotenv').config();
 
 // [Clients]
 const discordClient = new QbotClient();
-discordClient.loadCommands();
+discordClient.once('ready', async () => {
+    console.log('ready');
+    discordClient.loadCommands();
+});
 discordClient.login(process.env.token);
-const robloxClient = new RobloxClient({ credentials: { cookie: process.env.ROBLOX_COOKIE } });
+// const robloxClient = new RobloxClient({ credentials: { cookie: process.env.ROBLOX_COOKIE } });
+const robloxClient = null; // [TEMP] Substituting ^^
 
 // [Handlers]
 discordClient.on('interactionCreate', handleInteraction);

@@ -11,9 +11,9 @@ class HelloCommand extends Command {
         });
     }
 
-    run = (ctx, args) => {
-        console.log('Command "hello" has been triggered.');
-        return;
+    run(ctx: CommandContext, args: object) {
+        console.log('The command hello has been ran!');
+        ctx.reply('Hello!');
     }
 }
 

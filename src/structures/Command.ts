@@ -41,14 +41,13 @@ const mapArgument = (arg: CommandArgument) => {
     return apiArgument;
 }
 
-class Command {
+abstract class Command {
     name: string;
     type?: CommandType;
     description?: string;
     aliases?: string[];
     permissions?: CommandPermission[];
     arguments?: CommandArgument[];
-    run?: (ctx,  args) => void;
 
     constructor(options: CommandConfig) {
         this.name = options.name;
@@ -71,6 +70,13 @@ class Command {
             defaultPermission: this.permissions.length === 0,
         }
     }
+
+    /**
+     * The function to run the command.
+     * @param ctx The context of the command.
+     * @param args The arguments passed to the command, as an object mapped by ID.
+     */
+    abstract run(ctx: CommandContext, args: object);
 }
 
 export { Command };
