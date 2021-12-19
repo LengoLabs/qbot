@@ -3,16 +3,23 @@ import { CommandContext } from '../structures/addons/CommandAddons';
 import {
     Interaction,
     CommandInteraction,
-    ButtonInteraction,
-    SelectMenuInteraction,
+    CommandInteractionOption,
+    AutocompleteInteraction,
 } from 'discord.js';
+import { handleRobloxUser } from '../arguments/handleRobloxUser';
+import { handleRobloxRole } from '../arguments/handleRobloxRole';
 
-const handleInteraction = (anyInteraction: Interaction) => {
-    if(anyInteraction instanceof CommandInteraction) {
-        const interaction = anyInteraction as CommandInteraction;
-        const command = discordClient.commands.find((cmd) => cmd.name === interaction.commandName);
-        const context = new CommandContext(interaction);
-        command.run(context, {});
+const handleInteraction = async (payload: Interaction) => {
+    if(payload instanceof CommandInteraction) {
+        const interaction = payload as CommandInteraction;
+        const command = discordClient.commands.find((cmd) => (new cmd()).trigger === interaction.commandName);
+        const context = new CommandContext(interaction, command);
+        (new command()).run(context);
+    } else if(payload instanceof AutocompleteInteraction) {
+        const interaction = payload as AutocompleteInteraction;
+        const focusedOption = payload.options.getFocused(true);
+        if(focusedOption.name === 'roblox-user') handleRobloxUser(interaction, focusedOption);
+        if(focusedOption.name === 'roblox-role') await handleRobloxRole(interaction, focusedOption);
     }
 }
 

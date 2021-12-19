@@ -1,0 +1,43 @@
+import {
+    Message,
+} from 'discord.js';
+import { discordClient } from '../main';
+import { config } from '../config';
+import { CommandContext } from '../structures/addons/CommandAddons';
+import { Lexer, Parser, Args, prefixedStrategy } from 'lexure';
+import { Command } from '../structures/Command';
+
+const parseCommand = (s: string): [string, Args] | null => {
+    const lexer = new Lexer(s).setQuotes([ ['"', '"'], ['“', '”'] ]);
+    const lout = lexer.lexCommand(s => config.legacyCommands.prefixes.some((prefix) => s.startsWith(prefix)) ? 1 : null);
+    if(!lout) return null;
+
+    const [command, getTokens] = lout;
+    const tokens = getTokens();
+    const parser = new Parser(tokens).setUnorderedStrategy(prefixedStrategy(
+        ['--', '-', '—'],
+        ['=', ':'],
+    ));
+
+    const pout = parser.parse();
+    return [command.value, new Args(pout)];
+}
+
+const handleLegacyCommand = (message: Message) => {
+    const out = parseCommand(message.content);
+    if(!out) return;
+    const commandQuery = out[0] || null;
+    const args = out[1] || null;
+
+    const command = discordClient.commands.find((cmd) => (new(cmd)).trigger === (commandQuery.substring(config.legacyCommands.prefixes.find((prefix) => commandQuery.startsWith(prefix.replace(/[a-zA-Z0-9]+/gm, ''))).replace(/[a-zA-Z0-9]+/gm, '').length, commandQuery.length)));
+    if(!command) return;
+
+    try {
+        const context = new CommandContext(message, new command(), args);
+        (new command()).run(context);
+    } catch {
+        return;
+    }
+}
+
+export { handleLegacyCommand };

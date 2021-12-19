@@ -7,6 +7,47 @@ export interface BotConfig {
      * The ID of the Roblox group this bot will be tied to.
      */
     groupId: number;
+    /**
+     * Should slash commands be enabled? This is highly recommended, as it provides a way more interactive user experience.
+     * 
+     * Learn more at https://discord.dev/interactions/application-commands.
+     * @default true
+     */
+    slashCommands: boolean;
+    /**
+     * Options for legacy (prefixed) commands (e.g. q!promote)
+     */
+    legacyCommands: {
+        /**
+         * Should legacy (prefixed) commands be enabled?
+         * @default true
+         */
+        enabled: boolean;
+        /**
+         * A list of strings that must be appended to messages for commands to be parsed.
+         * @default q!
+         */
+        prefixes: string[];
+    }
+    /**
+     * IDs of roles that have permission to do various things.
+     */
+    permissions: {
+        /**
+         * Access to the promote, demote, setrank, and fire commands.
+         */
+        ranking: string;
+    }
+    /**
+     * Should actions be logged, and if so, where?
+     */
+    logChannels: {
+        /**
+         * The ID of the channel where you would like all actions done through commands on this bot to be logged.
+         * @default null
+         */
+        actions: string;
+    }
 }
 
 export declare type CommandPermission = {
@@ -17,7 +58,7 @@ export declare type CommandPermission = {
     /**
      * What is the ID of the user/role?
      */
-    id: number;
+    id: string;
     /**
      * Is this a positive or negative permission? Remember that the highest applicable permission in the array will be used.
      */
@@ -28,7 +69,7 @@ export declare type CommandArgument = {
     /**
      * The name of the argument.
      */
-    name: string;
+    trigger: string;
     /**
      * The description of the argument. Displayed in the help command and slash command preview.
      */
@@ -53,7 +94,7 @@ export declare type CommandArgument = {
     /**
      * If this is a subcommand (group), command arguments.
      */
-    arguments?: CommandArgument[];
+    args?: CommandArgument[];
     /**
      * If the type of this argument is set to DiscordChannel, what channel types are allowed?
      */
@@ -66,7 +107,7 @@ export interface CommandConfig {
     /**
      * The name of the command.
      */
-    name: string;
+    trigger: string;
     /**
      * The type of command.
      */
@@ -86,9 +127,20 @@ export interface CommandConfig {
     /**
      * What are the command arguments?
      */
-    arguments?: CommandArgument[];
+    args?: CommandArgument[];
 }
 
 export declare type CommandExport = {
-    default: Command;
+    default: any;
+}
+
+export declare type CommandContextArgument = {
+    /**
+     * The name of the argument that was used.
+     */
+    name: string;
+    /**
+     * The value of the argument that was used.
+     */
+    value: string;
 }

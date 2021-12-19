@@ -16,9 +16,11 @@
     "typescript": "^4.5.2"
   },
   "dependencies": {
+    "axios": "^0.24.0",
     "bloxy": "^5.7.3",
     "discord.js": "^13.3.1",
     "dotenv": "^10.0.0",
+    "lexure": "^0.17.0",
     "ts-node": "^10.4.0"
   }
 }

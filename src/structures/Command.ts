@@ -29,45 +29,54 @@ const argumentTypeMappings = {
 
 const mapArgument = (arg: CommandArgument) => {
     const apiArgument: ApplicationCommandOptionData = {
-        name: arg.name,
-        description: arg.description,
+        name: arg.trigger,
+        description: arg.description || 'No description provided.',
         type: argumentTypeMappings[arg.type],
         autocomplete: arg.autocomplete || false,
-        required: arg.required || true,
-        choices: arg.choices,
-        options: arg.arguments.map(mapArgument),
+        required: arg.type !== 'Subcommand' && arg.type !== 'SubcommandGroup' ? arg.required || true : null,
+        choices: arg.choices || [],
+        options: arg.args ? arg.args.map(mapArgument) : [],
         channelTypes: arg.channelTypes,
     }
     return apiArgument;
 }
 
 abstract class Command {
-    name: string;
+    trigger: string;
     type?: CommandType;
     description?: string;
     aliases?: string[];
     permissions?: CommandPermission[];
-    arguments?: CommandArgument[];
+    args?: CommandArgument[];
 
     constructor(options: CommandConfig) {
-        this.name = options.name;
+        this.trigger = options.trigger;
         this.type = options.type || 'ChatInput';
         this.description = options.description || '*No description provided.*';
         this.aliases = options.aliases || [];
         this.permissions = options.permissions || [];
-        this.arguments = options.arguments || [];
+        this.args = options.args || [];
     }
 
     /**
      * Generate a command object for slash commands.
      */
     generateAPICommand() {
-        return {
-            name: this.name,
-            description: this.description,
-            type: commandTypeMappings[this.type],
-            options: this.arguments.map(mapArgument),
-            defaultPermission: this.permissions.length === 0,
+        if(this.type.startsWith('Subcommand')) {
+            return {
+                name: this.trigger,
+                description: this.description,
+                type: commandTypeMappings[this.type],
+                options: this.args ? this.args.map(mapArgument) : [],
+            }
+        } else {
+            return {
+                name: this.trigger,
+                description: this.description,
+                type: commandTypeMappings[this.type],
+                options: this.args ? this.args.map(mapArgument) : [],
+                defaultPermission: true,
+            }
         }
     }
 
@@ -76,7 +85,7 @@ abstract class Command {
      * @param ctx The context of the command.
      * @param args The arguments passed to the command, as an object mapped by ID.
      */
-    abstract run(ctx: CommandContext, args: object);
+    abstract run(ctx: CommandContext): void;
 }
 
 export { Command };
