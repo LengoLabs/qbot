@@ -6,6 +6,7 @@ import {
     getRobloxUserIsNotMemberEmbed,
     getSuccessfulDemotionEmbed,
     getUnexpectedErrorEmbed,
+    getNoRankBelowEmbed,
 } from '../../handlers/locale';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
@@ -51,13 +52,18 @@ class PromoteCommand extends Command {
         let robloxMember: GroupMember;
         try {
             robloxMember = await robloxGroup.getMember(robloxUser.id);
+            if(!robloxMember) throw new Error();
         } catch (err) {
             return ctx.reply({ embeds: [ getRobloxUserIsNotMemberEmbed() ]});
         }
 
+        const groupRoles = await robloxGroup.getRoles();
+        const role = groupRoles.find((role) => role.rank === robloxMember.role.rank - 1);
+        if(!role || role.rank === 0) return ctx.reply({ embeds: [ getNoRankBelowEmbed() ]});
+
         try {
             const groupRoles = await robloxGroup.getRoles();
-            await robloxGroup.updateMember(robloxUser.id, groupRoles.find((role) => role.rank === robloxMember.role.rank - 1).id);
+            await robloxGroup.updateMember(robloxUser.id, role.id);
             const currentRoleIndex = groupRoles.findIndex((role) => role.id === robloxMember.role.id);
             ctx.reply({ embeds: [ await getSuccessfulDemotionEmbed(robloxUser, groupRoles[currentRoleIndex - 1].name) ]})
         } catch (err) {

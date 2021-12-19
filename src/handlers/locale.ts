@@ -3,6 +3,7 @@ import { CommandArgument } from '../structures/types';
 import { config } from '../config';
 import { User, PartialUser } from 'bloxy/dist/structures';
 import { robloxGroup } from '../main';
+import { textSync } from 'figlet';
 const cdnDomain = '';
 
 export const checkIconUrl = 'https://cdn.lengolabs.com/qbot-icons/check.png';
@@ -10,6 +11,19 @@ export const xmarkIconUrl = 'https://cdn.lengolabs.com/qbot-icons/xmark.png';
 
 export const greenColor = '#50C790';
 export const redColor = '#FA5757';
+
+export const consoleMagenta = '\x1b[35m';
+export const consoleGreen = '\x1b[32m';
+export const consoleYellow = '\x1b[33m';
+export const consoleRed = '\x1b[31m';
+export const consoleClear = '\x1b[0m';
+
+export const qbotLaunchTextDisplay = `${consoleMagenta}${textSync('Qbot')}`;
+export const welcomeText = `${consoleYellow}Hey, thanks for using Qbot! If you run into any issues, please do not hesitate to join our support server: https://discord.gg/ezxP5BJuDb`;
+export const startedText = `\n${consoleGreen}✓  ${consoleClear}Your bot has been started.`;
+export const securityText = `\n${consoleRed}⚠  ${consoleClear}URGENT: For security reasons, public bot must be DISABLED for the bot to start. For more information, please refer to this section of our documentation: https://docs.lengolabs.com/qbot/setup/replit-guide#discord`;
+
+export const noFiredRankLog = `${consoleRed}Uh oh, you do not have a fired rank with the rank specified in your configuration file.`;
 
 export const getMissingArgumentsEmbed = (cmdName: string, args: CommandArgument[]): MessageEmbed => {
     let argString = '';
@@ -50,7 +64,8 @@ export const getSuccessfulPromotionEmbed = async (user: User | PartialUser, newR
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
-        .setDescription(`**${user.name}** has been promoted to **${newRole}**!`);
+        .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
+        .setDescription(`**${user.name}** has been successfully promoted to **${newRole}**!`);
 
     return embed;
 }
@@ -60,7 +75,8 @@ export const getSuccessfulDemotionEmbed = async (user: User | PartialUser, newRo
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
-        .setDescription(`**${user.name}** has been demoted to **${newRole}**!`);
+        .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
+        .setDescription(`**${user.name}** has been successfully demoted to **${newRole}**.`);
 
     return embed;
 }
@@ -70,7 +86,8 @@ export const getSuccessfulFireEmbed = async (user: User | PartialUser, newRole: 
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
-        .setDescription(`**${user.name}** has been fired to **${newRole}**!`);
+        .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
+        .setDescription(`**${user.name}** has been successfully fired, and now has the **${newRole}** role.`);
 
     return embed;
 }
@@ -80,6 +97,33 @@ export const getUnexpectedErrorEmbed = (): MessageEmbed => {
         .setAuthor('Unexpected Error', xmarkIconUrl)
         .setColor(redColor)
         .setDescription('Unfortunately, something that we did not expect went wrong while processing this action. More information has been logged for the bot owner to diagnose.');
+
+    return embed;
+}
+
+export const getNoRankAboveEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Cannot Promote', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('There is no rank directly above this user, so you are unable to promote them.');
+
+    return embed;
+}
+
+export const getNoRankBelowEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Cannot Demote', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('There is no rank directly below this user, so you are unable to demote them.');
+
+    return embed;
+}
+
+export const getNoPermissionEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Unauthorized', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('You do not have permission to run this command.');
 
     return embed;
 }

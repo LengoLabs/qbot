@@ -6,6 +6,7 @@ import { config } from '../config';
 import { CommandContext } from '../structures/addons/CommandAddons';
 import { Lexer, Parser, Args, prefixedStrategy } from 'lexure';
 import { Command } from '../structures/Command';
+import { getNoPermissionEmbed } from '../handlers/locale';
 
 const parseCommand = (s: string): [string, Args] | null => {
     const lexer = new Lexer(s).setQuotes([ ['"', '"'], ['“', '”'] ]);
@@ -34,7 +35,11 @@ const handleLegacyCommand = (message: Message) => {
 
     try {
         const context = new CommandContext(message, new command(), args);
-        (new command()).run(context);
+        if(!context.checkPermissions()) {
+            context.reply({ embeds: [ getNoPermissionEmbed() ] });
+        } else {
+            (new command()).run(context);
+        }
     } catch {
         return;
     }

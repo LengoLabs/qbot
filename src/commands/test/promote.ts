@@ -6,6 +6,7 @@ import {
     getRobloxUserIsNotMemberEmbed,
     getSuccessfulPromotionEmbed,
     getUnexpectedErrorEmbed,
+    getNoRankAboveEmbed,
 } from '../../handlers/locale';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
@@ -51,9 +52,12 @@ class PromoteCommand extends Command {
         let robloxMember: GroupMember;
         try {
             robloxMember = await robloxGroup.getMember(robloxUser.id);
+            if(!robloxMember) throw new Error();
         } catch (err) {
             return ctx.reply({ embeds: [ getRobloxUserIsNotMemberEmbed() ]});
         }
+
+        const groupRoles = await robloxGroup.getRoles();
 
         try {
             const groupRoles = await robloxGroup.getRoles();

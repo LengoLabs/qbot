@@ -26,12 +26,12 @@ export class CommandContext  {
      * 
      * @param payload
      */
-    constructor(payload: Interaction | CommandInteraction | Message, command: Command, args?: Args) {
+    constructor(payload: Interaction | CommandInteraction | Message, command: any, args?: Args) {
         this.type = payload instanceof Message ? 'message' : 'interaction';
         this.subject = payload instanceof Interaction ? payload as CommandInteraction : payload;
         this.user = payload instanceof Message ? payload.author : payload.user;
         this.member = payload.member as GuildMember;
-        this.command = command;
+        this.command = new command();
 
         this.args = {};
         if(payload instanceof Interaction) {
@@ -49,7 +49,7 @@ export class CommandContext  {
     }
 
     checkPermissions() {
-        if(this.command.permissions.length === 0) {
+        if(!this.command.permissions || this.command.permissions.length === 0) {
             return true;
         } else {
             let hasPermission = null;
@@ -58,13 +58,10 @@ export class CommandContext  {
                 if(!hasPermission) {
                     if(permission.type === 'role') fitsCriteria = this.member.roles.cache.has(permission.id);
                     if(permission.type === 'user') fitsCriteria = this.member.id === permission.id;
-                    if(fitsCriteria) {
-                        hasPermission = true;
-                    } else {
-                        hasPermission = false;
-                    }
+                    if(fitsCriteria) hasPermission = true;
                 }
             });
+            console.log(hasPermission);
             return hasPermission || false;
         }
     }

@@ -8,13 +8,20 @@ import {
 } from 'discord.js';
 import { handleRobloxUser } from '../arguments/handleRobloxUser';
 import { handleRobloxRole } from '../arguments/handleRobloxRole';
+import { getNoPermissionEmbed } from '../handlers/locale';
 
 const handleInteraction = async (payload: Interaction) => {
     if(payload instanceof CommandInteraction) {
         const interaction = payload as CommandInteraction;
         const command = discordClient.commands.find((cmd) => (new cmd()).trigger === interaction.commandName);
         const context = new CommandContext(interaction, command);
-        (new command()).run(context);
+        const permission = context.checkPermissions();
+        console.log(permission);
+        if(!permission) {
+            context.reply({ embeds: [ getNoPermissionEmbed() ] });
+        } else {
+            (new command()).run(context);
+        }
     } else if(payload instanceof AutocompleteInteraction) {
         const interaction = payload as AutocompleteInteraction;
         const focusedOption = payload.options.getFocused(true);

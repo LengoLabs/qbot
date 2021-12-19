@@ -48,6 +48,11 @@ export interface BotConfig {
          */
         actions: string;
     }
+    /**
+     * What rank should users be ranked to when they are fired?
+     * @default 1
+     */
+    firedRank: number;
 }
 
 export declare type CommandPermission = {
