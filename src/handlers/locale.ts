@@ -127,3 +127,18 @@ export const getNoPermissionEmbed = (): MessageEmbed => {
 
     return embed;
 }
+
+export const getVerificationChecksFailedEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Verification Check Failed', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription(`
+        To prevent you from ranking someone that you would not manually be able to rank, we check the following things before allowing you to rank a user. In this case, you have failed one or more, and therefore you are unable to rank this user.
+
+        • You are verified on this server.
+        • The user you are performing this action on is not you.
+        • Your rank is above the rank of the user you are trying to perform this action on.
+        `);
+
+    return embed;
+}

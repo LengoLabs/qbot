@@ -7,9 +7,11 @@ import {
     getSuccessfulDemotionEmbed,
     getUnexpectedErrorEmbed,
     getNoRankBelowEmbed,
+    getVerificationChecksFailedEmbed,
 } from '../../handlers/locale';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
+import { checkActionEligibility } from '../../handlers/verificationChecks';
 
 class PromoteCommand extends Command {
     constructor() {
@@ -60,6 +62,9 @@ class PromoteCommand extends Command {
         const groupRoles = await robloxGroup.getRoles();
         const role = groupRoles.find((role) => role.rank === robloxMember.role.rank - 1);
         if(!role || role.rank === 0) return ctx.reply({ embeds: [ getNoRankBelowEmbed() ]});
+
+        const actionEligibility = checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
+        if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
 
         try {
             const groupRoles = await robloxGroup.getRoles();

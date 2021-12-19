@@ -5,6 +5,7 @@ import {
     InteractionReplyOptions,
     CommandInteraction,
     User,
+    Guild,
     GuildMember,
 } from 'discord.js';
 import { Command } from '../Command';
@@ -18,6 +19,7 @@ export class CommandContext  {
     subject?: CommandInteraction | Message;
     user?: User;
     member?: GuildMember;
+    guild?: Guild;
     args?: object;
     command: Command;
 
@@ -31,6 +33,7 @@ export class CommandContext  {
         this.subject = payload instanceof Interaction ? payload as CommandInteraction : payload;
         this.user = payload instanceof Message ? payload.author : payload.user;
         this.member = payload.member as GuildMember;
+        this.guild = payload.guild;
         this.command = new command();
 
         this.args = {};
@@ -61,7 +64,6 @@ export class CommandContext  {
                     if(fitsCriteria) hasPermission = true;
                 }
             });
-            console.log(hasPermission);
             return hasPermission || false;
         }
     }

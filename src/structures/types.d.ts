@@ -49,6 +49,12 @@ export interface BotConfig {
         actions: string;
     }
     /**
+     * Should users be required to verify through Bloxlink to rank users? This feature will ensure that users cannot rank themselves, users above them, or users with the same rank as them.
+     * 
+     * **We highly recommend disabling this feature if your server does not use Bloxlink.**
+    */
+    verificationChecks: boolean;
+    /**
      * What rank should users be ranked to when they are fired?
      * @default 1
      */
@@ -148,4 +154,10 @@ export declare type CommandContextArgument = {
      * The value of the argument that was used.
      */
     value: string;
+}
+
+export declare type BloxlinkResponse = {
+    status: string;
+    primaryAccount?: string;
+    matchingAccount?: string;
 }

@@ -1,11 +1,12 @@
 import { robloxClient } from '../main';
+import { BloxlinkResponse } from '../structures/types';
 import axios from 'axios';
 let requestCount = 0;
 
 const getLinkedRobloxUser = async (discordId: string, guildId?: string) => {
     if(requestCount >= 60) return null;
     requestCount += 1;
-    let robloxStatus;
+    let robloxStatus: BloxlinkResponse;
     if(guildId) {
         robloxStatus = (await axios.get(`https://api.blox.link/v1/user/${discordId}?guild=${guildId}`)).data;
     } else {

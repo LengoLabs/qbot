@@ -13,5 +13,6 @@ export const config: BotConfig = {
     logChannels: {
         actions: '922189549738786816',
     },
+    verificationChecks: true,
     firedRank: 1,
 }

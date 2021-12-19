@@ -6,8 +6,10 @@ import {
     getRobloxUserIsNotMemberEmbed,
     getSuccessfulFireEmbed,
     getUnexpectedErrorEmbed,
+    getVerificationChecksFailedEmbed,
     noFiredRankLog,
 } from '../../handlers/locale';
+import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 
@@ -58,16 +60,19 @@ class PromoteCommand extends Command {
         }
 
         const groupRoles = await robloxGroup.getRoles();
-        const firedRank = groupRoles.find((role) => role.rank === config.firedRank);
-        if(!firedRank) {
+        const role = groupRoles.find((role) => role.rank === config.firedRank);
+        if(!role) {
             console.log('Uh oh, it looks like you do not')
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
         }
 
+        const actionEligibility = checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
+        if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
+
         try {
-            await robloxGroup.updateMember(robloxUser.id, firedRank.id);
+            await robloxGroup.updateMember(robloxUser.id, role.id);
             const currentRoleIndex = groupRoles.findIndex((role) => role.id === robloxMember.role.id);
-            ctx.reply({ embeds: [ await getSuccessfulFireEmbed(robloxUser, firedRank.name) ]});
+            ctx.reply({ embeds: [ await getSuccessfulFireEmbed(robloxUser, role.name) ]});
         } catch (err) {
             console.error(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
