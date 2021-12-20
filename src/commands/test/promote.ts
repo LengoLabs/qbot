@@ -7,7 +7,10 @@ import {
     getSuccessfulPromotionEmbed,
     getUnexpectedErrorEmbed,
     getNoRankAboveEmbed,
+    getRoleNotFoundEmbed,
+    getVerificationChecksFailedEmbed,
 } from '../../handlers/locale';
+import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 
@@ -58,10 +61,16 @@ class PromoteCommand extends Command {
         }
 
         const groupRoles = await robloxGroup.getRoles();
+        const role = groupRoles.find((role) => role.rank === robloxMember.role.rank + 1);
+        if(!role) return ctx.reply({ embeds: [ getNoRankAboveEmbed() ]});
+        if(role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
+
+        const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
+        if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
 
         try {
             const groupRoles = await robloxGroup.getRoles();
-            await robloxGroup.updateMember(robloxUser.id, groupRoles.find((role) => role.rank === robloxMember.role.rank + 1).id);
+            await robloxGroup.updateMember(robloxUser.id, role.id);
             const currentRoleIndex = groupRoles.findIndex((role) => role.id === robloxMember.role.id);
             ctx.reply({ embeds: [ await getSuccessfulPromotionEmbed(robloxUser, groupRoles[currentRoleIndex + 1].name) ]})
         } catch (err) {

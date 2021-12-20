@@ -142,3 +142,21 @@ export const getVerificationChecksFailedEmbed = (): MessageEmbed => {
 
     return embed;
 }
+
+export const getAlreadyFiredEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('User Already Fired', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('This user already has the fired rank.');
+
+    return embed;
+}
+
+export const getRoleNotFoundEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Role Unavailable', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('This user you have specified does not exist on the group, or cannot be ranked by this bot.');
+
+    return embed;
+}

@@ -43,10 +43,27 @@ export class CommandContext  {
                 this.args[arg.name] = interaction.options.get(arg.name).value;
             });
         } else {
-            command.args.forEach((arg, index) => this.args[arg.trigger] = args.single());
-            if(Object.keys(Object.fromEntries(Object.entries(this.args).filter(([_, v]) => v !== null))).length !== command.args.filter((arg) => arg.required === undefined || arg.required === null ? true : arg.required).length) {
-                this.reply({ embeds: [ getMissingArgumentsEmbed(command.trigger, command.args) ] });
+            this.command.args.forEach((arg, index) => this.args[arg.trigger] = args.single());
+            const filledOutArgCount = Object.keys(Object.fromEntries(Object.entries(this.args).filter(([_, v]) => v !== null))).length;
+            const requiredArgCount = this.command.args.filter((arg) => (arg.required === undefined || arg.required === null ? true : arg.required) && !arg.isLegacyFlag).length;
+            if(filledOutArgCount < requiredArgCount) {
+                this.reply({ embeds: [ getMissingArgumentsEmbed(this.command.trigger, this.command.args) ] });
                 throw new Error('INVALID_USAGE');
+            } else {
+                if(args.length > this.command.args.length) {
+                    const extraArgs = args.many(1000, requiredArgCount);
+                    this.args[Object.keys(this.args).at(-1)] = [this.args[Object.keys(this.args).at(-1)], ...extraArgs.map((arg) => arg.value)].join(' ');
+                }
+                let areAllRequiredFlagsEntered = true;
+                this.command.args.filter((arg) => arg.isLegacyFlag).forEach((arg) => {
+                    const flagValue = args.option(arg.trigger);
+                    if(!flagValue && arg.required) areAllRequiredFlagsEntered = false;
+                    this.args[arg.trigger] = flagValue;
+                });
+                if(!areAllRequiredFlagsEntered) {
+                    this.reply({ embeds: [ getMissingArgumentsEmbed(this.command.trigger, this.command.args) ] });
+                    throw new Error('INVALID_USAGE');
+                }
             }
         }
     }

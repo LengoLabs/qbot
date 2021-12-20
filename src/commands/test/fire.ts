@@ -7,13 +7,15 @@ import {
     getSuccessfulFireEmbed,
     getUnexpectedErrorEmbed,
     getVerificationChecksFailedEmbed,
+    getAlreadyFiredEmbed,
+    getRoleNotFoundEmbed,
     noFiredRankLog,
 } from '../../handlers/locale';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 
-class PromoteCommand extends Command {
+class FireCommand extends Command {
     constructor() {
         super({
             trigger: 'fire',
@@ -62,16 +64,17 @@ class PromoteCommand extends Command {
         const groupRoles = await robloxGroup.getRoles();
         const role = groupRoles.find((role) => role.rank === config.firedRank);
         if(!role) {
-            console.log('Uh oh, it looks like you do not')
+            console.error('There is no role with the rank of the fired rank you specified in the bot config.');
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
         }
+        if(robloxMember.role.rank === config.firedRank) return ctx.reply({ embeds: [ getAlreadyFiredEmbed() ] });
+        if(role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
 
-        const actionEligibility = checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
+        const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
         if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
 
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);
-            const currentRoleIndex = groupRoles.findIndex((role) => role.id === robloxMember.role.id);
             ctx.reply({ embeds: [ await getSuccessfulFireEmbed(robloxUser, role.name) ]});
         } catch (err) {
             console.error(err);
@@ -80,4 +83,4 @@ class PromoteCommand extends Command {
     }
 }
 
-export default PromoteCommand;
+export default FireCommand;

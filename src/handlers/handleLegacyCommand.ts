@@ -34,13 +34,13 @@ const handleLegacyCommand = (message: Message) => {
     if(!command) return;
 
     try {
-        const context = new CommandContext(message, new command(), args);
+        const context = new CommandContext(message, command, args);
         if(!context.checkPermissions()) {
             context.reply({ embeds: [ getNoPermissionEmbed() ] });
         } else {
             (new command()).run(context);
         }
-    } catch {
+    } catch (err) {
         return;
     }
 }

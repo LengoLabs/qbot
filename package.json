@@ -5,6 +5,7 @@
   "main": "src/main.ts",
   "scripts": {
     "start": "ts-node src/main.ts",
+    "compile": "tsc --outDir out",
     "dev": "nodemon src/main.ts --ignore ./src/resources/commands.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,7 +14,7 @@
   "devDependencies": {
     "@types/node": "^16.11.11",
     "nodemon": "^2.0.15",
-    "typescript": "^4.5.2"
+    "typescript": "^4.5.4"
   },
   "dependencies": {
     "axios": "^0.24.0",

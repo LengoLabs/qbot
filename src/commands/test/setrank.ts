@@ -6,7 +6,6 @@ import {
     getRobloxUserIsNotMemberEmbed,
     getSuccessfulDemotionEmbed,
     getUnexpectedErrorEmbed,
-    getNoRankBelowEmbed,
     getRoleNotFoundEmbed,
     getVerificationChecksFailedEmbed,
 } from '../../handlers/locale';
@@ -14,16 +13,22 @@ import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 
-class PromoteCommand extends Command {
+class SetRankCommand extends Command {
     constructor() {
         super({
-            trigger: 'demote',
-            description: 'Demotes a user in the Roblox group.',
+            trigger: 'setrank',
+            description: 'Changes the rank of a user in the Roblox group.',
             type: 'ChatInput',
             args: [
                 {
                     trigger: 'roblox-user',
-                    description: 'Who do you want to demote?',
+                    description: 'Whose rank would you like to change?',
+                    autocomplete: true,
+                    type: 'String',
+                },
+                {
+                    trigger: 'roblox-role',
+                    description: 'What role would you like to change them to?',
                     autocomplete: true,
                     type: 'String',
                 },
@@ -61,9 +66,8 @@ class PromoteCommand extends Command {
         }
 
         const groupRoles = await robloxGroup.getRoles();
-        const role = groupRoles.find((role) => role.rank === robloxMember.role.rank - 1);
-        if(!role || role.rank === 0) return ctx.reply({ embeds: [ getNoRankBelowEmbed() ]});
-        if(role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
+        const role = groupRoles.find((role) => role.id == ctx.args['roblox-role'] || role.rank == ctx.args['roblox-role'] || role.name.toLowerCase().startsWith(ctx.args['roblox-role'].toLowerCase()));
+        if(!role || role.rank === 0 || role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ]});
 
         const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
         if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
@@ -72,7 +76,7 @@ class PromoteCommand extends Command {
             const groupRoles = await robloxGroup.getRoles();
             await robloxGroup.updateMember(robloxUser.id, role.id);
             const currentRoleIndex = groupRoles.findIndex((role) => role.id === robloxMember.role.id);
-            ctx.reply({ embeds: [ await getSuccessfulDemotionEmbed(robloxUser, groupRoles[currentRoleIndex - 1].name) ]})
+            ctx.reply({ embeds: [ await getSuccessfulDemotionEmbed(robloxUser, role.name) ]})
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
@@ -80,4 +84,4 @@ class PromoteCommand extends Command {
     }
 }
 
-export default PromoteCommand;
+export default SetRankCommand;

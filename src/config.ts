@@ -1,18 +1,19 @@
 import { BotConfig } from './structures/types'; 
 
 export const config: BotConfig = {
-    groupId: 3281575,
+    groupId: 0,
     slashCommands: true,
     legacyCommands: {
         enabled: true,
         prefixes: ['q!'],
     },
     permissions: {
-        ranking: '830194496238387221',
+        ranking: '',
     },
     logChannels: {
-        actions: '922189549738786816',
+        actions: '',
     },
+    maximumRank: 255,
     verificationChecks: true,
     firedRank: 1,
 }

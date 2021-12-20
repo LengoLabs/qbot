@@ -49,6 +49,10 @@ export interface BotConfig {
         actions: string;
     }
     /**
+     * What rank should be the maximum that can be ranked by your bot? 
+    */
+    maximumRank: number;
+    /**
      * Should users be required to verify through Bloxlink to rank users? This feature will ensure that users cannot rank themselves, users above them, or users with the same rank as them.
      * 
      * **We highly recommend disabling this feature if your server does not use Bloxlink.**
@@ -98,6 +102,11 @@ export declare type CommandArgument = {
      * Is this argument required?
      */
     required?: boolean;
+    /**
+     * Is this argument inputted through a a flag when using the legacy commands system?
+     * @default false
+     */
+    isLegacyFlag?: boolean;
     /**
      * The choices that the user can pick from.
      */
