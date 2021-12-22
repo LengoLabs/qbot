@@ -1,14 +1,16 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandArgument } from '../structures/types';
 import { config } from '../config';
-import { User, PartialUser } from 'bloxy/dist/structures';
-import { robloxGroup } from '../main';
+import { User, PartialUser, GroupShout } from 'bloxy/dist/structures';
+import { User as DiscordUser } from 'discord.js';
+import { robloxClient, robloxGroup } from '../main';
 import { textSync } from 'figlet';
-const cdnDomain = '';
 
 export const checkIconUrl = 'https://cdn.lengolabs.com/qbot-icons/check.png';
 export const xmarkIconUrl = 'https://cdn.lengolabs.com/qbot-icons/xmark.png';
+export const quoteIconUrl = 'https://cdn.lengolabs.com/qbot-icons/quote.png';
 
+export const mainColor = '#906FED';
 export const greenColor = '#50C790';
 export const redColor = '#FA5757';
 
@@ -157,6 +159,36 @@ export const getRoleNotFoundEmbed = (): MessageEmbed => {
         .setAuthor('Role Unavailable', xmarkIconUrl)
         .setColor(redColor)
         .setDescription('This user you have specified does not exist on the group, or cannot be ranked by this bot.');
+
+    return embed;
+}
+
+export const getShoutLogEmbed = async (shout: GroupShout): Promise<MessageEmbed> => {
+    const shoutCreator = await robloxClient.getUser(shout.creator.id);
+    const embed = new MessageEmbed()
+        .setAuthor(`Posted by ${shoutCreator.name}`, quoteIconUrl)
+        .setThumbnail((await shoutCreator.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
+        .setColor(mainColor)
+        .setTimestamp()
+        .setDescription(shout.content);
+
+    return embed;
+}
+
+export const getLogEmbed = async (action: string, moderator: DiscordUser, reason?: string, target?: User | PartialUser, rankChange?: string, body?: string): Promise<MessageEmbed> => {
+    const embed = new MessageEmbed()
+        .setAuthor(moderator.tag, moderator.displayAvatarURL())
+        .setThumbnail((await target.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
+        .setColor(mainColor)
+        .setFooter(`Moderator ID: ${moderator.id}`)
+        .setTimestamp()
+        .setDescription(`
+        **Action:** ${action}
+        ${target ? `**Target:** ${target.name} (${target.id})` : ''}
+        ${rankChange ? `**Rank Change:** ${rankChange}` : ''}
+        ${reason ? `**Reason:** ${reason}` : ''}
+        ${body ? `**Body:** ${target.name} (${target.id})` : ''}
+        `);
 
     return embed;
 }

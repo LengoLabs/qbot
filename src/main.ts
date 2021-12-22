@@ -4,6 +4,7 @@ import { handleInteraction } from './handlers/handleInteraction';
 import { handleLegacyCommand } from './handlers/handleLegacyCommand';
 import { config } from './config'; 
 import { Group } from 'bloxy/dist/structures';
+import { recordShout } from './loggers/shout';
 require('dotenv').config();
 
 // [Clients]
@@ -14,6 +15,9 @@ let robloxGroup: Group = null;
 (async () => {
     await robloxClient.login().catch(console.error);
     robloxGroup = await robloxClient.getGroup(config.groupId);
+    
+    // [Loggers]
+    recordShout();
 })();
 
 // [Handlers]

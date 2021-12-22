@@ -12,6 +12,11 @@ export const config: BotConfig = {
     },
     logChannels: {
         actions: '',
+        shout: '',
+    },
+    database: {
+        enabled: true,
+        type: 'sqlite',
     },
     maximumRank: 255,
     verificationChecks: true,

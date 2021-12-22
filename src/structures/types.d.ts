@@ -39,14 +39,34 @@ export interface BotConfig {
         ranking: string;
     }
     /**
+     * Configuration for the built-in database module used by suspension and XP-related commands.
+     */
+    database: {
+        /**
+         * Should the database module be enabled? Disabling this will also disable a few essential commands.
+         */
+        enabled: boolean;
+        /**
+         * What type of database would you like to use? If it is MongoDB, you need to install mongoose separately.
+         */
+        type: 'mongodb' | 'sqlite';
+        /**
+         * If the database uses MongoDB, put the connection URI here.
+         */
+        uri?: string;
+    }
+    /**
      * Should actions be logged, and if so, where?
      */
     logChannels: {
         /**
          * The ID of the channel where you would like all actions done through commands on this bot to be logged.
-         * @default null
          */
         actions: string;
+        /**
+         * Should shouts be logged to a public channel?
+         */
+        shout: string;
     }
     /**
      * What rank should be the maximum that can be ranked by your bot? 
@@ -92,7 +112,7 @@ export declare type CommandArgument = {
     /**
      * How should the value be resolved or what should be prompted for slash commands?
      */
-    type?: 'Subcommand' | 'SubcommandGroup' | 'String' | 'Number' | 'Boolean' | 'Subcommand' | 'RobloxUser' | 'DiscordUser' | 'DiscordRole' | 'DiscordChannel' | 'DiscordMentionable';
+    type: 'Subcommand' | 'SubcommandGroup' | 'String' | 'Number' | 'Boolean' | 'Subcommand' | 'RobloxUser' | 'DiscordUser' | 'DiscordRole' | 'DiscordChannel' | 'DiscordMentionable';
     /**
      * Should the bot be sent requests to autocomplete everything they type?
      * @default false;
@@ -154,19 +174,23 @@ export declare type CommandExport = {
     default: any;
 }
 
-export declare type CommandContextArgument = {
-    /**
-     * The name of the argument that was used.
-     */
-    name: string;
-    /**
-     * The value of the argument that was used.
-     */
-    value: string;
-}
-
 export declare type BloxlinkResponse = {
     status: string;
     primaryAccount?: string;
     matchingAccount?: string;
+}
+
+export declare type DatabaseUser = {
+    /**
+     * The Discord ID of the user belonging to this database entry.
+     */
+    discordId: string;
+    /**
+     * How much XP this user has.
+     */
+    xp: number;
+    /**
+     * If this user is suspended, when will they be unsuspended?
+     */
+    suspendedUntil?: Date;
 }

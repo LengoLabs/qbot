@@ -14,6 +14,7 @@ import {
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
+import { logAction } from '../../handlers/handleLogging';
 
 class FireCommand extends Command {
     constructor() {
@@ -26,6 +27,13 @@ class FireCommand extends Command {
                     trigger: 'roblox-user',
                     description: 'Who do you want to fire?',
                     autocomplete: true,
+                    type: 'String',
+                },
+                {
+                    trigger: 'reason',
+                    description: 'If you would like a reason to be supplied in the logs, put it here.',
+                    isLegacyFlag: true,
+                    required: false,
                     type: 'String',
                 },
             ],
@@ -76,6 +84,7 @@ class FireCommand extends Command {
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);
             ctx.reply({ embeds: [ await getSuccessfulFireEmbed(robloxUser, role.name) ]});
+            logAction('Fire', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
         } catch (err) {
             console.error(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
