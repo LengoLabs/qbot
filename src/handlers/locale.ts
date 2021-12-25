@@ -1,13 +1,14 @@
 import { MessageEmbed } from 'discord.js';
-import { CommandArgument } from '../structures/types';
+import { CommandArgument, DatabaseUser } from '../structures/types';
 import { config } from '../config';
-import { User, PartialUser, GroupShout } from 'bloxy/dist/structures';
+import { User, PartialUser, GroupShout, GroupMember } from 'bloxy/dist/structures';
 import { User as DiscordUser } from 'discord.js';
 import { robloxClient, robloxGroup } from '../main';
 import { textSync } from 'figlet';
 
 export const checkIconUrl = 'https://cdn.lengolabs.com/qbot-icons/check.png';
 export const xmarkIconUrl = 'https://cdn.lengolabs.com/qbot-icons/xmark.png';
+export const infoIconUrl = 'https://cdn.lengolabs.com/qbot-icons/info.png';
 export const quoteIconUrl = 'https://cdn.lengolabs.com/qbot-icons/quote.png';
 
 export const mainColor = '#906FED';
@@ -25,7 +26,8 @@ export const welcomeText = `${consoleYellow}Hey, thanks for using Qbot! If you r
 export const startedText = `\n${consoleGreen}✓  ${consoleClear}Your bot has been started.`;
 export const securityText = `\n${consoleRed}⚠  ${consoleClear}URGENT: For security reasons, public bot must be DISABLED for the bot to start. For more information, please refer to this section of our documentation: https://docs.lengolabs.com/qbot/setup/replit-guide#discord`;
 
-export const noFiredRankLog = `${consoleRed}Uh oh, you do not have a fired rank with the rank specified in your configuration file.`;
+export const noFiredRankLog = `Uh oh, you do not have a fired rank with the rank specified in your configuration file.`;
+export const noSuspendedRankLog = `Uh oh, you do not have a suspended rank with the rank specified in your configuration file.`;
 
 export const getMissingArgumentsEmbed = (cmdName: string, args: CommandArgument[]): MessageEmbed => {
     let argString = '';
@@ -62,7 +64,6 @@ export const getRobloxUserIsNotMemberEmbed = (): MessageEmbed => {
 }
 
 export const getSuccessfulPromotionEmbed = async (user: User | PartialUser, newRole: string): Promise<MessageEmbed> => {
-    const groupRoles = await robloxGroup.getRoles();
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
@@ -73,7 +74,6 @@ export const getSuccessfulPromotionEmbed = async (user: User | PartialUser, newR
 }
 
 export const getSuccessfulDemotionEmbed = async (user: User | PartialUser, newRole: string): Promise<MessageEmbed> => {
-    const groupRoles = await robloxGroup.getRoles();
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
@@ -84,12 +84,39 @@ export const getSuccessfulDemotionEmbed = async (user: User | PartialUser, newRo
 }
 
 export const getSuccessfulFireEmbed = async (user: User | PartialUser, newRole: string): Promise<MessageEmbed> => {
-    const groupRoles = await robloxGroup.getRoles();
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
         .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
         .setDescription(`**${user.name}** has been successfully fired, and now has the **${newRole}** role.`);
+
+    return embed;
+}
+
+export const getSuccessfulSuspendEmbed = async (user: User | PartialUser, newRole: string, endDate: Date): Promise<MessageEmbed> => {
+    const embed = new MessageEmbed()
+        .setAuthor('Success!', checkIconUrl)
+        .setColor(greenColor)
+        .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
+        .setDescription(`**${user.name}** has been successfully suspended, and will have their current rank return in <t:${Math.round(endDate.getTime() / 1000)}:R>.`);
+
+    return embed;
+}
+
+export const getUserSuspendedEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('User Suspended', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('This user is suspended, and cannot be ranked. Please use the unsuspend command to revert this.');
+
+    return embed;
+}
+
+export const getAlreadySuspendedEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('User Already Suspended', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('This user is already suspended. Please use the unsuspend command to revert this.');
 
     return embed;
 }
@@ -163,6 +190,15 @@ export const getRoleNotFoundEmbed = (): MessageEmbed => {
     return embed;
 }
 
+export const getInvalidDurationEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Invalid Duration', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('Durations must be within 5 minutes and 2 years.');
+
+    return embed;
+}
+
 export const getShoutLogEmbed = async (shout: GroupShout): Promise<MessageEmbed> => {
     const shoutCreator = await robloxClient.getUser(shout.creator.id);
     const embed = new MessageEmbed()
@@ -175,7 +211,7 @@ export const getShoutLogEmbed = async (shout: GroupShout): Promise<MessageEmbed>
     return embed;
 }
 
-export const getLogEmbed = async (action: string, moderator: DiscordUser, reason?: string, target?: User | PartialUser, rankChange?: string, body?: string): Promise<MessageEmbed> => {
+export const getLogEmbed = async (action: string, moderator: DiscordUser, reason?: string, target?: User | PartialUser, rankChange?: string, endDate?: Date, body?: string): Promise<MessageEmbed> => {
     const embed = new MessageEmbed()
         .setAuthor(moderator.tag, moderator.displayAvatarURL())
         .setThumbnail((await target.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
@@ -187,8 +223,34 @@ export const getLogEmbed = async (action: string, moderator: DiscordUser, reason
         ${target ? `**Target:** ${target.name} (${target.id})` : ''}
         ${rankChange ? `**Rank Change:** ${rankChange}` : ''}
         ${reason ? `**Reason:** ${reason}` : ''}
+        ${endDate ? `**Duration:** <t:${Math.round(endDate.getTime() / 1000)}:R>` : ''}
         ${body ? `**Body:** ${target.name} (${target.id})` : ''}
         `);
+
+    return embed;
+}
+
+export const getAlreadyRankedEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('User Already Ranked', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('This user already has the role you are trying to rank them to.');
+
+    return embed;
+}
+
+export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMember, data: DatabaseUser): Promise<MessageEmbed> => {
+    const primaryGroup = await user.getPrimaryGroup();
+    const embed = new MessageEmbed()
+        .setAuthor(`Information: ${user.name}`, infoIconUrl)
+        .setColor(mainColor)
+        .setDescription(primaryGroup ? `Primary Group: [${primaryGroup.group.name}](https://roblox.com/groups/${primaryGroup.group.id})` : '')
+        .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '150x150', isCircular: false })).imageUrl)
+        .setFooter(`User ID: ${user.id}`)
+        .setTimestamp()
+        .addField('Role', `${member.role.name} (${member.role.rank})`, true)
+        .addField('XP', data.xp.toString(), true)
+        .addField('Suspended', data.suspendedUntil ? `✅ (<t:${Math.round(data.suspendedUntil.getTime() / 1000)}:R>)` : '❌', true)
 
     return embed;
 }

@@ -1,11 +1,12 @@
 import { QbotClient } from './structures/QbotClient';
-import { Client, Client as RobloxClient } from 'bloxy';
+import { Client as RobloxClient } from 'bloxy';
 import { handleInteraction } from './handlers/handleInteraction';
 import { handleLegacyCommand } from './handlers/handleLegacyCommand';
 import { config } from './config'; 
 import { Group } from 'bloxy/dist/structures';
-import { recordShout } from './loggers/shout';
+import { recordShout } from './events/shout';
 require('dotenv').config();
+require('./database/router');
 
 // [Clients]
 const discordClient = new QbotClient();

@@ -83,6 +83,11 @@ export interface BotConfig {
      * @default 1
      */
     firedRank: number;
+    /**
+     * What role should users be placed at if they are suspended?
+     * @default 1
+     */
+    suspendedRank: number;
 }
 
 export declare type CommandPermission = {
@@ -153,6 +158,10 @@ export interface CommandConfig {
      */
     type?: CommandType;
     /**
+     * What module should the command be listed under?
+     */
+    module: string;
+    /**
      * The description of the command. Displayed in the help command and slash command preview.
      */
     description?: string;
@@ -182,9 +191,9 @@ export declare type BloxlinkResponse = {
 
 export declare type DatabaseUser = {
     /**
-     * The Discord ID of the user belonging to this database entry.
+     * The Roblox ID of the user belonging to this database entry.
      */
-    discordId: string;
+    robloxId: string;
     /**
      * How much XP this user has.
      */
@@ -193,4 +202,8 @@ export declare type DatabaseUser = {
      * If this user is suspended, when will they be unsuspended?
      */
     suspendedUntil?: Date;
+    /**
+     * What should they be ranked to once unsuspended?
+     */
+    unsuspendRank?: number;
 }

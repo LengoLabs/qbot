@@ -4,5 +4,6 @@
         "module": "commonjs",
         "target": "es2021",
         "types": ["node"],
+        "esModuleInterop": true
     }
 }

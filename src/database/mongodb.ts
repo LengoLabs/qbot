@@ -1,23 +1,31 @@
+import { DatabaseProvider } from '../structures/DatabaseProvider';
+import { DatabaseUser } from '../structures/types';
 import { Schema, connect, model } from 'mongoose';
 import { config } from '../config';
 
 const User = model('User', new Schema({
-    discordId: String,
+    robloxId: String,
     xp: Number,
     suspendedUntil: Date,
+    unsuspendRank: Number,
 }));
 
-class MongoDBProvider {
+class MongoDBProvider extends DatabaseProvider {
     constructor() {
+        super();
         connect(config.database.uri).catch(console.error);
     }
 
-    async findUser(discordId: string) {
-        return await User.findOneAndUpdate({ discordId }, { discordId, xp: 0 }, { upsert: true });
+    async findUser(robloxId: string): Promise<DatabaseUser> {
+        return await User.findOneAndUpdate({ robloxId }, { robloxId, xp: 0 }, { upsert: true });
     }
 
-    async updateUser(discordId: string, data: any) {
-        return await User.updateOne({ discordId }, { discordId, ...data });
+    async findSuspendedUsers(): Promise<DatabaseUser[]> {
+        return await User.find({ suspendedUntil: { $exists: true } });
+    }
+
+    async updateUser(robloxId: string, data: any) {
+        await User.updateOne({ robloxId }, { robloxId, ...data });
     }
 }
 

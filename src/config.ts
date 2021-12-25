@@ -21,4 +21,5 @@ export const config: BotConfig = {
     maximumRank: 255,
     verificationChecks: true,
     firedRank: 1,
+    suspendedRank: 1,
 }

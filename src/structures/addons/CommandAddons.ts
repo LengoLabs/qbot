@@ -44,16 +44,16 @@ export class CommandContext  {
             });
         } else {
             this.subject.channel.sendTyping();
-            this.command.args.forEach((arg, index) => this.args[arg.trigger] = args.single());
-            const filledOutArgCount = Object.keys(Object.fromEntries(Object.entries(this.args).filter(([_, v]) => v !== null))).length;
-            const requiredArgCount = this.command.args.filter((arg) => (arg.required === undefined || arg.required === null ? true : arg.required) && !arg.isLegacyFlag).length;
-            if(filledOutArgCount < requiredArgCount) {
+            this.command.args.forEach((arg, index) => { if(!arg.isLegacyFlag) this.args[arg.trigger] = args.single() });
+            const filledOutArgs = Object.keys(Object.fromEntries(Object.entries(this.args).filter(([_, v]) => v !== null)));
+            const requiredArgs = this.command.args.filter((arg) => (arg.required === undefined || arg.required === null ? true : arg.required) && !arg.isLegacyFlag);
+            if(filledOutArgs.length < requiredArgs.length) {
                 this.reply({ embeds: [ getMissingArgumentsEmbed(this.command.trigger, this.command.args) ] });
                 throw new Error('INVALID_USAGE');
             } else {
-                if(args.length > this.command.args.length) {
-                    const extraArgs = args.many(1000, requiredArgCount);
-                    this.args[Object.keys(this.args).at(-1)] = [this.args[Object.keys(this.args).at(-1)], ...extraArgs.map((arg) => arg.value)].join(' ');
+                if(args.length > requiredArgs.length) {
+                    const extraArgs = args.many(1000, requiredArgs.length);
+                    this.args[Object.keys(this.args).filter((key) => !this.command.args.find((arg) => arg.trigger === key).isLegacyFlag).at(-1)] = [ this.args[Object.keys(this.args).filter((key) => !this.command.args.find((arg) => arg.trigger === key).isLegacyFlag).at(-1)], ...extraArgs.map((arg) => arg.value)].join(' ');
                 }
                 let areAllRequiredFlagsEntered = true;
                 this.command.args.filter((arg) => arg.isLegacyFlag).forEach((arg) => {
@@ -77,6 +77,7 @@ export class CommandContext  {
             const permission = this.command.permissions.forEach((permission) => {
                 let fitsCriteria: boolean;
                 if(!hasPermission) {
+                    if(!permission.value) return;
                     if(permission.type === 'role') fitsCriteria = this.member.roles.cache.has(permission.id);
                     if(permission.type === 'user') fitsCriteria = this.member.id === permission.id;
                     if(fitsCriteria) hasPermission = true;
