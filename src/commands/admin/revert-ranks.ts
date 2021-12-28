@@ -7,6 +7,7 @@ import {
 import { config } from '../../config';
 import { robloxClient, robloxGroup } from '../../main';
 import ms from 'ms';
+import { logAction } from '../../handlers/handleLogging';
 
 class RevertRanksCommand extends Command {
     constructor() {
@@ -19,6 +20,13 @@ class RevertRanksCommand extends Command {
                 {
                     trigger: 'duration',
                     description: 'How much time of ranking events would you like to revert?',
+                    type: 'String',
+                },
+                {
+                    trigger: 'reason',
+                    description: 'If you would like a reason to be supplied in the logs, put it here.',
+                    isLegacyFlag: true,
+                    required: false,
                     type: 'String',
                 },
             ],
@@ -35,7 +43,7 @@ class RevertRanksCommand extends Command {
     async run(ctx: CommandContext) {
         const auditLog = await robloxClient.apis.groupsAPI.getAuditLogs({
             groupId: robloxGroup.id,
-            actionType: null,
+            actionType: 'ChangeRank',
         });
 
         const duration = Number(ms(ctx.args['duration']));
@@ -55,6 +63,7 @@ class RevertRanksCommand extends Command {
             }, index * 1000);
         });
 
+        logAction('Revert Ranks', ctx.user, ctx.args['reason'], null, null, maximumDate);
         return ctx.reply({ embeds: [ getSuccessfulRevertRanksEmbed(affectedLogs.length) ] });
     }
 }

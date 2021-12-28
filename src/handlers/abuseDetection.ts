@@ -26,4 +26,9 @@ const recordAction = async (moderator: User) => {
     }
 }
 
-export { recordAction };
+const clearActions = () => {
+    actionCounts = [];
+    setTimeout(clearActions, 60 * 1000);
+}
+
+export { recordAction, clearActions };
