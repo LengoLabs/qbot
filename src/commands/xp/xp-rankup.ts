@@ -81,7 +81,7 @@ class XPRankupCommand extends Command {
         if(!role) return ctx.reply({ embeds: [ getNoRankupAvailableEmbed() ] });
 
         if(ctx.args['roblox-user']) {
-            if(!ctx.member.roles.cache.has(config.permissions.users)) {
+            if(!ctx.member.roles.cache.has(config.permissions.users) && (config.permissions.all ? !ctx.member.roles.cache.has(config.permissions.all) : false)) {
                 return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
             }
             if(config.verificationChecks) {

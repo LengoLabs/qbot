@@ -41,12 +41,14 @@ export class CommandContext  {
         this.args = {};
         if(payload instanceof Interaction) {
             const interaction = payload as CommandInteraction;
-            if(!this.replied && !interaction.replied) interaction.deferReply();
+            setTimeout(() => {
+                if(!this.replied) interaction.deferReply();
+            }, 500);
             interaction.options.data.forEach(async (arg) => {
                 this.args[arg.name] = interaction.options.get(arg.name).value;
             });
         } else {
-            if(!this.replied) this.subject.channel.sendTyping();
+            this.subject.channel.sendTyping();
             this.command.args.forEach((arg, index) => { if(!arg.isLegacyFlag) this.args[arg.trigger] = args.single() });
             const filledOutArgs = Object.keys(Object.fromEntries(Object.entries(this.args).filter(([_, v]) => v !== null)));
             const requiredArgs = this.command.args.filter((arg) => (arg.required === undefined || arg.required === null ? true : arg.required) && !arg.isLegacyFlag);
@@ -81,9 +83,12 @@ export class CommandContext  {
                 let fitsCriteria: boolean;
                 if(!hasPermission) {
                     if(!permission.value) return;
-                    if(this.member.roles.cache.has(config.permissions.all)) fitsCriteria = true;
-                    if(permission.type === 'role') fitsCriteria = this.member.roles.cache.has(permission.id);
-                    if(permission.type === 'user') fitsCriteria = this.member.id === permission.id;
+                    if(config.permissions.all && this.member.roles.cache.has(config.permissions.all)) {
+                        fitsCriteria = true;
+                    } else {
+                        if(permission.type === 'role') fitsCriteria = this.member.roles.cache.has(permission.id);
+                        if(permission.type === 'user') fitsCriteria = this.member.id === permission.id;
+                    }
                     if(fitsCriteria) hasPermission = true;
                 }
             });
