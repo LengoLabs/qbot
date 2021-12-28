@@ -9,6 +9,7 @@ export const config: BotConfig = {
     },
     permissions: {
         ranking: '',
+        shout: '',
         users: '',
         join: '',
         signal: '',
