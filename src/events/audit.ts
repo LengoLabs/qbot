@@ -1,22 +1,23 @@
 import { robloxClient, robloxGroup } from '../main';
 import { logAction } from '../handlers/handleLogging';
 
-let lastRecordedDate: Date;
+let lastRecordedDate: number;
 
 const recordAuditLogs = async () => {
     try {
         const auditLog = await robloxClient.apis.groupsAPI.getAuditLogs({
             groupId: robloxGroup.id,
-            actionType: null,
+            actionType: 'ChangeRank',
+            limit: 10,
+            sortOrder: 'Desc',
         });
-        const mostRecentDate = new Date(auditLog.data[0].created);
+        const mostRecentDate = new Date(auditLog.data[0].created).getTime();
         if(lastRecordedDate) {
             const groupRoles = await robloxGroup.getRoles();
             auditLog.data.forEach(async (log) => {
-                if(log.actionType !== 'ChangeRank') return;
                 if(robloxClient.user.id !== log.actor.user.userId) {
                     const logCreationDate = new Date(log.created);
-                    if(logCreationDate.getTime() > lastRecordedDate.getTime()) {
+                    if(logCreationDate.getTime() > lastRecordedDate) {
                         const oldRole = groupRoles.find((role) => role.id === log.description['OldRoleSetId']);
                         const newRole = groupRoles.find((role) => role.id === log.description['NewRoleSetId']);
                         const target = await robloxClient.getUser(log.description['TargetId']);
@@ -31,7 +32,7 @@ const recordAuditLogs = async () => {
     } catch (err) {
         console.error(err);
     }
-    setTimeout(recordAuditLogs, 30000);
+    setTimeout(recordAuditLogs, 60000);
 }
 
 export { recordAuditLogs };

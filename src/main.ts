@@ -8,7 +8,6 @@ import { recordShout } from './events/shout';
 import { checkSuspensions } from './events/suspensions';
 import { recordAuditLogs } from './events/audit';
 import { recordMemberCount } from './events/member';
-import { recordGroupWallPosts } from './events/wall';
 import { clearActions } from './handlers/abuseDetection';
 require('dotenv').config();
 require('./database/router');
@@ -26,7 +25,6 @@ let robloxGroup: Group = null;
     // [Events]
     checkSuspensions();
     if(config.logChannels.shout) recordShout();
-    if(config.logChannels.wall) recordGroupWallPosts();
     if(config.recordManualActions) recordAuditLogs();
     if(config.memberCount.enabled) recordMemberCount();
     if(config.antiAbuse.enabled) clearActions();

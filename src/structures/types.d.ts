@@ -91,10 +91,6 @@ export interface BotConfig {
          * The ID of the channel where you would like all shouts to be logged. Usually, this is a public channel.
          */
         shout?: string;
-        /**
-         * The ID of the channel where you would like all wall posts to be logged.
-         */
-        wall?: string;
     }
     /**
      * Should the API be enabled? You are expected to have an environmental variable named API_KEY with a unique password-like string if this is enabled.

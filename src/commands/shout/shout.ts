@@ -42,7 +42,6 @@ class ShoutCommand extends Command {
 
     async run(ctx: CommandContext) {
         try {
-            console.log(robloxGroup.updateShout);
             await robloxGroup.updateShout(ctx.args['content']);
             ctx.reply({ embeds: [ await getSuccessfulShoutEmbed() ]});
             logAction('Shout', ctx.user, ctx.args['reason'], null, null, null, ctx.args['content']);

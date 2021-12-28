@@ -6,20 +6,24 @@ let firstShout = true;
 let lastShout: string;
 
 const recordShout = async () => {
-    const group = await robloxClient.getGroup(config.groupId);
-    const logChannel = await discordClient.channels.cache.get(config.logChannels.shout) as TextChannel;
-    if(firstShout) {
-        firstShout = false;
-    } else {
-        if(group.shout !== null && lastShout !== group.shout.content) {
-            logChannel.send({ embeds: [ await getShoutLogEmbed(group.shout) ] });
+    try {
+        const group = await robloxClient.getGroup(config.groupId);
+        const logChannel = await discordClient.channels.cache.get(config.logChannels.shout) as TextChannel;
+        if(firstShout) {
+            firstShout = false;
+        } else {
+            if(group.shout !== null && lastShout !== group.shout.content) {
+                logChannel.send({ embeds: [ await getShoutLogEmbed(group.shout) ] });
+            }
         }
-    }
-    setTimeout(recordShout, 30 * 1000);
-    if(!group.shout) {
-        lastShout = null;
-    } else {
-        lastShout = group.shout.content;
+        setTimeout(recordShout, 30 * 1000);
+        if(!group.shout) {
+            lastShout = null;
+        } else {
+            lastShout = group.shout.content;
+        }
+    } catch (err) {
+        console.error(err);
     }
 }
 
