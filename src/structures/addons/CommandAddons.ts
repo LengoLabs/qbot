@@ -104,10 +104,21 @@ export class CommandContext  {
     reply(payload: string | MessageOptions | InteractionReplyOptions) {
         this.replied = true;
         if(this.subject instanceof CommandInteraction) {
-            if(this.subject.deferred) {
-                return this.subject.editReply(payload);
-            } else {
-                return this.subject.reply(payload);
+            try {
+                if(this.subject.deferred) {
+                    return this.subject.editReply(payload);
+                } else {
+                    return this.subject.reply(payload);
+                }
+            } catch (err) {
+                const subject = this.subject as CommandInteraction;
+                setTimeout(() => {
+                    if(subject.deferred) {
+                        return subject.editReply(payload);
+                    } else {
+                        return subject.reply(payload);
+                    }
+                }, 1250);
             }
         } else {
             return this.subject.channel.send(payload);
