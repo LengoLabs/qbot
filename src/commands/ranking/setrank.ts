@@ -4,7 +4,7 @@ import { Command } from '../../structures/Command';
 import {
     getInvalidRobloxUserEmbed,
     getRobloxUserIsNotMemberEmbed,
-    getSuccessfulDemotionEmbed,
+    getSuccessfulSetRankEmbed,
     getUnexpectedErrorEmbed,
     getRoleNotFoundEmbed,
     getVerificationChecksFailedEmbed,
@@ -99,7 +99,7 @@ class SetRankCommand extends Command {
 
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);
-            ctx.reply({ embeds: [ await getSuccessfulDemotionEmbed(robloxUser, role.name) ]})
+            ctx.reply({ embeds: [ await getSuccessfulSetRankEmbed(robloxUser, role.name) ]})
             logAction('Update Rank', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
         } catch (err) {
             console.log(err);

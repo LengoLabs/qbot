@@ -30,7 +30,8 @@ const handleLegacyCommand = (message: Message) => {
     const commandQuery = out[0] || null;
     const args = out[1] || null;
 
-    const command = discordClient.commands.find((cmd) => (new(cmd)).trigger === (commandQuery.substring(config.legacyCommands.prefixes.find((prefix) => commandQuery.startsWith(prefix.replace(/[a-zA-Z0-9]+/gm, ''))).replace(/[a-zA-Z0-9]+/gm, '').length, commandQuery.length)));
+    const commandName = commandQuery.replace(/[^a-zA-Z0-9]/, '');
+    const command = discordClient.commands.find((cmd) => (new cmd()).trigger === commandName || (new cmd()).aliases.includes(commandName));
     if(!command) return;
 
     try {

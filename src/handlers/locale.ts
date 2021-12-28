@@ -95,6 +95,16 @@ export const getSuccessfulFireEmbed = async (user: User | PartialUser, newRole: 
     return embed;
 }
 
+export const getSuccessfulSetRankEmbed = async (user: User | PartialUser, newRole: string): Promise<MessageEmbed> => {
+    const embed = new MessageEmbed()
+        .setAuthor('Success!', checkIconUrl)
+        .setColor(greenColor)
+        .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
+        .setDescription(`**${user.name}** has been successfully ranked to the **${newRole}** role.`);
+
+    return embed;
+}
+
 export const getSuccessfulShoutEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)
