@@ -1,6 +1,3 @@
 node_modules
-src/resources/commands.json
-src/config.js
-package_lock.json
 .env
-.data
+dist
