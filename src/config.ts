@@ -8,12 +8,7 @@ export const config: BotConfig = {
         prefixes: ['q!'],
     },
     permissions: {
-        ranking: '',
-        shout: '',
-        users: '',
-        join: '',
-        signal: '',
-        admin: '',
+        all: '',
     },
     logChannels: {
         actions: '',

@@ -12,6 +12,7 @@ import { Command } from '../Command';
 import { Args } from 'lexure';
 import { getMissingArgumentsEmbed, getInvalidRobloxUserEmbed } from '../../handlers/locale';
 import { robloxClient } from '../../main';
+import { config } from '../../config';
 
 export class CommandContext  {
     type: 'interaction' | 'message';
@@ -80,6 +81,7 @@ export class CommandContext  {
                 let fitsCriteria: boolean;
                 if(!hasPermission) {
                     if(!permission.value) return;
+                    if(this.member.roles.cache.has(config.permissions.all)) fitsCriteria = true;
                     if(permission.type === 'role') fitsCriteria = this.member.roles.cache.has(permission.id);
                     if(permission.type === 'user') fitsCriteria = this.member.id === permission.id;
                     if(fitsCriteria) hasPermission = true;
