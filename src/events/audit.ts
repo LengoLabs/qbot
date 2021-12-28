@@ -17,7 +17,7 @@ const recordAuditLogs = async () => {
             auditLog.data.forEach(async (log) => {
                 if(robloxClient.user.id !== log.actor.user.userId) {
                     const logCreationDate = new Date(log.created);
-                    if(logCreationDate.getTime() > lastRecordedDate) {
+                    if(Math.round(logCreationDate.getTime() / 1000) > Math.round(lastRecordedDate / 1000)) {
                         const oldRole = groupRoles.find((role) => role.id === log.description['OldRoleSetId']);
                         const newRole = groupRoles.find((role) => role.id === log.description['NewRoleSetId']);
                         const target = await robloxClient.getUser(log.description['TargetId']);

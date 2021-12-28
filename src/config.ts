@@ -9,11 +9,16 @@ export const config: BotConfig = {
     },
     permissions: {
         all: '',
+        ranking: '',
+        users: '',
+        shout: '',
+        join: '',
+        signal: '',
+        admin: '',
     },
     logChannels: {
         actions: '',
         shout: '',
-        wall: '',
     },
     database: {
         enabled: true,
@@ -32,7 +37,7 @@ export const config: BotConfig = {
         onlyMilestones: false,
     },
     xpSystem: {
-        enabled: true,
+        enabled: false,
         roles: [
             /* Example:
             {

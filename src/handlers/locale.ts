@@ -327,7 +327,7 @@ export const getShoutLogEmbed = async (shout: GroupShout): Promise<MessageEmbed>
     return embed;
 }
 
-export const getWallPostEmbed = async (post: GroupWallPost): Promise<MessageEmbed> => {
+export const getWallPostEmbed = async (post): Promise<MessageEmbed> => {
     const postCreator = await robloxClient.getUser(post['poster']);
     const embed = new MessageEmbed()
         .setAuthor(`Posted by ${postCreator.name}`, quoteIconUrl)
@@ -344,7 +344,6 @@ export const getLogEmbed = async (action: string, moderator: DiscordUser | User 
     
     const embed = new MessageEmbed()
         .setColor(mainColor)
-        .setFooter(`Moderator ID: ${moderator.id}`)
         .setTimestamp()
         .setDescription(`**Action:** ${action}\n${target ? `**Target:** ${target.name} (${target.id})\n` : ''}${rankChange ? `**Rank Change:** ${rankChange}\n` : ''}${xpChange ? `**XP Change:** ${xpChange}\n` : ''}${endDate ? `**Duration:** <t:${Math.round(endDate.getTime() / 1000)}:R>\n` : ''}${reason ? `**Reason:** ${reason}\n` : ''}${body ? `**Body:** ${target.name} (${target.id})\n` : ''}`);
 
@@ -353,8 +352,9 @@ export const getLogEmbed = async (action: string, moderator: DiscordUser | User 
     } else {
         if(moderator instanceof DiscordUser) {
             embed.setAuthor(moderator.tag, moderator.displayAvatarURL());
+            embed.setFooter(`Moderator ID: ${moderator.id}`);
         } else {
-            embed.setAuthor(moderator);
+            embed.setAuthor(moderator.username);
             embed.setThumbnail((await target.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl);
         }
     }
