@@ -84,8 +84,10 @@ class XPRankupCommand extends Command {
             if(!ctx.member.roles.cache.has(config.permissions.users)) {
                 return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
             }
-            const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
-            if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
+            if(config.verificationChecks) {
+                const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
+                if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
+            }
         }
 
         try {

@@ -92,8 +92,10 @@ class RemoveXPCommand extends Command {
         if(!role) return ctx.reply({ embeds: [ getNoRankAboveEmbed() ]});
         if(role.rank > config.maximumRank || robloxMember.role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
 
-        const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
-        if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
+        if(config.verificationChecks) {
+            const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
+            if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
+        }
 
         const userData = await provider.findUser(robloxUser.id.toString());
         const xp = Number(userData.xp) - Number(ctx.args['decrement']);
