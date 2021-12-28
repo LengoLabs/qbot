@@ -179,7 +179,7 @@ export interface BotConfig {
         /**
          * How frequently should recorded actions be cleared? This is in seconds, and does not require integers.
          */
-        flushDuration?: number;
+         clearDuration?: number;
         /**
          * Within the flushDuration specified above, how many actions can a user have before being demoted due to this anti abuse system?
          */
