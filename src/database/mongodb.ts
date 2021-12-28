@@ -17,15 +17,26 @@ class MongoDBProvider extends DatabaseProvider {
     }
 
     async findUser(robloxId: string): Promise<DatabaseUser> {
-        return await User.findOneAndUpdate({ robloxId }, { robloxId, xp: 0 }, { upsert: true });
+        let userData = await User.findOne({ robloxId });
+        if(!userData) {
+            userData = await User.create({ robloxId, xp: 0 });
+        }
+        return userData;
     }
 
     async findSuspendedUsers(): Promise<DatabaseUser[]> {
-        return await User.find({ suspendedUntil: { $exists: true } });
+        return await User.find({ suspendedUntil: { $ne: null } });
     }
 
     async updateUser(robloxId: string, data: any) {
-        await User.updateOne({ robloxId }, { robloxId, ...data });
+        let userData = await User.findOne({ robloxId });
+        if(!userData) {
+            userData = await User.create({ robloxId, xp: 0 });
+        }
+        Object.keys(data).forEach((key) => {
+            userData[key] = data[key];
+        });
+        return await userData.save();
     }
 }
 

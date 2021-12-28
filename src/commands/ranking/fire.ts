@@ -10,12 +10,14 @@ import {
     getAlreadyFiredEmbed,
     getRoleNotFoundEmbed,
     noFiredRankLog,
+    getUserSuspendedEmbed,
 } from '../../handlers/locale';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
+import { provider } from '../../database/router';
 
 class FireCommand extends Command {
     constructor() {
@@ -29,7 +31,7 @@ class FireCommand extends Command {
                     trigger: 'roblox-user',
                     description: 'Who do you want to fire?',
                     autocomplete: true,
-                    type: 'String',
+                    type: 'RobloxUser',
                 },
                 {
                     trigger: 'reason',
@@ -86,10 +88,13 @@ class FireCommand extends Command {
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
         }
         if(robloxMember.role.rank === config.firedRank) return ctx.reply({ embeds: [ getAlreadyFiredEmbed() ] });
-        if(role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
+        if(role.rank > config.maximumRank || robloxMember.role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
 
         const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
         if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
+
+        const userData = await provider.findUser(robloxUser.id.toString());
+        if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
 
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);

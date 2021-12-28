@@ -36,7 +36,23 @@ export interface BotConfig {
         /**
          * Access to the promote, demote, setrank, and fire commands.
          */
-        ranking: string;
+        ranking?: string;
+        /**
+         * Access to the info, add-xp, remove-xp, and xp-rankup commands.
+         */
+        users: string;
+        /**
+         * Access to the join-requests, accept-join, and deny-join commands.
+         */
+        join: string;
+        /**
+         * Access to the signal command.
+         */
+        signal: string;
+        /**
+         * Access to the revert-ranks command.
+         */
+        admin: string;
     }
     /**
      * Configuration for the built-in database module used by suspension and XP-related commands.
@@ -62,12 +78,20 @@ export interface BotConfig {
         /**
          * The ID of the channel where you would like all actions done through commands on this bot to be logged.
          */
-        actions: string;
+        actions?: string;
         /**
-         * Should shouts be logged to a public channel?
+         * The ID of the channel where you would like all shouts to be logged. Usually, this is a public channel.
          */
-        shout: string;
+        shout?: string;
+        /**
+         * The ID of the channel where you would like all wall posts to be logged.
+         */
+        wall?: string;
     }
+    /**
+     * Should the API be enabled? You are expected to have an environmental variable named API_KEY with a unique password-like string if this is enabled.
+    */
+    api: boolean;
     /**
      * What rank should be the maximum that can be ranked by your bot? 
     */
@@ -88,6 +112,79 @@ export interface BotConfig {
      * @default 1
      */
     suspendedRank: number;
+    /**
+     * Should manual ranking actions be recorded and logged?
+     */
+    recordManualActions: boolean;
+    /**
+     * Configuration for the member count feature.
+     */
+    memberCount: {
+        /**
+         * Is this feature enabled?
+         */
+        enabled: boolean;
+        /**
+         * What channel should the member count be announced in when it changes?
+         */
+        channelId?: string;
+        /**
+         * Multiples of this number will be considered milestones.
+         */
+        milestone?: number;
+        /**
+         * Should the bot log member counts that are not milestones?
+         */
+        onlyMilestones?: boolean;
+    }
+    /**
+     * Configuration for the XP system.
+     */
+    xpSystem: {
+        /**
+         * Should the XP system be enabled?
+         */
+        enabled: boolean;
+        /**
+         * Roles that users can rank up to.
+         */
+        roles?: {
+            /**
+             * The rank number of this role.
+             */
+            rank: number;
+            /**
+             * The minimum XP that a user needs to rank up to this role.
+             * They will always rank up to the one with the highest XP.
+             */
+            xp: number;
+        }[];
+    }
+    /**
+     * Configuration for the anti abuse feature. This works by demoting users who exceed the action threshold within the set amount of time.
+     */
+    antiAbuse: {
+        /**
+         * Should the anti abuse feature be enabled?
+         */
+        enabled: boolean;
+        /**
+         * How frequently should recorded actions be cleared? This is in seconds, and does not require integers.
+         */
+        flushDuration?: number;
+        /**
+         * Within the flushDuration specified above, how many actions can a user have before being demoted due to this anti abuse system?
+         */
+        threshold?: number;
+        /**
+         * What rank number should users be demoted to if their actions exceed the 
+         */
+        demotionRank?: number;
+        /**
+         * Is there a role that can bypass this? If so, place the ID here.
+         */
+        bypassRoleId?: string;
+    }
 }
 
 export declare type CommandPermission = {
@@ -117,7 +214,7 @@ export declare type CommandArgument = {
     /**
      * How should the value be resolved or what should be prompted for slash commands?
      */
-    type: 'Subcommand' | 'SubcommandGroup' | 'String' | 'Number' | 'Boolean' | 'Subcommand' | 'RobloxUser' | 'DiscordUser' | 'DiscordRole' | 'DiscordChannel' | 'DiscordMentionable';
+    type: 'Subcommand' | 'SubcommandGroup' | 'String' | 'Number' | 'Boolean' | 'Subcommand' | 'RobloxUser' | 'RobloxRole' | 'DiscordUser' | 'DiscordRole' | 'DiscordChannel' | 'DiscordMentionable';
     /**
      * Should the bot be sent requests to autocomplete everything they type?
      * @default false;

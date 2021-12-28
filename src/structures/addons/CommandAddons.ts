@@ -20,6 +20,7 @@ export class CommandContext  {
     member?: GuildMember;
     guild?: Guild;
     args?: { [key: string]: any };
+    replied: boolean;
     command: Command;
 
     /**
@@ -34,16 +35,17 @@ export class CommandContext  {
         this.member = payload.member as GuildMember;
         this.guild = payload.guild;
         this.command = new command();
+        this.replied = false;
 
         this.args = {};
         if(payload instanceof Interaction) {
             const interaction = payload as CommandInteraction;
-            interaction.deferReply();
+            if(!this.replied && !interaction.replied) interaction.deferReply();
             interaction.options.data.forEach(async (arg) => {
                 this.args[arg.name] = interaction.options.get(arg.name).value;
             });
         } else {
-            this.subject.channel.sendTyping();
+            if(!this.replied) this.subject.channel.sendTyping();
             this.command.args.forEach((arg, index) => { if(!arg.isLegacyFlag) this.args[arg.trigger] = args.single() });
             const filledOutArgs = Object.keys(Object.fromEntries(Object.entries(this.args).filter(([_, v]) => v !== null)));
             const requiredArgs = this.command.args.filter((arg) => (arg.required === undefined || arg.required === null ? true : arg.required) && !arg.isLegacyFlag);
@@ -93,8 +95,13 @@ export class CommandContext  {
      * @param payload
      */
     reply(payload: string | MessageOptions | InteractionReplyOptions) {
+        this.replied = true;
         if(this.subject instanceof CommandInteraction) {
-            return this.subject.editReply(payload);
+            if(this.subject.deferred) {
+                return this.subject.editReply(payload);
+            } else {
+                return this.subject.reply(payload);
+            }
         } else {
             return this.subject.channel.send(payload);
         }

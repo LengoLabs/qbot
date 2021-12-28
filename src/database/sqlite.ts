@@ -11,7 +11,7 @@ class SQLiteProvider {
     constructor() {
         this.sql = new Sequelize({
             dialect: 'sqlite',
-            storage: '../../.data/sql/database.sqlite',
+            storage: '../.data/db.sqlite',
             logging: false
         });
         User.init({

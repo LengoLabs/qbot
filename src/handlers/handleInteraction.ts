@@ -24,8 +24,11 @@ const handleInteraction = async (payload: Interaction) => {
     } else if(payload instanceof AutocompleteInteraction) {
         const interaction = payload as AutocompleteInteraction;
         const focusedOption = payload.options.getFocused(true);
-        if(focusedOption.name === 'roblox-user') handleRobloxUser(interaction, focusedOption);
-        if(focusedOption.name === 'roblox-role') await handleRobloxRole(interaction, focusedOption);
+        const command = await discordClient.commands.find((cmd) => (new cmd()).trigger === interaction.commandName);
+        if(!command) return;
+        const focusedArg = (new command()).args.find((arg) => arg.trigger === focusedOption.name);
+        if(focusedArg.type === 'RobloxUser') handleRobloxUser(interaction, focusedOption);
+        if(focusedArg.type === 'RobloxRole') await handleRobloxRole(interaction, focusedOption);
     }
 }
 

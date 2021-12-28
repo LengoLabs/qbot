@@ -1,8 +1,9 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandArgument, DatabaseUser } from '../structures/types';
 import { config } from '../config';
-import { User, PartialUser, GroupShout, GroupMember } from 'bloxy/dist/structures';
+import { User, PartialUser, GroupShout, GroupMember, GroupWallPost, GroupJoinRequest } from 'bloxy/dist/structures';
 import { User as DiscordUser } from 'discord.js';
+import { Command } from '../structures/Command';
 import { robloxClient, robloxGroup } from '../main';
 import { textSync } from 'figlet';
 
@@ -28,6 +29,7 @@ export const securityText = `\n${consoleRed}⚠  ${consoleClear}URGENT: For secu
 
 export const noFiredRankLog = `Uh oh, you do not have a fired rank with the rank specified in your configuration file.`;
 export const noSuspendedRankLog = `Uh oh, you do not have a suspended rank with the rank specified in your configuration file.`;
+export const getListeningText = (port) => `${consoleGreen}✓  ${consoleClear}Listening on port ${port}.`;
 
 export const getMissingArgumentsEmbed = (cmdName: string, args: CommandArgument[]): MessageEmbed => {
     let argString = '';
@@ -93,21 +95,107 @@ export const getSuccessfulFireEmbed = async (user: User | PartialUser, newRole: 
     return embed;
 }
 
+export const getSuccessfulShoutEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Success!', checkIconUrl)
+        .setColor(greenColor)
+        .setDescription('The specified message has been posted as the group shout.');
+
+    return embed;
+}
+
+export const getSuccessfulSignalEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Success!', checkIconUrl)
+        .setColor(greenColor)
+        .setDescription('The specified command has been stored and made available to connected Roblox games using our API.');
+
+    return embed;
+}
+
+export const getSuccessfulRevertRanksEmbed = (actionCount: number): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Success!', checkIconUrl)
+        .setColor(greenColor)
+        .setDescription(`Successfully rolled back **${actionCount}** ranking actions.`);
+
+    return embed;
+}
+
+export const getSuccessfulXPRankupEmbed = async (user: User | PartialUser, newRole: string): Promise<MessageEmbed> => {
+    const embed = new MessageEmbed()
+        .setAuthor('Success!', checkIconUrl)
+        .setColor(greenColor)
+        .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
+        .setDescription(`**${user.name}** has been ranked up to **${newRole}**!`);
+
+    return embed;
+}
+
+export const getSuccessfulXPChangeEmbed = async (user: User | PartialUser, xp: number): Promise<MessageEmbed> => {
+    const embed = new MessageEmbed()
+        .setAuthor('Success!', checkIconUrl)
+        .setColor(greenColor)
+        .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
+        .setDescription(`The XP of **${user.name}** has been updated, leaving them with a total of **${xp}** XP.`);
+
+    return embed;
+}
+
 export const getSuccessfulSuspendEmbed = async (user: User | PartialUser, newRole: string, endDate: Date): Promise<MessageEmbed> => {
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
         .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
-        .setDescription(`**${user.name}** has been successfully suspended, and will have their current rank return in <t:${Math.round(endDate.getTime() / 1000)}:R>.`);
+        .setDescription(`**${user.name}** has been successfully suspended, and will have their current rank return <t:${Math.round(endDate.getTime() / 1000)}:R>.`);
+
+    return embed;
+}
+
+export const getSuccessfulUnsuspendEmbed = async (user: User | PartialUser, newRole: string): Promise<MessageEmbed> => {
+    const embed = new MessageEmbed()
+        .setAuthor('Success!', checkIconUrl)
+        .setColor(greenColor)
+        .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
+        .setDescription(`**${user.name}** is no longer suspended, and has been ranked back to **${newRole}**!`);
+
+    return embed;
+}
+
+export const getSuccessfulAcceptJoinRequestEmbed = async (user: User | PartialUser): Promise<MessageEmbed> => {
+    const embed = new MessageEmbed()
+        .setAuthor('Success!', checkIconUrl)
+        .setColor(greenColor)
+        .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
+        .setDescription(`The join request from **${user.name}** has been accepted.`);
+
+    return embed;
+}
+
+export const getSuccessfulDenyJoinRequestEmbed = async (user: User | PartialUser): Promise<MessageEmbed> => {
+    const embed = new MessageEmbed()
+        .setAuthor('Success!', checkIconUrl)
+        .setColor(greenColor)
+        .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
+        .setDescription(`The join request from **${user.name}** has been denied.`);
 
     return embed;
 }
 
 export const getUserSuspendedEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
-        .setAuthor('User Suspended', xmarkIconUrl)
+        .setAuthor('User Is Suspended', xmarkIconUrl)
         .setColor(redColor)
         .setDescription('This user is suspended, and cannot be ranked. Please use the unsuspend command to revert this.');
+
+    return embed;
+}
+
+export const getCommandNotFoundEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Command Not Found', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('A command could not be found with that query.');
 
     return embed;
 }
@@ -157,6 +245,24 @@ export const getNoPermissionEmbed = (): MessageEmbed => {
     return embed;
 }
 
+export const getInvalidXPEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Invalid XP', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('The value of XP used in this command must be a positive integer.');
+
+    return embed;
+}
+
+export const getNoRankupAvailableEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('No Rankup Available', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('You do not have any available rankups.');
+
+    return embed;
+}
+
 export const getVerificationChecksFailedEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Verification Check Failed', xmarkIconUrl)
@@ -202,7 +308,7 @@ export const getInvalidDurationEmbed = (): MessageEmbed => {
 export const getShoutLogEmbed = async (shout: GroupShout): Promise<MessageEmbed> => {
     const shoutCreator = await robloxClient.getUser(shout.creator.id);
     const embed = new MessageEmbed()
-        .setAuthor(`Posted by ${shoutCreator.name}`, quoteIconUrl)
+        .setAuthor(`Shout from ${shoutCreator.name}`, quoteIconUrl)
         .setThumbnail((await shoutCreator.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
         .setColor(mainColor)
         .setTimestamp()
@@ -211,21 +317,37 @@ export const getShoutLogEmbed = async (shout: GroupShout): Promise<MessageEmbed>
     return embed;
 }
 
-export const getLogEmbed = async (action: string, moderator: DiscordUser, reason?: string, target?: User | PartialUser, rankChange?: string, endDate?: Date, body?: string): Promise<MessageEmbed> => {
+export const getWallPostEmbed = async (post: GroupWallPost): Promise<MessageEmbed> => {
+    const postCreator = await robloxClient.getUser(post['poster']);
     const embed = new MessageEmbed()
-        .setAuthor(moderator.tag, moderator.displayAvatarURL())
-        .setThumbnail((await target.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
+        .setAuthor(`Posted by ${postCreator.name}`, quoteIconUrl)
+        .setThumbnail((await postCreator.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
+        .setColor(mainColor)
+        .setTimestamp()
+        .setDescription(post['body']);
+
+    return embed;
+}
+
+export const getLogEmbed = async (action: string, moderator: DiscordUser | User | GroupMember | any, reason?: string, target?: User | PartialUser, rankChange?: string, endDate?: Date, body?: string, xpChange?: string): Promise<MessageEmbed> => {
+    if(!target.name) target = await robloxClient.getUser(target.id);
+    
+    const embed = new MessageEmbed()
         .setColor(mainColor)
         .setFooter(`Moderator ID: ${moderator.id}`)
         .setTimestamp()
-        .setDescription(`
-        **Action:** ${action}
-        ${target ? `**Target:** ${target.name} (${target.id})` : ''}
-        ${rankChange ? `**Rank Change:** ${rankChange}` : ''}
-        ${reason ? `**Reason:** ${reason}` : ''}
-        ${endDate ? `**Duration:** <t:${Math.round(endDate.getTime() / 1000)}:R>` : ''}
-        ${body ? `**Body:** ${target.name} (${target.id})` : ''}
-        `);
+        .setDescription(`**Action:** ${action}\n${target ? `**Target:** ${target.name} (${target.id})\n` : ''}${rankChange ? `**Rank Change:** ${rankChange}\n` : ''}${xpChange ? `**XP Change:** ${xpChange}\n` : ''}${endDate ? `**Duration:** <t:${Math.round(endDate.getTime() / 1000)}:R>\n` : ''}${reason ? `**Reason:** ${reason}\n` : ''}${body ? `**Body:** ${target.name} (${target.id})\n` : ''}`);
+
+    if(typeof moderator === 'string') {
+        embed.setAuthor(moderator);
+    } else {
+        if(moderator instanceof DiscordUser) {
+            embed.setAuthor(moderator.tag, moderator.displayAvatarURL());
+        } else {
+            embed.setAuthor(moderator);
+            embed.setThumbnail((await target.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl);
+        }
+    }
 
     return embed;
 }
@@ -249,8 +371,78 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
         .setFooter(`User ID: ${user.id}`)
         .setTimestamp()
         .addField('Role', `${member.role.name} (${member.role.rank})`, true)
-        .addField('XP', data.xp.toString(), true)
+        .addField('XP', data.xp.toString() || '0', true)
         .addField('Suspended', data.suspendedUntil ? `✅ (<t:${Math.round(data.suspendedUntil.getTime() / 1000)}:R>)` : '❌', true)
+
+    return embed;
+}
+
+export const getNotSuspendedEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('User Not Suspended', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('This user is not suspended, so you cannot run this command on them.');
+
+    return embed;
+}
+
+export const getMemberCountMessage = (oldCount: number, newCount: number): string => {
+    if(oldCount > newCount) {
+        return `⬆️ The member count is now **${newCount}** (+${newCount - oldCount})`;
+    } else {
+        return `⬇️ The member count is now **${newCount}** (-${oldCount - newCount})`;
+    }
+}
+
+export const getMemberCountMilestoneEmbed = (count: number): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Member Milestone Reached!', checkIconUrl)
+        .setColor(greenColor)
+        .setDescription(`🎉 The member count is now **${count}**!`);
+
+    return embed;
+}
+
+export const getCommandInfoEmbed = (command: Command): MessageEmbed => {
+    let argString = '';
+    command.args.forEach((arg) => {
+        argString += arg.required || true ? `<${arg.trigger}> ` : `[${arg.trigger}] `;
+    });
+    argString = argString.substring(0, argString.length - 1);
+
+    const embed = new MessageEmbed()
+        .setAuthor('Command Information', infoIconUrl)
+        .setTitle(command.trigger)
+        .setColor(mainColor)
+        .setDescription(command.description)
+        .setFooter(config.slashCommands ? 'Tip: Slash commands automatically display a list of available commands, and their required usage.' : '')
+        .addField('Module', command.module, true)
+        .addField('Usage', `\`${argString}\``, true);
+
+    return embed;
+}
+
+export const getCommandListEmbed = (modules: { [key: string]: Command[] }): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Command List', infoIconUrl)
+        .setColor(mainColor)
+        .setDescription(config.slashCommands && config.legacyCommands ? 'Tip: Slash commands automatically display a list of available commands, and their required usage.' : '')
+
+    Object.keys(modules).forEach((key) => {
+        const moduleCommands = modules[key];
+        const mappedCommands = moduleCommands.map((cmd) => `\`${cmd.trigger}\` - ${cmd.description}`);
+        embed.addField(key.replace('-', ' ').split(' ').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '), mappedCommands.join('\n'));
+    });
+
+    return embed;
+}
+
+export const getJoinRequestsEmbed = (joinRequests: GroupJoinRequest[]): MessageEmbed => {
+    const requestString = joinRequests.map((request) => `- \`${request['requester'].username}\``).join('\n');
+    const embed = new MessageEmbed()
+        .setAuthor('Join Requests', infoIconUrl)
+        .setColor(mainColor)
+        .setDescription(`${joinRequests.length !== 0 ? `There is currently ${joinRequests.length} pending join requests:\n\n${requestString}` : 'There is no pending join requests.'}`);
 
     return embed;
 }

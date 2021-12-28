@@ -7,7 +7,7 @@ let lastShout: string;
 
 const recordShout = async () => {
     const group = await robloxClient.getGroup(config.groupId);
-    const logChannel = await discordClient.channels.fetch(config.logChannels.shout) as TextChannel;
+    const logChannel = await discordClient.channels.cache.get(config.logChannels.shout) as TextChannel;
     if(firstShout) {
         firstShout = false;
     } else {

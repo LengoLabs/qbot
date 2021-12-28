@@ -20,13 +20,13 @@ import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import ms from 'ms';
 import { provider } from '../../database/router';
 
-class FireCommand extends Command {
+class SuspendCommand extends Command {
     constructor() {
         super({
             trigger: 'suspend',
             description: 'Temporarily fires a user.',
             type: 'ChatInput',
-            module: 'ranking',
+            module: 'suspensions',
             args: [
                 {
                     trigger: 'roblox-user',
@@ -88,7 +88,7 @@ class FireCommand extends Command {
         }
 
         const duration = Number(ms(ctx.args['duration']));
-        if(duration < 5 * 60000 && duration > 6.31138519 * (10 ^ 10) ) return ctx.reply({ embeds: [ getInvalidDurationEmbed() ] });
+        if(duration < 0.5 * 60000 && duration > 6.31138519 * (10 ^ 10) ) return ctx.reply({ embeds: [ getInvalidDurationEmbed() ] });
         
         const endDate = new Date();
         endDate.setMilliseconds(endDate.getMilliseconds() + duration);
@@ -99,8 +99,7 @@ class FireCommand extends Command {
             console.error(noSuspendedRankLog);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
         }
-        if(robloxMember.role.rank === config.suspendedRank) return ctx.reply({ embeds: [ getAlreadySuspendedEmbed() ] });
-        if(role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
+        if(role.rank > config.maximumRank || robloxMember.role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
 
         const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
         if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
@@ -110,7 +109,7 @@ class FireCommand extends Command {
         await provider.updateUser(robloxUser.id.toString(), { suspendedUntil: endDate, unsuspendRank: robloxMember.role.id });
 
         try {
-            await robloxGroup.updateMember(robloxUser.id, role.id);
+            if(robloxMember.role.id !== role.id) await robloxGroup.updateMember(robloxUser.id, role.id);
             ctx.reply({ embeds: [ await getSuccessfulSuspendEmbed(robloxUser, role.name, endDate) ]});
             logAction('Suspend', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`, endDate);
         } catch (err) {
@@ -120,4 +119,4 @@ class FireCommand extends Command {
     }
 }
 
-export default FireCommand;
+export default SuspendCommand;

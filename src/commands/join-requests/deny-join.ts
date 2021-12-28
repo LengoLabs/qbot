@@ -3,32 +3,25 @@ import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
     getInvalidRobloxUserEmbed,
-    getRobloxUserIsNotMemberEmbed,
-    getSuccessfulPromotionEmbed,
     getUnexpectedErrorEmbed,
-    getNoRankAboveEmbed,
-    getRoleNotFoundEmbed,
-    getVerificationChecksFailedEmbed,
-    getUserSuspendedEmbed,
+    getSuccessfulDenyJoinRequestEmbed,
 } from '../../handlers/locale';
-import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
-import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
+import { User, PartialUser } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
-import { provider } from '../../database/router';
 
-class PromoteCommand extends Command {
+class DenyJoinCommand extends Command {
     constructor() {
         super({
-            trigger: 'promote',
-            description: 'Promotes a user in the Roblox group.',
+            trigger: 'deny-join',
+            description: 'Denies the join request from a user.',
             type: 'ChatInput',
-            module: 'ranking',
+            module: 'join-requests',
             args: [
                 {
                     trigger: 'roblox-user',
-                    description: 'Who do you want to promote?',
+                    description: 'Whose join request do you want to deny?',
                     autocomplete: true,
                     type: 'RobloxUser',
                 },
@@ -43,7 +36,7 @@ class PromoteCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    id: config.permissions.ranking,
+                    id: config.permissions.join,
                     value: true,
                 }
             ]
@@ -72,29 +65,10 @@ class PromoteCommand extends Command {
             }
         }
 
-        let robloxMember: GroupMember;
         try {
-            robloxMember = await robloxGroup.getMember(robloxUser.id);
-            if(!robloxMember) throw new Error();
-        } catch (err) {
-            return ctx.reply({ embeds: [ getRobloxUserIsNotMemberEmbed() ]});
-        }
-
-        const groupRoles = await robloxGroup.getRoles();
-        const role = groupRoles.find((role) => role.rank === robloxMember.role.rank + 1);
-        if(!role) return ctx.reply({ embeds: [ getNoRankAboveEmbed() ]});
-        if(role.rank > config.maximumRank || robloxMember.role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
-
-        const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
-        if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
-
-        const userData = await provider.findUser(robloxUser.id.toString());
-        if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
-
-        try {
-            await robloxGroup.updateMember(robloxUser.id, role.id);
-            ctx.reply({ embeds: [ await getSuccessfulPromotionEmbed(robloxUser, role.name) ]});
-            logAction('Promote', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
+            await robloxGroup.declineJoinRequest(robloxUser.id);
+            ctx.reply({ embeds: [ await getSuccessfulDenyJoinRequestEmbed(robloxUser) ]});
+            logAction('Deny Join Request', ctx.user, ctx.args['reason'], robloxUser);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
@@ -102,4 +76,4 @@ class PromoteCommand extends Command {
     }
 }
 
-export default PromoteCommand;
+export default DenyJoinCommand;

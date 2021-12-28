@@ -10,9 +10,8 @@ import {
     getUserInfoEmbed,
 } from '../../handlers/locale';
 import { provider } from '../../database/router';
-import { MessageActionRow, MessageButton, MessageSelectMenu } from 'discord.js';
 
-class XPCommand extends Command {
+class InfoCommand extends Command {
     constructor() {
         super({
             trigger: 'info',
@@ -31,7 +30,7 @@ class XPCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    id: config.permissions.ranking,
+                    id: config.permissions.users,
                     value: true,
                 }
             ]
@@ -78,4 +77,4 @@ class XPCommand extends Command {
     }
 }
 
-export default XPCommand;
+export default InfoCommand;

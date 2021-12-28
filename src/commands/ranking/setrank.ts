@@ -9,12 +9,14 @@ import {
     getRoleNotFoundEmbed,
     getVerificationChecksFailedEmbed,
     getAlreadyRankedEmbed,
+    getUserSuspendedEmbed,
 } from '../../handlers/locale';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
+import { provider } from '../../database/router';
 
 class SetRankCommand extends Command {
     constructor() {
@@ -28,13 +30,13 @@ class SetRankCommand extends Command {
                     trigger: 'roblox-user',
                     description: 'Whose rank would you like to change?',
                     autocomplete: true,
-                    type: 'String',
+                    type: 'RobloxUser',
                 },
                 {
                     trigger: 'roblox-role',
                     description: 'What role would you like to change them to?',
                     autocomplete: true,
-                    type: 'String',
+                    type: 'RobloxRole',
                 },
                 {
                     trigger: 'reason',
@@ -86,11 +88,14 @@ class SetRankCommand extends Command {
 
         const groupRoles = await robloxGroup.getRoles();
         const role = groupRoles.find((role) => role.id == ctx.args['roblox-role'] || role.rank == ctx.args['roblox-role'] || role.name.toLowerCase().startsWith(ctx.args['roblox-role'].toLowerCase()));
-        if(!role || role.rank === 0 || role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ]});
+        if(!role || role.rank === 0 || role.rank > config.maximumRank || robloxMember.role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ]});
         if(robloxMember.role.id === role.id) return ctx.reply({ embeds: [ getAlreadyRankedEmbed() ] });
 
         const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
         if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
+
+        const userData = await provider.findUser(robloxUser.id.toString());
+        if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
 
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);

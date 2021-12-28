@@ -1,30 +1,35 @@
-import { robloxClient, robloxGroup } from '../../main';
+import { discordClient, robloxClient, robloxGroup } from '../../main';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
     getInvalidRobloxUserEmbed,
     getRobloxUserIsNotMemberEmbed,
-    getSuccessfulPromotionEmbed,
+    getSuccessfulUnsuspendEmbed,
     getUnexpectedErrorEmbed,
-    getNoRankAboveEmbed,
-    getRoleNotFoundEmbed,
     getVerificationChecksFailedEmbed,
+    getRoleNotFoundEmbed,
+    getNotSuspendedEmbed,
+    getAlreadySuspendedEmbed,
+    noSuspendedRankLog,
 } from '../../handlers/locale';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
+import { getLinkedRobloxUser } from '../../handlers/accountLinks';
+import { provider } from '../../database/router';
 
-class PromoteCommand extends Command {
+class UnsuspendCommand extends Command {
     constructor() {
         super({
-            trigger: 'promote',
-            description: 'Promotes a user in the Roblox group.',
+            trigger: 'unsuspend',
+            description: 'Removes a suspension from a user, and ranks them back to their previous role.',
             type: 'ChatInput',
+            module: 'suspensions',
             args: [
                 {
                     trigger: 'roblox-user',
-                    description: 'Who do you want to promote?',
+                    description: 'Who do you want to unsuspend?',
                     autocomplete: true,
                     type: 'String',
                 },
@@ -56,7 +61,15 @@ class PromoteCommand extends Command {
                 if(robloxUsers.length === 0) throw new Error();
                 robloxUser = robloxUsers[0];
             } catch (err) {
-                return ctx.reply({ embeds: [ getInvalidRobloxUserEmbed() ]});
+                try {
+                    const idQuery = ctx.args['roblox-user'].replace(/[^0-9]/gm, '');
+                    const discordUser = await discordClient.users.fetch(idQuery);
+                    const linkedUser = await getLinkedRobloxUser(discordUser.id, ctx.guild.id);
+                    if(!linkedUser) throw new Error();
+                    robloxUser = linkedUser;
+                } catch (err) {
+                    return ctx.reply({ embeds: [ getInvalidRobloxUserEmbed() ]});
+                }
             }
         }
 
@@ -68,23 +81,30 @@ class PromoteCommand extends Command {
             return ctx.reply({ embeds: [ getRobloxUserIsNotMemberEmbed() ]});
         }
 
+        const userData = await provider.findUser(robloxUser.id.toString());
+        if(!userData.suspendedUntil) return ctx.reply({ embeds: [ getNotSuspendedEmbed() ] });
+
         const groupRoles = await robloxGroup.getRoles();
-        const role = groupRoles.find((role) => role.rank === robloxMember.role.rank + 1);
-        if(!role) return ctx.reply({ embeds: [ getNoRankAboveEmbed() ]});
-        if(role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
+        const role = groupRoles.find((role) => role.id === userData.unsuspendRank);
+        if(!role) {
+            return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
+        }
+        if(role.rank > config.maximumRank || robloxMember.role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
 
         const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
         if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
 
+        await provider.updateUser(robloxUser.id.toString(), { suspendedUntil: null, unsuspendRank: null });
+
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);
-            ctx.reply({ embeds: [ await getSuccessfulPromotionEmbed(robloxUser, role.name) ]});
-            logAction('Promote', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
+            ctx.reply({ embeds: [ await getSuccessfulUnsuspendEmbed(robloxUser, role.name) ]});
+            logAction('Unsuspend', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
         } catch (err) {
-            console.log(err);
+            console.error(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
         }
     }
 }
 
-export default PromoteCommand;
+export default UnsuspendCommand;

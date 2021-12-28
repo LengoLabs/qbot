@@ -4,7 +4,8 @@ import { Command } from './Command';
 import { config } from '../config';
 import { readdirSync, writeFileSync } from 'fs';
 import { discordClient } from '../main';
-import { qbotLaunchTextDisplay, welcomeText, startedText, securityText } from '../handlers/locale';
+import { qbotLaunchTextDisplay, welcomeText, startedText, securityText, getListeningText } from '../handlers/locale';
+import { getLogChannels } from '../handlers/handleLogging';
 
 class QbotClient extends Client {
     config: BotConfig;
@@ -25,7 +26,9 @@ class QbotClient extends Client {
             console.log(welcomeText);
             if(this.application.botPublic) return console.log(securityText);
             console.log(startedText);
+            console.log(getListeningText(process.env.PORT || 3001));
             this.loadCommands();
+            getLogChannels();
         });
     }
 

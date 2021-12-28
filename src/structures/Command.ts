@@ -21,6 +21,7 @@ const argumentTypeMappings = {
     String: 'STRING',
     Number: 'INTEGER',
     RobloxUser: 'STRING',
+    RobloxRole: 'STRING',
     DiscordUser: 'USER',
     DiscordRole: 'ROLE',
     DiscordChannel: 'CHANNEL',
@@ -45,6 +46,7 @@ abstract class Command {
     trigger: string;
     type?: CommandType;
     description?: string;
+    module?: string;
     aliases?: string[];
     permissions?: CommandPermission[];
     args?: CommandArgument[];
@@ -53,6 +55,7 @@ abstract class Command {
         this.trigger = options.trigger;
         this.type = options.type || 'ChatInput';
         this.description = options.description || '*No description provided.*';
+        this.module = options.module || 'other';
         this.aliases = options.aliases || [];
         this.permissions = options.permissions || [];
         this.args = options.args || [];
