@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionChoice, ExcludeEnum } from 'discord.js';
+import { ActivityType, ApplicationCommandOptionChoice, ExcludeEnum } from 'discord.js';
 import { ChannelTypes } from 'discord.js/typings/enums';
 import { Command } from './Command';
 
@@ -188,6 +188,18 @@ export interface BotConfig {
          * Is there a role that can bypass this? If so, place the ID here.
          */
         bypassRoleId?: string;
+    }
+    /**
+     * Configuration for the bot's activity status (rich presence) on Discord.
+     */
+    activityStatus: {
+        /**
+         * Should there be an activity status for the bot?
+         */
+        enabled: boolean;
+        type?: 'PLAYING' | 'WATCHING' | 'STREAMING' | 'LISTENING' | 'COMPETING';
+        value?: string;
+        url?: string;
     }
 }
 

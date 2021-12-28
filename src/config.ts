@@ -54,4 +54,9 @@ export const config: BotConfig = {
         demotionRank: 1,
         bypassRoleId: '',
     },
+    activityStatus: {
+        enabled: false,
+        type: 'WATCHING',
+        value: 'for commands.',
+    },
 }
