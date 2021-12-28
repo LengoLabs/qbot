@@ -42,6 +42,10 @@ export interface BotConfig {
          */
         users: string;
         /**
+         * Access to the shout command.
+         */
+        shout: string;
+        /**
          * Access to the join-requests, accept-join, and deny-join commands.
          */
         join: string;

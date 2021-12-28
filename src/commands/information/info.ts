@@ -21,18 +21,11 @@ class InfoCommand extends Command {
             args: [
                 {
                     trigger: 'roblox-user',
-                    description: 'Who do you want to promote?',
+                    description: 'Who do you want to view the information of?',
                     autocomplete: true,
                     required: false,
                     type: 'String',
                 },
-            ],
-            permissions: [
-                {
-                    type: 'role',
-                    id: config.permissions.users,
-                    value: true,
-                }
             ]
         });
     }
