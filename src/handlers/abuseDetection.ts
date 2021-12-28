@@ -28,7 +28,7 @@ const recordAction = async (moderator: User) => {
 
 const clearActions = () => {
     actionCounts = [];
-    setTimeout(clearActions, 60 * 1000);
+    setTimeout(clearActions, config.antiAbuse.flushDuration * 1000);
 }
 
 export { recordAction, clearActions };
