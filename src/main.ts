@@ -15,7 +15,7 @@ require('./api');
 
 // [Clients]
 const discordClient = new QbotClient();
-discordClient.login(process.env.token);
+discordClient.login(process.env.DISCORD_TOKEN);
 const robloxClient = new RobloxClient({ credentials: { cookie: process.env.ROBLOX_COOKIE } });
 let robloxGroup: Group = null;
 (async () => {
