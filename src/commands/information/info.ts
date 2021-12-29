@@ -7,6 +7,7 @@ import { config } from '../../config';
 import {
     getInvalidRobloxUserEmbed,
     getRobloxUserIsNotMemberEmbed,
+    getUnexpectedErrorEmbed,
     getUserInfoEmbed,
 } from '../../handlers/locale';
 import { provider } from '../../database/router';
@@ -17,7 +18,7 @@ class InfoCommand extends Command {
             trigger: 'info',
             description: 'Displays information about a group member, and gives you some quick actions.',
             type: 'ChatInput',
-            module: 'xp-system',
+            module: 'information',
             args: [
                 {
                     trigger: 'roblox-user',
@@ -31,6 +32,8 @@ class InfoCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
+        if(!config.database.enabled) return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ] });
+
         let robloxUser: User | PartialUser;
         try {
             if(ctx.args['roblox-user']) {

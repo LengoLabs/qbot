@@ -52,6 +52,8 @@ class UnsuspendCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
+        if(!config.database.enabled) return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ] });
+
         let robloxUser: User | PartialUser;
         try {
             robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);

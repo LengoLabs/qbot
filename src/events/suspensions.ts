@@ -5,6 +5,7 @@ import { robloxGroup } from '../main';
 import { config } from '../config';
 
 const checkSuspensions = async () => {
+    if(!config.database.enabled) return;
     const suspensions = await provider.findSuspendedUsers();
     suspensions.forEach(async (suspension) => {
         try {
