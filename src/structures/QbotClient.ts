@@ -6,6 +6,7 @@ import { readdirSync, writeFileSync } from 'fs';
 import { discordClient } from '../main';
 import { qbotLaunchTextDisplay, welcomeText, startedText, securityText, getListeningText } from '../handlers/locale';
 import { getLogChannels } from '../handlers/handleLogging';
+require('dotenv').config();
 
 class QbotClient extends Client {
     config: BotConfig;
