@@ -340,7 +340,7 @@ export const getWallPostEmbed = async (post): Promise<MessageEmbed> => {
 }
 
 export const getLogEmbed = async (action: string, moderator: DiscordUser | User | GroupMember | any, reason?: string, target?: User | PartialUser, rankChange?: string, endDate?: Date, body?: string, xpChange?: string): Promise<MessageEmbed> => {
-    if(!target.name) target = await robloxClient.getUser(target.id);
+    if(target && !target.name) target = null;
     
     const embed = new MessageEmbed()
         .setColor(mainColor)
