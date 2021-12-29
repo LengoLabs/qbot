@@ -23,7 +23,6 @@ export const config: BotConfig = {
     database: {
         enabled: false,
         type: 'mongodb',
-        uri: '',
     },
     api: true,
     maximumRank: 255,
