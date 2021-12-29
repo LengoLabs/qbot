@@ -21,8 +21,9 @@ export const config: BotConfig = {
         shout: '',
     },
     database: {
-        enabled: true,
-        type: 'sqlite',
+        enabled: false,
+        type: 'mongodb',
+        uri: '',
     },
     api: true,
     maximumRank: 255,

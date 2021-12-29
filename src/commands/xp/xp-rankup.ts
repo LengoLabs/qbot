@@ -40,6 +40,8 @@ class XPRankupCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
+        if(!config.database.enabled) return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ] });
+
         let robloxUser: User | PartialUser;
         try {
             if(!ctx.args['roblox-user']) {
