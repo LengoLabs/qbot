@@ -1,5 +1,4 @@
 import { DatabaseUser } from '../structures/types';
-import { User } from '../database/sqlite';
 import { provider } from '../database/router';
 import { robloxGroup } from '../main';
 import { config } from '../config';
