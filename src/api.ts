@@ -34,7 +34,7 @@ const addSignal = (signal) => {
 
 if(config.api) {
     app.use((req, res, next) => {
-        if(!req.headers.authorization) return res.send({ success: false, msg: 'Unauthorized' });
+        if(!req.headers.authorization || req.headers.authorization !== process.env.API_KEY) return res.send({ success: false, msg: 'Unauthorized' });
         next();
     });
 
