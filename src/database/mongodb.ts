@@ -13,7 +13,7 @@ const User = model('User', new Schema({
 class MongoDBProvider extends DatabaseProvider {
     constructor() {
         super();
-        connect(config.database.uri).catch(console.error);
+        if(config.database.enabled) connect(config.database.uri).catch(console.error);
     }
 
     async findUser(robloxId: string): Promise<DatabaseUser> {
