@@ -1,2 +1,2 @@
 language = "nix"
-run = "npm install && npm start"
+run = "npm install --legacy-peer-deps && npm start"
