@@ -115,6 +115,10 @@ export interface BotConfig {
     /**
      * Should manual ranking actions be recorded and logged?
      */
+    autoXpRankup: boolean;
+    /**
+     * Should the user being given xp using add-xp be automatically ranked up if they have the right amount of xp?
+     */
     recordManualActions: boolean;
     /**
      * Configuration for the member count feature.

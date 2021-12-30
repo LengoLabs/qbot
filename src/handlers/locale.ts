@@ -65,6 +65,16 @@ export const getRobloxUserIsNotMemberEmbed = (): MessageEmbed => {
     return embed;
 }
 
+export const getSuccessfulAddingAndRankupEmbed = async(user: User | PartialUser, newRole: string, xpChange: string): Promise<MessageEmbed> => {
+    const embed = new MessageEmbed()
+        .setAuthor('Success!',checkIconUrl)
+        .setColor(greenColor)
+        .setThumbnail(await (await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false})).imageUrl)
+        .setDescription(`**${user.name}** has been given **${xpChange}** XP and has been promoted to **${newRole}**, since they had enough XP!`)
+
+    return embed
+}
+
 export const getSuccessfulPromotionEmbed = async (user: User | PartialUser, newRole: string): Promise<MessageEmbed> => {
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)

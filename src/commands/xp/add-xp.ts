@@ -10,6 +10,8 @@ import {
     getVerificationChecksFailedEmbed,
     getSuccessfulXPChangeEmbed,
     getInvalidXPEmbed,
+    getNoRankupAvailableEmbed,
+    getSuccessfulAddingAndRankupEmbed,
 } from '../../handlers/locale';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
@@ -17,6 +19,7 @@ import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { provider } from '../../database/router';
+import { findEligibleRole } from '../../handlers/handleXpRankup';
 
 class AddXPCommand extends Command {
     constructor() {
@@ -57,7 +60,7 @@ class AddXPCommand extends Command {
 
     async run(ctx: CommandContext) {
         if(!config.database.enabled) return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ] });
-
+        let enoughForRankUp: boolean;
         let robloxUser: User | PartialUser;
         try {
             robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
@@ -98,8 +101,23 @@ class AddXPCommand extends Command {
         const xp = Number(userData.xp) + Number(ctx.args['increment']);
         await provider.updateUser(robloxUser.id.toString(), { xp });
 
-        try {
+        const groupRoles = await robloxGroup.getRoles();
+        const role = await findEligibleRole(robloxMember, groupRoles, xp);
+        if (role) {
+            enoughForRankUp = true;
+            try {
+                await robloxGroup.updateMember(robloxUser.id, role.id);
+                ctx.reply({ embeds: [ await getSuccessfulAddingAndRankupEmbed(robloxUser, role.name,xp.toString()) ]});
+                logAction('XP Rankup', ctx.user, null, robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
+            } catch (err) {
+                console.log(err);
+                return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
+            }
+        } else {
             ctx.reply({ embeds: [ await getSuccessfulXPChangeEmbed(robloxUser, xp) ]});
+        }
+
+        try {
             logAction('Add XP', ctx.user, ctx.args['reason'], robloxUser, null, null, null, `${userData.xp} → ${xp} (+${Number(ctx.args['increment'])})`);
         } catch (err) {
             console.log(err);
