@@ -113,10 +113,6 @@ export interface BotConfig {
      */
     suspendedRank: number;
     /**
-     * Should manual ranking actions be recorded and logged?
-     */
-    autoXpRankup: boolean;
-    /**
      * Should the user being given xp using add-xp be automatically ranked up if they have the right amount of xp?
      */
     recordManualActions: boolean;
@@ -149,6 +145,10 @@ export interface BotConfig {
          * Should the XP system be enabled?
          */
         enabled: boolean;
+        /**
+         * Should users be ranked up if they meet requirements after their XP is changed through commands?
+         */
+        autoRankup: boolean;
         /**
          * Roles that users can rank up to.
          */
