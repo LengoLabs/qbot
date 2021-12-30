@@ -1,7 +1,3 @@
 node_modules
 .env
 dist
-src/config.ts
-src/resources/commands.json
-src/commands/suspensions/viewsuspensions.ts
-package-lock.json
