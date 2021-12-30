@@ -29,6 +29,7 @@ export const config: BotConfig = {
     verificationChecks: true,
     firedRank: 1,
     suspendedRank: 1,
+    autoXpRankup: true,
     recordManualActions: true,
     memberCount: {
         enabled: false,
