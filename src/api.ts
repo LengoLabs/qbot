@@ -61,8 +61,8 @@ if(config.api) {
         try {
             const suspensions = await provider.findSuspendedUsers();
             if (suspensions.length == 0) return res.send({ success: true, msg: 'No Currently Suspened Users.' });
-            var jsonString = JSON.stringify(suspensions);
-            return res.send({ success: true, jsonString });
+            var data = JSON.stringify(suspensions);
+            return res.send({ success: true, data });
         } catch (e) {
             return res.send({ success: false, msg: e });
         }
