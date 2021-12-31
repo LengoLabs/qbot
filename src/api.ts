@@ -57,6 +57,16 @@ if(config.api) {
             return res.send({ success: false, msg: 'Failed to get information.' });
         }
     });
+    app.get('/getsuspensions', async (req, res) => {
+        try {
+            const suspensions = await provider.findSuspendedUsers();
+            if (suspensions.length == 0) return res.send({ success: true, msg: 'No Currently Suspened Users.' });
+            var jsonString = JSON.stringify(suspensions);
+            return res.send({ success: true, jsonString });
+        } catch (e) {
+            return res.send({ success: false, msg: e });
+        }
+    });
 
     app.get('/signals', async (req, res) => {
         return res.send(signals);
