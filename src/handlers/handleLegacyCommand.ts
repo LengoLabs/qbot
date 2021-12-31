@@ -25,6 +25,7 @@ const parseCommand = (s: string): [string, Args] | null => {
 }
 
 const handleLegacyCommand = (message: Message) => {
+    if(message.channel.type === 'DM') return;
     const out = parseCommand(message.content);
     if(!out) return;
     const commandQuery = out[0] || null;

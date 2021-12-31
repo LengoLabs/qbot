@@ -8,11 +8,12 @@ import {
 } from 'discord.js';
 import { handleRobloxUser } from '../arguments/handleRobloxUser';
 import { handleRobloxRole } from '../arguments/handleRobloxRole';
-import { getNoPermissionEmbed } from '../handlers/locale';
+import { getNoPermissionEmbed, getDMCommandsDisabledEmbed } from '../handlers/locale';
 
 const handleInteraction = async (payload: Interaction) => {
     if(payload instanceof CommandInteraction) {
         const interaction = payload as CommandInteraction;
+        if(payload.channel.type === 'DM') return interaction.reply({ embeds: [ getDMCommandsDisabledEmbed() ] });
         const command = discordClient.commands.find((cmd) => (new cmd()).trigger === interaction.commandName);
         const context = new CommandContext(interaction, command);
         const permission = context.checkPermissions();
