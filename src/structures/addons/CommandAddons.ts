@@ -79,7 +79,6 @@ export class CommandContext  {
         if(!this.command.permissions || this.command.permissions.length === 0) {
             return true;
         } else {
-            let hasPermission = null;
             let actualPermissions : CommandPermission[] = [];
             for(let i = 0; i < this.command.permissions.length; i++) {
                 let permissionObject = this.command.permissions[i];
@@ -92,25 +91,24 @@ export class CommandContext  {
                     });
                 }
             }
-            const permission = actualPermissions.forEach((permission) => {
-                let fitsCriteria: boolean;
-                if(!hasPermission) {
-                    if(!permission.value) return;
-                    if(config.permissions.all) {
-                        let allPermissionRoles = config.permissions.all.split(",");
-                        for(let i = 0; i < allPermissionRoles.length; i++) {
-                            if(this.member.roles.cache.has(allPermissionRoles[i])) {
-                                fitsCriteria = true;
-                            }
-                        }
-                    } else {
-                        if(permission.type === 'role') fitsCriteria = this.member.roles.cache.has(permission.id);
-                        if(permission.type === 'user') fitsCriteria = this.member.id === permission.id;
+            if(config.permissions.all && config.permissions.all !== "") {
+                let allPermissionRoles = config.permissions.all.split(",");
+                for(let i = 0; i < allPermissionRoles.length; i++) {
+                    if(this.member.roles.cache.has(allPermissionRoles[i])) {
+                        return true;
                     }
-                    if(fitsCriteria) hasPermission = true;
+                }
+            }
+            let isAble = false;
+            actualPermissions.forEach((permission) => {
+                if(!permission.value) return;
+                if(permission.type === 'role') {
+                    if(this.member.roles.cache.has(permission.id)) isAble = true;
+                } else {
+                    if(this.member.id === permission.id) isAble = true;
                 }
             });
-            return hasPermission || false;
+            return isAble;
         }
     }
 
