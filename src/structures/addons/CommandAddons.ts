@@ -13,6 +13,7 @@ import { Args } from 'lexure';
 import { getMissingArgumentsEmbed, getInvalidRobloxUserEmbed } from '../../handlers/locale';
 import { robloxClient } from '../../main';
 import { config } from '../../config';
+import { CommandPermission } from '../types';
 
 export class CommandContext  {
     type: 'interaction' | 'message';
@@ -79,12 +80,29 @@ export class CommandContext  {
             return true;
         } else {
             let hasPermission = null;
-            const permission = this.command.permissions.forEach((permission) => {
+            let actualPermissions : CommandPermission[] = [];
+            for(let i = 0; i < this.command.permissions.length; i++) {
+                let permissionObject = this.command.permissions[i];
+                let IDS = permissionObject.id.split(",");
+                for(let r = 0; r < IDS.length; r++) {
+                    actualPermissions.push({
+                        type: permissionObject.type,
+                        id: IDS[r],
+                        value: permissionObject.value
+                    });
+                }
+            }
+            const permission = actualPermissions.forEach((permission) => {
                 let fitsCriteria: boolean;
                 if(!hasPermission) {
                     if(!permission.value) return;
-                    if(config.permissions.all && this.member.roles.cache.has(config.permissions.all)) {
-                        fitsCriteria = true;
+                    if(config.permissions.all) {
+                        let allPermissionRoles = config.permissions.all.split(",");
+                        for(let i = 0; i < allPermissionRoles.length; i++) {
+                            if(this.member.roles.cache.has(allPermissionRoles[i])) {
+                                fitsCriteria = true;
+                            }
+                        }
                     } else {
                         if(permission.type === 'role') fitsCriteria = this.member.roles.cache.has(permission.id);
                         if(permission.type === 'user') fitsCriteria = this.member.id === permission.id;
