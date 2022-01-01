@@ -89,8 +89,13 @@ class SuspendCommand extends Command {
             return ctx.reply({ embeds: [ getRobloxUserIsNotMemberEmbed() ]});
         }
 
-        const duration = Number(ms(ctx.args['duration']));
-        if(duration < 0.5 * 60000 && duration > 6.31138519 * (10 ^ 10) ) return ctx.reply({ embeds: [ getInvalidDurationEmbed() ] });
+        let duration: number;
+        try {
+            duration = Number(ms(ctx.args['duration']));
+            if(duration < 0.5 * 60000 && duration > 6.31138519 * (10 ^ 10) ) return ctx.reply({ embeds: [ getInvalidDurationEmbed() ] });
+        } catch (err) {
+            return ctx.reply({ embeds: [ getInvalidDurationEmbed() ] });
+        }
         
         const endDate = new Date();
         endDate.setMilliseconds(endDate.getMilliseconds() + duration);
