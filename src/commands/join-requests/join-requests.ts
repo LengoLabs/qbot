@@ -14,7 +14,7 @@ class JoinRequestsCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    id: config.permissions.join,
+                    ids: config.permissions.join,
                     value: true,
                 }
             ]

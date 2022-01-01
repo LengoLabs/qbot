@@ -43,7 +43,7 @@ class PromoteCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    id: config.permissions.ranking,
+                    ids: config.permissions.ranking,
                     value: true,
                 }
             ]

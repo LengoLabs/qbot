@@ -33,7 +33,7 @@ class RevertRanksCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    id: config.permissions.admin,
+                    ids: config.permissions.admin,
                     value: true,
                 }
             ]

@@ -51,7 +51,7 @@ class AddXPCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    id: config.permissions.users,
+                    ids: config.permissions.users,
                     value: true,
                 }
             ]
