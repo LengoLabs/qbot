@@ -3,11 +3,14 @@ import { Command } from '../../structures/Command';
 import {
     getSuccessfulRevertRanksEmbed,
     getInvalidDurationEmbed,
+    getInvalidRobloxUserEmbed,
 } from '../../handlers/locale';
 import { config } from '../../config';
-import { robloxClient, robloxGroup } from '../../main';
+import { discordClient, robloxClient, robloxGroup } from '../../main';
 import ms from 'ms';
 import { logAction } from '../../handlers/handleLogging';
+import { PartialUser, User } from 'bloxy/dist/structures';
+import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 
 class RevertRanksCommand extends Command {
     constructor() {
@@ -21,6 +24,13 @@ class RevertRanksCommand extends Command {
                     trigger: 'duration',
                     description: 'How much time of ranking events would you like to revert?',
                     type: 'String',
+                },
+                {
+                    trigger: 'filter',
+                    description: 'Do you want to filter actions to a specific Roblox user?',
+                    autocomplete: true,
+                    required: false,
+                    type: 'RobloxUser',
                 },
                 {
                     trigger: 'reason',
@@ -41,19 +51,48 @@ class RevertRanksCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
+        let robloxUser: User | PartialUser;
+        if(ctx.args['filter']) {
+            try {
+                robloxUser = await robloxClient.getUser(ctx.args['filter'] as number);
+            } catch (err) {
+                try {
+                    const robloxUsers = await robloxClient.getUsersByUsernames([ ctx.args['filter'] as string ]);
+                    if(robloxUsers.length === 0) throw new Error();
+                    robloxUser = robloxUsers[0];
+                } catch (err) {
+                    try {
+                        const idQuery = ctx.args['filter'].replace(/[^0-9]/gm, '');
+                        const discordUser = await discordClient.users.fetch(idQuery);
+                        const linkedUser = await getLinkedRobloxUser(discordUser.id, ctx.guild.id);
+                        if(!linkedUser) throw new Error();
+                        robloxUser = linkedUser;
+                    } catch (err) {
+                        return ctx.reply({ embeds: [ getInvalidRobloxUserEmbed() ]});
+                    }
+                }
+            }
+        }
+        
         const auditLog = await robloxClient.apis.groupsAPI.getAuditLogs({
             groupId: robloxGroup.id,
             actionType: 'ChangeRank',
             limit: 100,
         });
 
-        const duration = Number(ms(ctx.args['duration']));
-        if(duration < 0.5 * 60000 && duration > 8.64e+7 ) return ctx.reply({ embeds: [ getInvalidDurationEmbed() ] });
+        let duration: number;
+        try {
+            duration = Number(ms(ctx.args['duration']));
+            if(duration < 0.5 * 60000 && duration > 8.64e+7 ) return ctx.reply({ embeds: [ getInvalidDurationEmbed() ] });
+        } catch (err) {
+            return ctx.reply({ embeds: [ getInvalidDurationEmbed() ] });
+        }
         
         const maximumDate = new Date();
         maximumDate.setMilliseconds(maximumDate.getMilliseconds() - duration);
 
         const affectedLogs = auditLog.data.filter((log) => {
+            if(robloxUser && robloxUser.id !== log.actor.user.userId) return;
             const logCreatedDate = new Date(log.created);
             return logCreatedDate > maximumDate;
         });
