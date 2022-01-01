@@ -44,6 +44,7 @@ class RevertRanksCommand extends Command {
         const auditLog = await robloxClient.apis.groupsAPI.getAuditLogs({
             groupId: robloxGroup.id,
             actionType: 'ChangeRank',
+            limit: 100,
         });
 
         const duration = Number(ms(ctx.args['duration']));
