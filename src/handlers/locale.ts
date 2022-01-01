@@ -307,6 +307,15 @@ export const getAlreadyFiredEmbed = (): MessageEmbed => {
     return embed;
 }
 
+export const getDMCommandsDisabledEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Command Disabled', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('Sorry, but this command is disabled in this type of channel.');
+
+    return embed;
+}
+
 export const getRoleNotFoundEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Role Unavailable', xmarkIconUrl)
