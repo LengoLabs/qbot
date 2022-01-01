@@ -36,31 +36,31 @@ export interface BotConfig {
         /**
          * Access to all commands. Please be careful with this.
          */
-        all?: string;
+        all?: string[];
         /**
          * Access to the promote, demote, setrank, and fire commands.
          */
-        ranking?: string;
+        ranking?: string[];
         /**
          * Access to the info, add-xp, remove-xp, and xp-rankup commands.
          */
-        users?: string;
+        users?: string[];
         /**
          * Access to the shout command.
          */
-        shout?: string;
+        shout?: string[];
         /**
          * Access to the join-requests, accept-join, and deny-join commands.
          */
-        join?: string;
+        join?: string[];
         /**
          * Access to the signal command.
          */
-        signal?: string;
+        signal?: string[];
         /**
          * Access to the revert-ranks command.
          */
-        admin?: string;
+        admin?: string[];
     }
     /**
      * Configuration for the built-in database module used by suspension and XP-related commands.
@@ -209,9 +209,9 @@ export declare type CommandPermission = {
      */
     type: 'user' | 'role';
     /**
-     * What is the ID of the user/role?
+     * What is the IDs of the user/role in this permission?
      */
-    id: string;
+    ids: string[];
     /**
      * Is this a positive or negative permission? Remember that the highest applicable permission in the array will be used.
      */
