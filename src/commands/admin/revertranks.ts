@@ -95,6 +95,7 @@ class RevertRanksCommand extends Command {
 
         console.log('c');
         const affectedLogs = auditLog.data.filter((log) => {
+            if(log.actor.user.userId === robloxClient.user.id && !(robloxUser && robloxUser.id === robloxClient.user.id)) return;
             if(robloxUser && robloxUser.id !== log.actor.user.userId) return;
             const logCreatedDate = new Date(log.created);
             return logCreatedDate > maximumDate;
