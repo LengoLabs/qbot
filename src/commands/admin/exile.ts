@@ -4,7 +4,7 @@ import { Command } from '../../structures/Command';
 import {
     getInvalidRobloxUserEmbed,
     getRobloxUserIsNotMemberEmbed,
-    getSuccessfulDemotionEmbed,
+    getSuccessfulExileEmbed,
     getUnexpectedErrorEmbed,
     getNoRankBelowEmbed,
     getRoleNotFoundEmbed,
