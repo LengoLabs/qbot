@@ -24,7 +24,7 @@ const parseCommand = (s: string): [string, Args] | null => {
     return [command.value, new Args(pout)];
 }
 
-const handleLegacyCommand = (message: Message) => {
+const handleLegacyCommand = async (message: Message) => {
     const out = parseCommand(message.content);
     if(!out) return;
     const commandQuery = out[0] || null;
@@ -39,6 +39,7 @@ const handleLegacyCommand = (message: Message) => {
         if(!context.checkPermissions()) {
             context.reply({ embeds: [ getNoPermissionEmbed() ] });
         } else {
+            await context.defer();
             (new command()).run(context);
         }
     } catch (err) {
