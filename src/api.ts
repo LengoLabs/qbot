@@ -47,12 +47,13 @@ if(config.api) {
             const userData = await provider.findUser(robloxUser.id.toString());
             if(!userData) throw new Error();
 
-            return {
+            return res.send({
+                success: true,
                 robloxId: userData.robloxId,
                 xp: userData.xp,
                 suspendedUntil: userData.suspendedUntil,
                 unsuspendRank: userData.unsuspendRank,
-            }
+            })
         } catch (err) {
             return res.send({ success: false, msg: 'Failed to get information.' });
         }
@@ -93,7 +94,8 @@ if(config.api) {
             const robloxMember = await robloxGroup.getMember(Number(id));
             if(!robloxMember) throw new Error();
             const groupRoles = await robloxGroup.getRoles();
-            const role = groupRoles.find((role) => role.rank === robloxMember.role.rank + 1);
+            const currentRoleIndex = groupRoles.findIndex((role) => role.rank === robloxMember.role.rank);
+            const role = groupRoles[currentRoleIndex + 1];
             if(!role) throw new Error();
             await robloxGroup.updateMember(Number(id), role.id);
             logAction('Promote', 'API Action', robloxMember.name, robloxMember, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
@@ -110,7 +112,8 @@ if(config.api) {
             const robloxMember = await robloxGroup.getMember(Number(id));
             if(!robloxMember) throw new Error();
             const groupRoles = await robloxGroup.getRoles();
-            const role = groupRoles.find((role) => role.rank === robloxMember.role.rank - 1);
+            const currentRoleIndex = groupRoles.findIndex((role) => role.rank === robloxMember.role.rank);
+            const role = groupRoles[currentRoleIndex - 1];
             if(!role) throw new Error();
             await robloxGroup.updateMember(Number(id), role.id);
             logAction('Demote', 'API Action', robloxMember.name, robloxMember, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
@@ -144,7 +147,7 @@ if(config.api) {
             const robloxMember = await robloxGroup.getMember(Number(id));
             if(!robloxMember) throw new Error();
             const groupRoles = await robloxGroup.getRoles();
-            const newRole = groupRoles.find((r) => role === r.rank || role === r.id);
+            const newRole = groupRoles.find((r) => Number(role) === r.rank || Number(role) === r.id || String(role).toLowerCase() === r.name.toLowerCase());
             if(!newRole) throw new Error();
             await robloxGroup.updateMember(Number(id), newRole.id);
             logAction('Set Rank', 'API Action', null, robloxMember, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${newRole.name} (${newRole.rank})`);
@@ -194,16 +197,16 @@ if(config.api) {
             const robloxMember = await robloxGroup.getMember(Number(id));
             if(!robloxMember) throw new Error();
 
-            const groupRoles = await robloxGroup.getRoles();
-            const role = groupRoles.find((role) => role.rank === config.suspendedRank);
-            if(!role) throw new Error();
-
             const userData = await provider.findUser(robloxMember.id.toString());
             if(!userData.suspendedUntil) throw new Error();
             
             if(robloxMember.role.id !== userData.unsuspendRank) {
                 await robloxGroup.updateMember(Number(id), userData.unsuspendRank);
             }
+
+            const groupRoles = await robloxGroup.getRoles();
+            const role = groupRoles.find((role) => role.rank === userData.unsuspendRank);
+            if(!role) throw new Error();
 
             logAction('Unsuspend', 'API Action', null, robloxMember, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
             await provider.updateUser(robloxMember.id.toString(), { suspendedUntil: null, unsuspendRank: null });
@@ -229,7 +232,7 @@ if(config.api) {
 
             return res.send({ success: true });
         } catch (err) {
-            return res.send({ success: false, msg: 'Failed to rank.' });
+            return res.send({ success: false, msg: 'Failed to add xp.' });
         }
     });
 
@@ -248,7 +251,7 @@ if(config.api) {
 
             return res.send({ success: true });
         } catch (err) {
-            return res.send({ success: false, msg: 'Failed to rank.' });
+            return res.send({ success: false, msg: 'Failed to remove xp.' });
         }
     });
 
@@ -274,14 +277,14 @@ if(config.api) {
     });
 
     app.post('/shout', async (req, res) => {
-        const { content } = req.body;
-        if(!content) return res.send({ success: false, msg: 'Missing parameters.' });
+        let { content } = req.body;
+        if(!content) content = '';
         try {
             await robloxGroup.updateShout(content);
             logAction('Shout', 'API Action', null, null, null, null, content);
             return res.send({ success: true });
         } catch (err) {
-            return res.send({ success: false, msg: 'Failed to rank.' });
+            return res.send({ success: false, msg: 'Failed to shout.' });
         }
     });
 
@@ -296,7 +299,7 @@ if(config.api) {
 
             return res.send({ success: true });
         } catch (err) {
-            return res.send({ success: false, msg: 'Failed to rank.' });
+            return res.send({ success: false, msg: 'Failed to accept join request.' });
         }
     });
 
@@ -311,7 +314,7 @@ if(config.api) {
 
             return res.send({ success: true });
         } catch (err) {
-            return res.send({ success: false, msg: 'Failed to rank.' });
+            return res.send({ success: false, msg: 'Failed to deny join request.' });
         }
     });
 }
