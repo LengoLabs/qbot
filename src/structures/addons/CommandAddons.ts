@@ -23,6 +23,7 @@ export class CommandContext  {
     guild?: Guild;
     args?: { [key: string]: any };
     replied: boolean;
+    deferred: boolean;
     command: Command;
 
     /**
@@ -38,14 +39,16 @@ export class CommandContext  {
         this.guild = payload.guild;
         this.command = new command();
         this.replied = false;
+        this.deferred = false;
 
         this.args = {};
         if(payload instanceof Interaction) {
             const interaction = payload as CommandInteraction;
-            if(!interaction.replied && !this.replied) {
-              try {
-                interaction.deferReply();
-              } catch (err) {};
+            if(!this.replied) {
+            //   try {
+            //     interaction.deferReply();
+            //     this.deferred = true;
+            //   } catch (err) {};
             }
             interaction.options.data.forEach(async (arg) => {
                 this.args[arg.name] = interaction.options.get(arg.name).value;
@@ -117,28 +120,37 @@ export class CommandContext  {
         this.replied = true;
         if(this.subject instanceof CommandInteraction) {
             try {
-              const subject = this.subject as CommandInteraction;
-              setTimeout(() => {
-                if(subject.deferred) {
+                const subject = this.subject as CommandInteraction;
+                if(this.deferred) {
                     return subject.editReply(payload);
                 } else {
                     return subject.reply(payload);
                 }
-              }, 500)
             } catch (err) {
                 const subject = this.subject as CommandInteraction;
-                setTimeout(async () => {
-                    try {
-                        if(subject.deferred) {
-                            return subject.editReply(payload);
-                        } else {
-                            return subject.reply(payload);
-                        }
-                    } catch (err) {};
-                }, 1250);
+                try {
+                    if(this.deferred) {
+                        return subject.editReply(payload);
+                    } else {
+                        return subject.reply(payload);
+                    }
+                } catch (err) {};
             }
         } else {
             return this.subject.channel.send(payload);
         }
+    }
+
+    /**
+     * Defers a reply.
+     */
+    async defer() {
+        if(this.subject instanceof CommandInteraction) {
+            const interaction = this.subject as CommandInteraction;
+            if(!interaction.deferred && !interaction.replied) await this.subject.deferReply();
+        } else {
+            await this.subject.channel.sendTyping();
+        }
+        this.deferred = true;
     }
 }
