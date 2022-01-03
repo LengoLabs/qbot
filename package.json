@@ -9,7 +9,7 @@
     "dev": "nodemon src/main.ts --ignore ./src/resources/commands.json",
     "test": "echo \"Error: no test specified\" && exit 1",
     "resetSlashCmds": "echo [] > src/resources/commands.json",
-    "update": "git fetch && git pull"
+    "update": "git fetch && git reset --hard origin/master && git pull"
   },
   "author": "LengoLabs",
   "license": "MIT",
