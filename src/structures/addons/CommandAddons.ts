@@ -42,13 +42,11 @@ export class CommandContext  {
         this.args = {};
         if(payload instanceof Interaction) {
             const interaction = payload as CommandInteraction;
-            setTimeout(() => {
-                if(!this.replied) {
-                    try {
-                        interaction.deferReply();
-                    } catch (err) {};
-                }
-            }, 100);
+            if(!interaction.replied && !this.replied) {
+              try {
+                interaction.deferReply();
+              } catch (err) {};
+            }
             interaction.options.data.forEach(async (arg) => {
                 this.args[arg.name] = interaction.options.get(arg.name).value;
             });
@@ -119,19 +117,24 @@ export class CommandContext  {
         this.replied = true;
         if(this.subject instanceof CommandInteraction) {
             try {
-                if(this.subject.deferred) {
-                    return this.subject.editReply(payload);
+              const subject = this.subject as CommandInteraction;
+              setTimeout(() => {
+                if(subject.deferred) {
+                    return subject.editReply(payload);
                 } else {
-                    return this.subject.reply(payload);
+                    return subject.reply(payload);
                 }
+              }, 500)
             } catch (err) {
                 const subject = this.subject as CommandInteraction;
-                setTimeout(() => {
-                    if(subject.deferred) {
-                        return subject.editReply(payload);
-                    } else {
-                        return subject.reply(payload);
-                    }
+                setTimeout(async () => {
+                    try {
+                        if(subject.deferred) {
+                            return subject.editReply(payload);
+                        } else {
+                            return subject.reply(payload);
+                        }
+                    } catch (err) {};
                 }, 1250);
             }
         } else {
