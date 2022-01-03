@@ -7,7 +7,7 @@ import { config } from '../../config';
 class JoinRequestsCommand extends Command {
     constructor() {
         super({
-            trigger: 'join-requests',
+            trigger: 'joinrequests',
             description: 'Gets a list of pending join requests.',
             type: 'ChatInput',
             module: 'join-requests',

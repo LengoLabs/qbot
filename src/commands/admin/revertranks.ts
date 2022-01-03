@@ -15,7 +15,7 @@ import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 class RevertRanksCommand extends Command {
     constructor() {
         super({
-            trigger: 'revert-ranks',
+            trigger: 'revertranks',
             description: 'Reverts all ranking events within the time of the specified duration.',
             type: 'ChatInput',
             module: 'admin',
@@ -51,6 +51,7 @@ class RevertRanksCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
+        console.log('a');
         let robloxUser: User | PartialUser;
         if(ctx.args['filter']) {
             try {
@@ -74,6 +75,7 @@ class RevertRanksCommand extends Command {
             }
         }
         
+        console.log('b');
         const auditLog = await robloxClient.apis.groupsAPI.getAuditLogs({
             groupId: robloxGroup.id,
             actionType: 'ChangeRank',
@@ -91,18 +93,21 @@ class RevertRanksCommand extends Command {
         const maximumDate = new Date();
         maximumDate.setMilliseconds(maximumDate.getMilliseconds() - duration);
 
+        console.log('c');
         const affectedLogs = auditLog.data.filter((log) => {
             if(robloxUser && robloxUser.id !== log.actor.user.userId) return;
             const logCreatedDate = new Date(log.created);
             return logCreatedDate > maximumDate;
         });
+        console.log('d');
         
-        affectedLogs.forEach((log, index) => {
+        affectedLogs.forEach(async (log, index) => {
             setTimeout(async () => {
                 await robloxGroup.updateMember(log.description['TargetId'], log.description['OldRoleSetId']);
             }, index * 1000);
         });
 
+        console.log('e');
         logAction('Revert Ranks', ctx.user, ctx.args['reason'], null, null, maximumDate);
         return ctx.reply({ embeds: [ getSuccessfulRevertRanksEmbed(affectedLogs.length) ] });
     }

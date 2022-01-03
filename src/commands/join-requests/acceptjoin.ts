@@ -4,24 +4,24 @@ import { Command } from '../../structures/Command';
 import {
     getInvalidRobloxUserEmbed,
     getUnexpectedErrorEmbed,
-    getSuccessfulDenyJoinRequestEmbed,
+    getSuccessfulAcceptJoinRequestEmbed,
 } from '../../handlers/locale';
 import { config } from '../../config';
-import { User, PartialUser } from 'bloxy/dist/structures';
+import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 
-class DenyJoinCommand extends Command {
+class AcceptJoinCommand extends Command {
     constructor() {
         super({
-            trigger: 'deny-join',
-            description: 'Denies the join request from a user.',
+            trigger: 'acceptjoin',
+            description: 'Accepts the join request from a user.',
             type: 'ChatInput',
             module: 'join-requests',
             args: [
                 {
                     trigger: 'roblox-user',
-                    description: 'Whose join request do you want to deny?',
+                    description: 'Whose join request do you want to accept?',
                     autocomplete: true,
                     type: 'RobloxUser',
                 },
@@ -66,9 +66,9 @@ class DenyJoinCommand extends Command {
         }
 
         try {
-            await robloxGroup.declineJoinRequest(robloxUser.id);
-            ctx.reply({ embeds: [ await getSuccessfulDenyJoinRequestEmbed(robloxUser) ]});
-            logAction('Deny Join Request', ctx.user, ctx.args['reason'], robloxUser);
+            await robloxGroup.acceptJoinRequest(robloxUser.id);
+            ctx.reply({ embeds: [ await getSuccessfulAcceptJoinRequestEmbed(robloxUser) ]});
+            logAction('Accept Join Request', ctx.user, ctx.args['reason'], robloxUser);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
@@ -76,4 +76,4 @@ class DenyJoinCommand extends Command {
     }
 }
 
-export default DenyJoinCommand;
+export default AcceptJoinCommand;

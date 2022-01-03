@@ -30,7 +30,8 @@ const handleLegacyCommand = (message: Message) => {
     const commandQuery = out[0] || null;
     const args = out[1] || null;
 
-    const commandName = commandQuery.replace(/[^a-zA-Z0-9]/, '');
+    const commandName = commandQuery.replace(/[^a-zA-Z0-9]/, '').replace('-', '');
+    console.log(commandName);
     const command = discordClient.commands.find((cmd) => (new cmd()).trigger === commandName || (new cmd()).aliases.includes(commandName));
     if(!command) return;
 

@@ -24,7 +24,7 @@ import { findEligibleRole } from '../../handlers/handleXpRankup';
 class AddXPCommand extends Command {
     constructor() {
         super({
-            trigger: 'add-xp',
+            trigger: 'addxp',
             description: 'Adds XP to a user.',
             type: 'ChatInput',
             module: 'xp',

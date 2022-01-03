@@ -84,7 +84,7 @@ export class CommandContext  {
             return true;
         } else {
             let hasPermission = null;
-            let permissions;
+            let permissions = [];
             this.command.permissions.map((permission) => {
                 permission.ids.forEach((id) => {
                     return permissions.push({

@@ -23,7 +23,7 @@ import { findEligibleRole } from '../../handlers/handleXpRankup';
 class XPRankupCommand extends Command {
     constructor() {
         super({
-            trigger: 'xp-rankup',
+            trigger: 'xprankup',
             description: 'Ranks a user up based on their XP.',
             type: 'ChatInput',
             module: 'xp',

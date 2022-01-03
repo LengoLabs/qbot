@@ -147,7 +147,7 @@ export const getSuccessfulRevertRanksEmbed = (actionCount: number): MessageEmbed
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
-        .setDescription(`Successfully rolled back **${actionCount}** ranking actions.`);
+        .setDescription(`Successfully started rolling back **${actionCount}** ranking actions.`);
 
     return embed;
 }

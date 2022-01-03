@@ -21,7 +21,7 @@ import { provider } from '../../database/router';
 class RemoveXPCommand extends Command {
     constructor() {
         super({
-            trigger: 'remove-xp',
+            trigger: 'removexp',
             description: 'Removes XP from a user.',
             type: 'ChatInput',
             module: 'xp',
