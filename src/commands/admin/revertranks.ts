@@ -51,7 +51,6 @@ class RevertRanksCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        console.log('a');
         let robloxUser: User | PartialUser;
         if(ctx.args['filter']) {
             try {
@@ -75,7 +74,6 @@ class RevertRanksCommand extends Command {
             }
         }
         
-        console.log('b');
         const auditLog = await robloxClient.apis.groupsAPI.getAuditLogs({
             groupId: robloxGroup.id,
             actionType: 'ChangeRank',
@@ -93,14 +91,12 @@ class RevertRanksCommand extends Command {
         const maximumDate = new Date();
         maximumDate.setMilliseconds(maximumDate.getMilliseconds() - duration);
 
-        console.log('c');
         const affectedLogs = auditLog.data.filter((log) => {
             if(log.actor.user.userId === robloxClient.user.id && !(robloxUser && robloxUser.id === robloxClient.user.id)) return;
             if(robloxUser && robloxUser.id !== log.actor.user.userId) return;
             const logCreatedDate = new Date(log.created);
             return logCreatedDate > maximumDate;
         });
-        console.log('d');
         
         affectedLogs.forEach(async (log, index) => {
             setTimeout(async () => {
@@ -108,7 +104,6 @@ class RevertRanksCommand extends Command {
             }, index * 1000);
         });
 
-        console.log('e');
         logAction('Revert Ranks', ctx.user, ctx.args['reason'], null, null, maximumDate);
         return ctx.reply({ embeds: [ getSuccessfulRevertRanksEmbed(affectedLogs.length) ] });
     }
