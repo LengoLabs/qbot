@@ -44,12 +44,6 @@ export class CommandContext  {
         this.args = {};
         if(payload instanceof Interaction) {
             const interaction = payload as CommandInteraction;
-            if(!this.replied) {
-            //   try {
-            //     interaction.deferReply();
-            //     this.deferred = true;
-            //   } catch (err) {};
-            }
             interaction.options.data.forEach(async (arg) => {
                 this.args[arg.name] = interaction.options.get(arg.name).value;
             });
