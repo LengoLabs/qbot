@@ -25,13 +25,12 @@ const parseCommand = (s: string): [string, Args] | null => {
 }
 
 const handleLegacyCommand = (message: Message) => {
-    if(message.channel.type === 'DM') return;
     const out = parseCommand(message.content);
     if(!out) return;
     const commandQuery = out[0] || null;
     const args = out[1] || null;
 
-    const commandName = commandQuery.replace(/[^a-zA-Z0-9]/, '');
+    const commandName = commandQuery.replace(/[^a-zA-Z0-9]/, '').replace('-', '');
     const command = discordClient.commands.find((cmd) => (new cmd()).trigger === commandName || (new cmd()).aliases.includes(commandName));
     if(!command) return;
 

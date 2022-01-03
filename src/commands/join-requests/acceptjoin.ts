@@ -14,7 +14,7 @@ import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 class AcceptJoinCommand extends Command {
     constructor() {
         super({
-            trigger: 'accept-join',
+            trigger: 'acceptjoin',
             description: 'Accepts the join request from a user.',
             type: 'ChatInput',
             module: 'join-requests',
@@ -36,7 +36,7 @@ class AcceptJoinCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    id: config.permissions.join,
+                    ids: config.permissions.join,
                     value: true,
                 }
             ]

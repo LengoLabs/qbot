@@ -8,13 +8,13 @@ export const config: BotConfig = {
         prefixes: ['q!'],
     },
     permissions: {
-        all: '',
-        ranking: '',
-        users: '',
-        shout: '',
-        join: '',
-        signal: '',
-        admin: '',
+        all: [''],
+        ranking: [''],
+        users: [''],
+        shout: [''],
+        join: [''],
+        signal: [''],
+        admin: [''],
     },
     logChannels: {
         actions: '',
@@ -38,6 +38,7 @@ export const config: BotConfig = {
     },
     xpSystem: {
         enabled: false,
+        autoRankup: false,
         roles: [
             /* Example:
             {

@@ -14,7 +14,7 @@ import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 class DenyJoinCommand extends Command {
     constructor() {
         super({
-            trigger: 'deny-join',
+            trigger: 'denyjoin',
             description: 'Denies the join request from a user.',
             type: 'ChatInput',
             module: 'join-requests',
@@ -36,7 +36,7 @@ class DenyJoinCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    id: config.permissions.join,
+                    ids: config.permissions.join,
                     value: true,
                 }
             ]

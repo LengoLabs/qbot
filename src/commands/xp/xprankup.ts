@@ -4,63 +4,54 @@ import { Command } from '../../structures/Command';
 import {
     getInvalidRobloxUserEmbed,
     getRobloxUserIsNotMemberEmbed,
-    getSuccessfulSetRankEmbed,
     getUnexpectedErrorEmbed,
+    getNoRankAboveEmbed,
     getRoleNotFoundEmbed,
     getVerificationChecksFailedEmbed,
-    getAlreadyRankedEmbed,
-    getUserSuspendedEmbed,
+    getSuccessfulXPRankupEmbed,
+    getNoRankupAvailableEmbed,
+    getNoPermissionEmbed,
 } from '../../handlers/locale';
+import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
-import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { provider } from '../../database/router';
+import { findEligibleRole } from '../../handlers/handleXpRankup';
 
-class SetRankCommand extends Command {
+class XPRankupCommand extends Command {
     constructor() {
         super({
-            trigger: 'setrank',
-            description: 'Changes the rank of a user in the Roblox group.',
+            trigger: 'xprankup',
+            description: 'Ranks a user up based on their XP.',
             type: 'ChatInput',
-            module: 'ranking',
+            module: 'xp',
             args: [
                 {
                     trigger: 'roblox-user',
-                    description: 'Whose rank would you like to change?',
+                    description: 'Who do you want to attempt to rankup? This defaults to yourself.',
+                    required: false,
                     autocomplete: true,
                     type: 'RobloxUser',
                 },
-                {
-                    trigger: 'roblox-role',
-                    description: 'What role would you like to change them to?',
-                    autocomplete: true,
-                    type: 'RobloxRole',
-                },
-                {
-                    trigger: 'reason',
-                    description: 'If you would like a reason to be supplied in the logs, put it here.',
-                    isLegacyFlag: true,
-                    required: false,
-                    type: 'String',
-                },
-            ],
-            permissions: [
-                {
-                    type: 'role',
-                    ids: config.permissions.ranking,
-                    value: true,
-                }
             ]
         });
     }
 
     async run(ctx: CommandContext) {
+        if(!config.database.enabled) return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ] });
+
         let robloxUser: User | PartialUser;
         try {
-            robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
+            if(!ctx.args['roblox-user']) {
+                robloxUser = await getLinkedRobloxUser(ctx.user.id, ctx.guild.id);
+                if(!robloxUser) throw new Error();
+            } else {
+                robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
+            }
         } catch (err) {
+            if(!ctx.args['roblox-user']) return ctx.reply({ embeds: [ getInvalidRobloxUserEmbed() ]});
             try {
                 const robloxUsers = await robloxClient.getUsersByUsernames([ ctx.args['roblox-user'] as string ]);
                 if(robloxUsers.length === 0) throw new Error();
@@ -87,22 +78,24 @@ class SetRankCommand extends Command {
         }
 
         const groupRoles = await robloxGroup.getRoles();
-        const role = groupRoles.find((role) => role.id == ctx.args['roblox-role'] || role.rank == ctx.args['roblox-role'] || role.name.toLowerCase().startsWith(ctx.args['roblox-role'].toLowerCase()));
-        if(!role || role.rank === 0 || role.rank > config.maximumRank || robloxMember.role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ]});
-        if(robloxMember.role.id === role.id) return ctx.reply({ embeds: [ getAlreadyRankedEmbed() ] });
-
-        if(config.verificationChecks) {
-            const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
-            if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
-        }
-
         const userData = await provider.findUser(robloxUser.id.toString());
-        if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
+        const role = await findEligibleRole(robloxMember, groupRoles, userData.xp);
+        if(!role) return ctx.reply({ embeds: [ getNoRankupAvailableEmbed() ] });
+
+        if(ctx.args['roblox-user']) {
+            if(!ctx.member.roles.cache.some((role) => config.permissions.users.includes(role.id)) && (config.permissions.all ? !ctx.member.roles.cache.some((role) => config.permissions.all.includes(role.id)) : false)) {
+                return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
+            }
+            if(config.verificationChecks) {
+                const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
+                if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
+            }
+        }
 
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);
-            ctx.reply({ embeds: [ await getSuccessfulSetRankEmbed(robloxUser, role.name) ]})
-            logAction('Update Rank', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
+            ctx.reply({ embeds: [ await getSuccessfulXPRankupEmbed(robloxUser, role.name) ]});
+            logAction('XP Rankup', ctx.user, null, robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
@@ -110,4 +103,4 @@ class SetRankCommand extends Command {
     }
 }
 
-export default SetRankCommand;
+export default XPRankupCommand;

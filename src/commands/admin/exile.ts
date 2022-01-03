@@ -4,38 +4,33 @@ import { Command } from '../../structures/Command';
 import {
     getInvalidRobloxUserEmbed,
     getRobloxUserIsNotMemberEmbed,
+    getSuccessfulExileEmbed,
     getUnexpectedErrorEmbed,
-    getNoRankAboveEmbed,
+    getNoRankBelowEmbed,
     getRoleNotFoundEmbed,
     getVerificationChecksFailedEmbed,
-    getSuccessfulXPChangeEmbed,
-    getInvalidXPEmbed,
+    getUserSuspendedEmbed,
 } from '../../handlers/locale';
-import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
+import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { provider } from '../../database/router';
 
-class AddXPCommand extends Command {
+class ExileCommand extends Command {
     constructor() {
         super({
-            trigger: 'add-xp',
-            description: 'Adds XP to a user.',
+            trigger: 'exile',
+            description: 'Exiles a user from the Roblox group.',
             type: 'ChatInput',
-            module: 'xp',
+            module: 'ranking',
             args: [
                 {
                     trigger: 'roblox-user',
-                    description: 'Who do you want to add XP to?',
+                    description: 'Who do you want to exile?',
                     autocomplete: true,
                     type: 'RobloxUser',
-                },
-                {
-                    trigger: 'increment',
-                    description: 'How much XP would you like to add?',
-                    type: 'Number',
                 },
                 {
                     trigger: 'reason',
@@ -48,7 +43,7 @@ class AddXPCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    id: config.permissions.users,
+                    ids: config.permissions.admin,
                     value: true,
                 }
             ]
@@ -56,8 +51,6 @@ class AddXPCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        if(!config.database.enabled) return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ] });
-
         let robloxUser: User | PartialUser;
         try {
             robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
@@ -87,20 +80,18 @@ class AddXPCommand extends Command {
             return ctx.reply({ embeds: [ getRobloxUserIsNotMemberEmbed() ]});
         }
 
-        if(!Number.isInteger(Number(ctx.args['increment'])) || Number(ctx.args['increment']) < 0) return ctx.reply({ embeds: [ getInvalidXPEmbed() ] });
-
         if(config.verificationChecks) {
             const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 
         const userData = await provider.findUser(robloxUser.id.toString());
-        const xp = Number(userData.xp) + Number(ctx.args['increment']);
-        await provider.updateUser(robloxUser.id.toString(), { xp });
+        if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
 
         try {
-            ctx.reply({ embeds: [ await getSuccessfulXPChangeEmbed(robloxUser, xp) ]});
-            logAction('Add XP', ctx.user, ctx.args['reason'], robloxUser, null, null, null, `${userData.xp} → ${xp} (+${Number(ctx.args['increment'])})`);
+            await robloxMember.kickFromGroup(config.groupId);
+            ctx.reply({ embeds: [ await getSuccessfulExileEmbed(robloxUser) ]})
+            logAction('Exile', ctx.user, ctx.args['reason'], robloxUser);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
@@ -108,4 +99,4 @@ class AddXPCommand extends Command {
     }
 }
 
-export default AddXPCommand;
+export default ExileCommand;

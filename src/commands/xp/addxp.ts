@@ -10,6 +10,8 @@ import {
     getVerificationChecksFailedEmbed,
     getSuccessfulXPChangeEmbed,
     getInvalidXPEmbed,
+    getNoRankupAvailableEmbed,
+    getSuccessfulAddingAndRankupEmbed,
 } from '../../handlers/locale';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
@@ -17,24 +19,25 @@ import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { provider } from '../../database/router';
+import { findEligibleRole } from '../../handlers/handleXpRankup';
 
-class RemoveXPCommand extends Command {
+class AddXPCommand extends Command {
     constructor() {
         super({
-            trigger: 'remove-xp',
-            description: 'Removes XP from a user.',
+            trigger: 'addxp',
+            description: 'Adds XP to a user.',
             type: 'ChatInput',
             module: 'xp',
             args: [
                 {
                     trigger: 'roblox-user',
-                    description: 'Who do you want to remove XP from?',
+                    description: 'Who do you want to add XP to?',
                     autocomplete: true,
                     type: 'RobloxUser',
                 },
                 {
-                    trigger: 'decrement',
-                    description: 'How much XP would you like to remove?',
+                    trigger: 'increment',
+                    description: 'How much XP would you like to add?',
                     type: 'Number',
                 },
                 {
@@ -48,7 +51,7 @@ class RemoveXPCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    id: config.permissions.users,
+                    ids: config.permissions.users,
                     value: true,
                 }
             ]
@@ -57,7 +60,7 @@ class RemoveXPCommand extends Command {
 
     async run(ctx: CommandContext) {
         if(!config.database.enabled) return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ] });
-
+        let enoughForRankUp: boolean;
         let robloxUser: User | PartialUser;
         try {
             robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
@@ -87,7 +90,7 @@ class RemoveXPCommand extends Command {
             return ctx.reply({ embeds: [ getRobloxUserIsNotMemberEmbed() ]});
         }
 
-        if(!Number.isInteger(Number(ctx.args['decrement'])) || Number(ctx.args['decrement']) < 0) return ctx.reply({ embeds: [ getInvalidXPEmbed() ] });
+        if(!Number.isInteger(Number(ctx.args['increment'])) || Number(ctx.args['increment']) < 0) return ctx.reply({ embeds: [ getInvalidXPEmbed() ] });
 
         if(config.verificationChecks) {
             const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
@@ -95,12 +98,27 @@ class RemoveXPCommand extends Command {
         }
 
         const userData = await provider.findUser(robloxUser.id.toString());
-        const xp = Number(userData.xp) - Number(ctx.args['decrement']);
+        const xp = Number(userData.xp) + Number(ctx.args['increment']);
         await provider.updateUser(robloxUser.id.toString(), { xp });
 
-        try {
+        const groupRoles = await robloxGroup.getRoles();
+        const role = await findEligibleRole(robloxMember, groupRoles, xp);
+        if (role) {
+            enoughForRankUp = true;
+            try {
+                await robloxGroup.updateMember(robloxUser.id, role.id);
+                ctx.reply({ embeds: [ await getSuccessfulAddingAndRankupEmbed(robloxUser, role.name,xp.toString()) ]});
+                logAction('XP Rankup', ctx.user, null, robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
+            } catch (err) {
+                console.log(err);
+                return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
+            }
+        } else {
             ctx.reply({ embeds: [ await getSuccessfulXPChangeEmbed(robloxUser, xp) ]});
-            logAction('Remove XP', ctx.user, ctx.args['reason'], robloxUser, null, null, null, `${userData.xp} → ${xp} (-${Number(ctx.args['decrement'])})`);
+        }
+
+        try {
+            logAction('Add XP', ctx.user, ctx.args['reason'], robloxUser, null, null, null, `${userData.xp} → ${xp} (+${Number(ctx.args['increment'])})`);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
@@ -108,4 +126,4 @@ class RemoveXPCommand extends Command {
     }
 }
 
-export default RemoveXPCommand;
+export default AddXPCommand;
