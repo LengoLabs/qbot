@@ -58,7 +58,7 @@ export interface BotConfig {
          */
         signal?: string[];
         /**
-         * Access to the revert-ranks command.
+         * Access to the revert-ranks, and exile command.
          */
         admin?: string[];
     }
