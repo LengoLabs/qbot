@@ -19,6 +19,7 @@ const handleInteraction = async (payload: Interaction) => {
         if(!permission) {
             context.reply({ embeds: [ getNoPermissionEmbed() ] });
         } else {
+            await context.defer();
             (new command()).run(context);
         }
     } else if(payload instanceof AutocompleteInteraction) {
