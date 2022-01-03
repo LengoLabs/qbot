@@ -1,6 +1,6 @@
 {
   "name": "qbot",
-  "version": "7.0.0",
+  "version": "7.1.0",
   "description": "The most advanced Discord to Roblox ranking bot available, open source and free, without any branding.",
   "main": "src/main.ts",
   "scripts": {
