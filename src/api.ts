@@ -70,6 +70,18 @@ if(config.api) {
         }
     });
 
+    app.get('/join-requests', async (req, res) => {
+        try {
+            const joinRequests = await robloxGroup.getJoinRequests({ limit: 100 });
+            return res.send({
+                success: true,
+                requests: joinRequests.data,
+            })
+        } catch (err) {
+            return res.send({ success: false, msg: 'Failed to get join requests.' });
+        }
+    });
+
     app.get('/signals', async (req, res) => {
         return res.send(signals);
     });
