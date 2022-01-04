@@ -21,7 +21,7 @@ export const config: BotConfig = {
         shout: '',
     },
     database: {
-        enabled: true,
+        enabled: false,
         type: 'mongodb',
     },
     api: true,
