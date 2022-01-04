@@ -165,6 +165,27 @@ export interface BotConfig {
         }[];
     }
     /**
+     * Configuration for the in-game activity system. This needs to have the database enabled.
+     */
+    activity: {
+        /**
+         * Should the activity system be enabled?
+         */
+        enabled: boolean;
+        /**
+         * Should the user get XP from being in-game?
+         */
+        xpInGame: boolean;
+        /**
+         * Amount of xp should be added per minute in-game?
+         */
+        amountPerMinute: number;
+        /**
+         * What is the minimum rank a user should be to earn xp from in-game?
+         */
+        minimumXpRankId: number;
+    }
+    /**
      * Configuration for the anti abuse feature. This works by demoting users who exceed the action threshold within the set amount of time.
      */
     antiAbuse: {
@@ -319,4 +340,8 @@ export declare type DatabaseUser = {
      * What should they be ranked to once unsuspended?
      */
     unsuspendRank?: number;
+    /**
+     * How many minutes of activity does the user have?
+     */
+    activity: number;
 }

@@ -1,7 +1,7 @@
 import { BotConfig } from './structures/types'; 
 
 export const config: BotConfig = {
-    groupId: 8555157,
+    groupId: 0,
     slashCommands: true,
     legacyCommands: {
         enabled: true,
@@ -17,8 +17,8 @@ export const config: BotConfig = {
         admin: [''],
     },
     logChannels: {
-        actions: '925220493290770512',
-        shout: '925544846603726918',
+        actions: '',
+        shout: '',
     },
     database: {
         enabled: true,
@@ -47,6 +47,12 @@ export const config: BotConfig = {
             },
             */
         ],
+    },
+    activity: {
+        enabled: false,
+        xpInGame: false,
+        amountPerMinute: 5,
+        minimumXpRankId: 1,
     },
     antiAbuse: {
         enabled: false,

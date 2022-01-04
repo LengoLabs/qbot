@@ -403,7 +403,23 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
         .setTimestamp()
         .addField('Role', `${member.role.name} (${member.role.rank})`, true)
         .addField('XP', data.xp.toString() || '0', true)
+        .addField('Activity', `${data.activity} Minutes`)
         .addField('Suspended', data.suspendedUntil ? `✅ (<t:${Math.round(data.suspendedUntil.getTime() / 1000)}:R>)` : '❌', true)
+
+    return embed;
+}
+
+export const getActivityEmbed = async (user: User | PartialUser, member: GroupMember, data: DatabaseUser): Promise<MessageEmbed> => {
+    const primaryGroup = await user.getPrimaryGroup();
+    const embed = new MessageEmbed()
+        .setAuthor(`Activity: ${user.name}`, infoIconUrl)
+        .setColor(mainColor)
+        .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '150x150', isCircular: false })).imageUrl)
+        .setFooter(`User ID: ${user.id}`)
+        .setTimestamp()
+
+        
+    if(config.activity.enabled) embed.addField('Total Minutes', `${data.activity} Minutes In-Game`)
 
     return embed;
 }

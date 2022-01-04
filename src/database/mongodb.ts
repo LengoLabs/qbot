@@ -9,6 +9,7 @@ const User = model('User', new Schema({
     xp: Number,
     suspendedUntil: Date,
     unsuspendRank: Number,
+    activity: Number
 }));
 
 class MongoDBProvider extends DatabaseProvider {
@@ -20,7 +21,7 @@ class MongoDBProvider extends DatabaseProvider {
     async findUser(robloxId: string): Promise<DatabaseUser> {
         let userData = await User.findOne({ robloxId });
         if(!userData) {
-            userData = await User.create({ robloxId, xp: 0 });
+            userData = await User.create({ robloxId, xp: 0, activity: 0 });
         }
         return userData;
     }

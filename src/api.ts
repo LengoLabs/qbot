@@ -98,6 +98,30 @@ if(config.api) {
             return res.send({ success: false, msg: 'Failed to mark signal as completed.' });
         }
     });
+
+    app.post('/addTime', async (req,res) => {
+        const { id } = req.body;
+        const { time } = req.body;
+        if(!id || !time) return res.send({ success: false, msg: 'Missing parameters.' });
+
+        let userData = await provider.findUser(id.toString());
+        var minutes = Math.floor(time / 60);
+        let toAdd = userData.activity + minutes;
+        await provider.updateUser(id.toString(), { activity: toAdd });
+        userData = await provider.findUser(id.toString());
+
+        if(config.activity.xpInGame) {
+            const xpPerMin = config.activity.amountPerMinute;
+            const minRank = config.activity.minimumXpRankId;
+            const user = await robloxGroup.getMember(id);
+            const xpTemp = xpPerMin * minutes;
+            const xpChange = userData.xp + xpTemp
+            
+            await provider.updateUser(id.toString(), { xp: xpChange })
+        }
+
+        return res.send({ success: true });
+    })
     
     app.post('/promote', async (req, res) => {
         const { id } = req.body;
