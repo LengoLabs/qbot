@@ -2,6 +2,7 @@ import { DatabaseProvider } from '../structures/DatabaseProvider';
 import { DatabaseUser } from '../structures/types';
 import { Schema, connect, model } from 'mongoose';
 import { config } from '../config';
+require('dotenv').config();
 
 const User = model('User', new Schema({
     robloxId: String,
@@ -13,7 +14,7 @@ const User = model('User', new Schema({
 class MongoDBProvider extends DatabaseProvider {
     constructor() {
         super();
-        if(config.database.enabled) connect(config.database.uri).catch(console.error);
+        if(config.database.enabled) connect(process.env.DB_URI).catch(console.error);
     }
 
     async findUser(robloxId: string): Promise<DatabaseUser> {

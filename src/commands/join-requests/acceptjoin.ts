@@ -3,39 +3,27 @@ import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
     getInvalidRobloxUserEmbed,
-    getRobloxUserIsNotMemberEmbed,
     getUnexpectedErrorEmbed,
-    getNoRankAboveEmbed,
-    getRoleNotFoundEmbed,
-    getVerificationChecksFailedEmbed,
-    getSuccessfulXPChangeEmbed,
-    getInvalidXPEmbed,
+    getSuccessfulAcceptJoinRequestEmbed,
 } from '../../handlers/locale';
-import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
-import { provider } from '../../database/router';
 
-class AddXPCommand extends Command {
+class AcceptJoinCommand extends Command {
     constructor() {
         super({
-            trigger: 'add-xp',
-            description: 'Adds XP to a user.',
+            trigger: 'acceptjoin',
+            description: 'Accepts the join request from a user.',
             type: 'ChatInput',
-            module: 'xp',
+            module: 'join-requests',
             args: [
                 {
                     trigger: 'roblox-user',
-                    description: 'Who do you want to add XP to?',
+                    description: 'Whose join request do you want to accept?',
                     autocomplete: true,
                     type: 'RobloxUser',
-                },
-                {
-                    trigger: 'increment',
-                    description: 'How much XP would you like to add?',
-                    type: 'Number',
                 },
                 {
                     trigger: 'reason',
@@ -48,7 +36,7 @@ class AddXPCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    id: config.permissions.users,
+                    ids: config.permissions.join,
                     value: true,
                 }
             ]
@@ -56,8 +44,6 @@ class AddXPCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        if(!config.database.enabled) return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ] });
-
         let robloxUser: User | PartialUser;
         try {
             robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
@@ -79,28 +65,10 @@ class AddXPCommand extends Command {
             }
         }
 
-        let robloxMember: GroupMember;
         try {
-            robloxMember = await robloxGroup.getMember(robloxUser.id);
-            if(!robloxMember) throw new Error();
-        } catch (err) {
-            return ctx.reply({ embeds: [ getRobloxUserIsNotMemberEmbed() ]});
-        }
-
-        if(!Number.isInteger(Number(ctx.args['increment'])) || Number(ctx.args['increment']) < 0) return ctx.reply({ embeds: [ getInvalidXPEmbed() ] });
-
-        if(config.verificationChecks) {
-            const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
-            if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
-        }
-
-        const userData = await provider.findUser(robloxUser.id.toString());
-        const xp = Number(userData.xp) + Number(ctx.args['increment']);
-        await provider.updateUser(robloxUser.id.toString(), { xp });
-
-        try {
-            ctx.reply({ embeds: [ await getSuccessfulXPChangeEmbed(robloxUser, xp) ]});
-            logAction('Add XP', ctx.user, ctx.args['reason'], robloxUser, null, null, null, `${userData.xp} → ${xp} (+${Number(ctx.args['increment'])})`);
+            await robloxGroup.acceptJoinRequest(robloxUser.id);
+            ctx.reply({ embeds: [ await getSuccessfulAcceptJoinRequestEmbed(robloxUser) ]});
+            logAction('Accept Join Request', ctx.user, ctx.args['reason'], robloxUser);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
@@ -108,4 +76,4 @@ class AddXPCommand extends Command {
     }
 }
 
-export default AddXPCommand;
+export default AcceptJoinCommand;

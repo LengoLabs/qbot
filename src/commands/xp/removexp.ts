@@ -21,7 +21,7 @@ import { provider } from '../../database/router';
 class RemoveXPCommand extends Command {
     constructor() {
         super({
-            trigger: 'remove-xp',
+            trigger: 'removexp',
             description: 'Removes XP from a user.',
             type: 'ChatInput',
             module: 'xp',
@@ -48,7 +48,7 @@ class RemoveXPCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    id: config.permissions.users,
+                    ids: config.permissions.users,
                     value: true,
                 }
             ]
@@ -88,11 +88,6 @@ class RemoveXPCommand extends Command {
         }
 
         if(!Number.isInteger(Number(ctx.args['decrement'])) || Number(ctx.args['decrement']) < 0) return ctx.reply({ embeds: [ getInvalidXPEmbed() ] });
-
-        const groupRoles = await robloxGroup.getRoles();
-        const role = groupRoles.find((role) => role.rank === robloxMember.role.rank + 1);
-        if(!role) return ctx.reply({ embeds: [ getNoRankAboveEmbed() ]});
-        if(role.rank > config.maximumRank || robloxMember.role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
 
         if(config.verificationChecks) {
             const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);

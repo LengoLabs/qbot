@@ -33,7 +33,7 @@ class ShoutCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    id: config.permissions.shout,
+                    ids: config.permissions.shout,
                     value: true,
                 }
             ]

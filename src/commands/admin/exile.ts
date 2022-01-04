@@ -3,25 +3,32 @@ import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
     getInvalidRobloxUserEmbed,
+    getRobloxUserIsNotMemberEmbed,
+    getSuccessfulExileEmbed,
     getUnexpectedErrorEmbed,
-    getSuccessfulDenyJoinRequestEmbed,
+    getNoRankBelowEmbed,
+    getRoleNotFoundEmbed,
+    getVerificationChecksFailedEmbed,
+    getUserSuspendedEmbed,
 } from '../../handlers/locale';
 import { config } from '../../config';
-import { User, PartialUser } from 'bloxy/dist/structures';
+import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
+import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
+import { provider } from '../../database/router';
 
-class DenyJoinCommand extends Command {
+class ExileCommand extends Command {
     constructor() {
         super({
-            trigger: 'deny-join',
-            description: 'Denies the join request from a user.',
+            trigger: 'exile',
+            description: 'Exiles a user from the Roblox group.',
             type: 'ChatInput',
-            module: 'join-requests',
+            module: 'ranking',
             args: [
                 {
                     trigger: 'roblox-user',
-                    description: 'Whose join request do you want to deny?',
+                    description: 'Who do you want to exile?',
                     autocomplete: true,
                     type: 'RobloxUser',
                 },
@@ -36,7 +43,7 @@ class DenyJoinCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    id: config.permissions.join,
+                    ids: config.permissions.admin,
                     value: true,
                 }
             ]
@@ -65,10 +72,28 @@ class DenyJoinCommand extends Command {
             }
         }
 
+        let robloxMember: GroupMember;
         try {
-            await robloxGroup.declineJoinRequest(robloxUser.id);
-            ctx.reply({ embeds: [ await getSuccessfulDenyJoinRequestEmbed(robloxUser) ]});
-            logAction('Deny Join Request', ctx.user, ctx.args['reason'], robloxUser);
+            robloxMember = await robloxGroup.getMember(robloxUser.id);
+            if(!robloxMember) throw new Error();
+        } catch (err) {
+            return ctx.reply({ embeds: [ getRobloxUserIsNotMemberEmbed() ]});
+        }
+
+        if(config.verificationChecks) {
+            const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
+            if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
+        }
+
+        if(config.database.enabled) {
+            const userData = await provider.findUser(robloxUser.id.toString());
+            if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
+        }
+
+        try {
+            await robloxMember.kickFromGroup(config.groupId);
+            ctx.reply({ embeds: [ await getSuccessfulExileEmbed(robloxUser) ]})
+            logAction('Exile', ctx.user, ctx.args['reason'], robloxUser);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
@@ -76,4 +101,4 @@ class DenyJoinCommand extends Command {
     }
 }
 
-export default DenyJoinCommand;
+export default ExileCommand;

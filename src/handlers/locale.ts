@@ -66,6 +66,16 @@ export const getRobloxUserIsNotMemberEmbed = (): MessageEmbed => {
     return embed;
 }
 
+export const getSuccessfulAddingAndRankupEmbed = async(user: User | PartialUser, newRole: string, xpChange: string): Promise<MessageEmbed> => {
+    const embed = new MessageEmbed()
+        .setAuthor('Success!',checkIconUrl)
+        .setColor(greenColor)
+        .setThumbnail(await (await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false})).imageUrl)
+        .setDescription(`**${user.name}** has been given **${xpChange}** XP and has been promoted to **${newRole}**, since they had enough XP!`)
+
+    return embed
+}
+
 export const getSuccessfulPromotionEmbed = async (user: User | PartialUser, newRole: string): Promise<MessageEmbed> => {
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)
@@ -92,6 +102,16 @@ export const getSuccessfulFireEmbed = async (user: User | PartialUser, newRole: 
         .setColor(greenColor)
         .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
         .setDescription(`**${user.name}** has been successfully fired, and now has the **${newRole}** role.`);
+
+    return embed;
+}
+
+export const getSuccessfulExileEmbed = async (user: User | PartialUser): Promise<MessageEmbed> => {
+    const embed = new MessageEmbed()
+        .setAuthor('Success!', checkIconUrl)
+        .setColor(greenColor)
+        .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
+        .setDescription(`**${user.name}** has been successfully exiled from the group.`);
 
     return embed;
 }
@@ -128,7 +148,7 @@ export const getSuccessfulRevertRanksEmbed = (actionCount: number): MessageEmbed
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
-        .setDescription(`Successfully rolled back **${actionCount}** ranking actions.`);
+        .setDescription(`Successfully started rolling back **${actionCount}** ranking actions.`);
 
     return embed;
 }

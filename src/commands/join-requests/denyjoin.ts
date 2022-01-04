@@ -4,24 +4,24 @@ import { Command } from '../../structures/Command';
 import {
     getInvalidRobloxUserEmbed,
     getUnexpectedErrorEmbed,
-    getSuccessfulAcceptJoinRequestEmbed,
+    getSuccessfulDenyJoinRequestEmbed,
 } from '../../handlers/locale';
 import { config } from '../../config';
-import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
+import { User, PartialUser } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 
-class AcceptJoinCommand extends Command {
+class DenyJoinCommand extends Command {
     constructor() {
         super({
-            trigger: 'accept-join',
-            description: 'Accepts the join request from a user.',
+            trigger: 'denyjoin',
+            description: 'Denies the join request from a user.',
             type: 'ChatInput',
             module: 'join-requests',
             args: [
                 {
                     trigger: 'roblox-user',
-                    description: 'Whose join request do you want to accept?',
+                    description: 'Whose join request do you want to deny?',
                     autocomplete: true,
                     type: 'RobloxUser',
                 },
@@ -36,7 +36,7 @@ class AcceptJoinCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    id: config.permissions.join,
+                    ids: config.permissions.join,
                     value: true,
                 }
             ]
@@ -66,9 +66,9 @@ class AcceptJoinCommand extends Command {
         }
 
         try {
-            await robloxGroup.acceptJoinRequest(robloxUser.id);
-            ctx.reply({ embeds: [ await getSuccessfulAcceptJoinRequestEmbed(robloxUser) ]});
-            logAction('Accept Join Request', ctx.user, ctx.args['reason'], robloxUser);
+            await robloxGroup.declineJoinRequest(robloxUser.id);
+            ctx.reply({ embeds: [ await getSuccessfulDenyJoinRequestEmbed(robloxUser) ]});
+            logAction('Deny Join Request', ctx.user, ctx.args['reason'], robloxUser);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
@@ -76,4 +76,4 @@ class AcceptJoinCommand extends Command {
     }
 }
 
-export default AcceptJoinCommand;
+export default DenyJoinCommand;

@@ -49,7 +49,7 @@ class SetRankCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    id: config.permissions.ranking,
+                    ids: config.permissions.ranking,
                     value: true,
                 }
             ]
@@ -96,8 +96,10 @@ class SetRankCommand extends Command {
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 
-        const userData = await provider.findUser(robloxUser.id.toString());
-        if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
+        if(config.database.enabled) {
+            const userData = await provider.findUser(robloxUser.id.toString());
+            if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
+        }
 
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);

@@ -24,13 +24,13 @@ const parseCommand = (s: string): [string, Args] | null => {
     return [command.value, new Args(pout)];
 }
 
-const handleLegacyCommand = (message: Message) => {
+const handleLegacyCommand = async (message: Message) => {
     const out = parseCommand(message.content);
     if(!out) return;
     const commandQuery = out[0] || null;
     const args = out[1] || null;
 
-    const commandName = commandQuery.replace(/[^a-zA-Z0-9]/, '');
+    const commandName = commandQuery.replace(/[^a-zA-Z0-9]/, '').replace('-', '');
     const command = discordClient.commands.find((cmd) => (new cmd()).trigger === commandName || (new cmd()).aliases.includes(commandName));
     if(!command) return;
 
@@ -39,6 +39,7 @@ const handleLegacyCommand = (message: Message) => {
         if(!context.checkPermissions()) {
             context.reply({ embeds: [ getNoPermissionEmbed() ] });
         } else {
+            await context.defer();
             (new command()).run(context);
         }
     } catch (err) {

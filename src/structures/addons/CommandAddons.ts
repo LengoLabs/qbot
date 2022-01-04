@@ -13,6 +13,7 @@ import { Args } from 'lexure';
 import { getMissingArgumentsEmbed, getInvalidRobloxUserEmbed } from '../../handlers/locale';
 import { robloxClient } from '../../main';
 import { config } from '../../config';
+import { CommandPermission } from '../types';
 
 export class CommandContext  {
     type: 'interaction' | 'message';
@@ -22,6 +23,7 @@ export class CommandContext  {
     guild?: Guild;
     args?: { [key: string]: any };
     replied: boolean;
+    deferred: boolean;
     command: Command;
 
     /**
@@ -37,13 +39,11 @@ export class CommandContext  {
         this.guild = payload.guild;
         this.command = new command();
         this.replied = false;
+        this.deferred = false;
 
         this.args = {};
         if(payload instanceof Interaction) {
             const interaction = payload as CommandInteraction;
-            setTimeout(() => {
-                if(!this.replied) interaction.deferReply();
-            }, 500);
             interaction.options.data.forEach(async (arg) => {
                 this.args[arg.name] = interaction.options.get(arg.name).value;
             });
@@ -79,11 +79,20 @@ export class CommandContext  {
             return true;
         } else {
             let hasPermission = null;
-            const permission = this.command.permissions.forEach((permission) => {
+            let permissions = [];
+            this.command.permissions.map((permission) => {
+                permission.ids.forEach((id) => {
+                    return permissions.push({
+                        type: permission.type,
+                        id,
+                        value: permission.value,
+                    });
+                });
+            });
+            const permission = permissions.forEach((permission) => {
                 let fitsCriteria: boolean;
                 if(!hasPermission) {
-                    if(!permission.value) return;
-                    if(config.permissions.all && this.member.roles.cache.has(config.permissions.all)) {
+                    if(config.permissions.all && this.member.roles.cache.some((role) => config.permissions.all.includes(role.id))) {
                         fitsCriteria = true;
                     } else {
                         if(permission.type === 'role') fitsCriteria = this.member.roles.cache.has(permission.id);
@@ -105,23 +114,37 @@ export class CommandContext  {
         this.replied = true;
         if(this.subject instanceof CommandInteraction) {
             try {
-                if(this.subject.deferred) {
-                    return this.subject.editReply(payload);
+                const subject = this.subject as CommandInteraction;
+                if(this.deferred) {
+                    return subject.editReply(payload);
                 } else {
-                    return this.subject.reply(payload);
+                    return subject.reply(payload);
                 }
             } catch (err) {
                 const subject = this.subject as CommandInteraction;
-                setTimeout(() => {
-                    if(subject.deferred) {
+                try {
+                    if(this.deferred) {
                         return subject.editReply(payload);
                     } else {
                         return subject.reply(payload);
                     }
-                }, 1250);
+                } catch (err) {};
             }
         } else {
             return this.subject.channel.send(payload);
         }
+    }
+
+    /**
+     * Defers a reply.
+     */
+    async defer() {
+        if(this.subject instanceof CommandInteraction) {
+            const interaction = this.subject as CommandInteraction;
+            if(!interaction.deferred && !interaction.replied) await this.subject.deferReply();
+        } else {
+            await this.subject.channel.sendTyping();
+        }
+        this.deferred = true;
     }
 }

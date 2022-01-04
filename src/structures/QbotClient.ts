@@ -50,7 +50,7 @@ class QbotClient extends Client {
             rawModules.forEach(async (module, moduleIndex) => {
                 const rawCommands = readdirSync(`./src/commands/${module}`);
                 rawCommands.forEach(async (cmdName, cmdIndex) => {
-                    const { default: command }: CommandExport = await import(`../commands/${module}/${cmdName}`);
+                    const { default: command }: CommandExport = await import(`../commands/${module}/${cmdName.replace('.ts', '')}`);
                     commands.push(command);
                     if(moduleIndex === rawModules.length - 1 && cmdIndex === rawCommands.length - 1) resolve(commands);
                 });
