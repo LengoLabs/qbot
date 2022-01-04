@@ -47,6 +47,7 @@ export const getMissingArgumentsEmbed = (cmdName: string, args: CommandArgument[
     return embed;
 }
 
+
 export const getInvalidRobloxUserEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Query Unsuccessful', xmarkIconUrl)
