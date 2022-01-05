@@ -476,3 +476,19 @@ export const getJoinRequestsEmbed = (joinRequests: GroupJoinRequest[]): MessageE
 
     return embed;
 }
+
+export const getSuccessfulGroupBanEmbed = () : MessageEmbed => {
+    const embed = new MessageEmbed();
+    embed.setAuthor("Success", checkIconUrl);
+    embed.setColor(greenColor);
+    embed.setDescription(`You have successfully banned this user from the group`);
+    return embed;
+}
+
+export const getSuccessfulUnGroupBanEmbed = () : MessageEmbed => {
+    const embed = new MessageEmbed();
+    embed.setAuthor("Success", checkIconUrl);
+    embed.setColor(greenColor);
+    embed.setDescription(`You have successfully unbanned this user from the group`);
+    return embed;
+}

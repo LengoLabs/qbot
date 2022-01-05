@@ -1,27 +1,27 @@
 import { BotConfig } from './structures/types'; 
 
 export const config: BotConfig = {
-    groupId: 0,
+    groupId: 5242495,
     slashCommands: true,
     legacyCommands: {
         enabled: true,
         prefixes: ['q!'],
     },
     permissions: {
-        all: [''],
+        all: ['759959415708450837'],
         ranking: [''],
         users: [''],
         shout: [''],
         join: [''],
-        signal: [''],
+        signal: ['759959415708450837'],
         admin: [''],
     },
     logChannels: {
-        actions: '',
-        shout: '',
+        actions: '759959421085417533',
+        shout: '759959421085417533',
     },
     database: {
-        enabled: false,
+        enabled: true,
         type: 'mongodb',
     },
     api: true,
@@ -37,7 +37,7 @@ export const config: BotConfig = {
         onlyMilestones: false,
     },
     xpSystem: {
-        enabled: false,
+        enabled: true,
         autoRankup: false,
         roles: [
             /* Example:
@@ -54,6 +54,9 @@ export const config: BotConfig = {
         threshold: 5,
         demotionRank: 1,
         bypassRoleId: '',
+    },
+    groupBan: {
+        enabled: true
     },
     activityStatus: {
         enabled: false,
