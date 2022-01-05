@@ -34,7 +34,11 @@ export const getListeningText = (port) => `${consoleGreen}✓  ${consoleClear}Li
 export const getMissingArgumentsEmbed = (cmdName: string, args: CommandArgument[]): MessageEmbed => {
     let argString = '';
     args.forEach((arg) => {
-        argString += arg.required || true ? `<${arg.trigger}> ` : `[${arg.trigger}] `;
+        if(arg.isLegacyFlag) {
+            argString += arg.required || true ? `--<${arg.trigger}> ` : `--[${arg.trigger}] `;
+        } else {
+            argString += arg.required || true ? `<${arg.trigger}> ` : `[${arg.trigger}] `;
+        }
     });
     argString = argString.substring(0, argString.length - 1);
 
@@ -52,6 +56,15 @@ export const getInvalidRobloxUserEmbed = (): MessageEmbed => {
         .setAuthor('Query Unsuccessful', xmarkIconUrl)
         .setColor(redColor)
         .setDescription('The Roblox user you searched for does not exist.');
+
+    return embed;
+}
+
+export const getNoDatabaseEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Command Disabled', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('This command requires a database, and one is not configured for this bot.');
 
     return embed;
 }
