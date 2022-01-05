@@ -142,7 +142,7 @@ export const getSuccessfulShoutEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
-        .setDescription('The specified message has been posted as the group shout.');
+        .setDescription('The Group Shout has been updated to that message!');
 
     return embed;
 }
@@ -160,7 +160,7 @@ export const getSuccessfulRevertRanksEmbed = (actionCount: number): MessageEmbed
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
-        .setDescription(`Successfully started rolling back **${actionCount}** ranking actions.`);
+        .setDescription(`Successfully started reverting back **${actionCount}** ranking actions.`);
 
     return embed;
 }
@@ -170,7 +170,7 @@ export const getSuccessfulXPRankupEmbed = async (user: User | PartialUser, newRo
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
         .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
-        .setDescription(`**${user.name}** has been successfully ranked up to **${newRole}**!`);
+        .setDescription(`**${user.name}** has been successfully ranked to **${newRole}**!`);
 
     return embed;
 }
@@ -190,7 +190,7 @@ export const getSuccessfulSuspendEmbed = async (user: User | PartialUser, newRol
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
         .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
-        .setDescription(`**${user.name}** has been successfully suspended, and will have their current rank returned in <t:${Math.round(endDate.getTime() / 1000)}:R>.`);
+        .setDescription(`**${user.name}** has been successfully suspended, and will have their rank returned in <t:${Math.round(endDate.getTime() / 1000)}:R>.`);
 
     return embed;
 }
