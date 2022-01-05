@@ -34,7 +34,11 @@ export const getListeningText = (port) => `${consoleGreen}✓  ${consoleClear}Li
 export const getMissingArgumentsEmbed = (cmdName: string, args: CommandArgument[]): MessageEmbed => {
     let argString = '';
     args.forEach((arg) => {
-        argString += arg.required || true ? `<${arg.trigger}> ` : `[${arg.trigger}] `;
+        if(arg.isLegacyFlag) {
+            argString += arg.required || true ? `--<${arg.trigger}> ` : `--[${arg.trigger}] `;
+        } else {
+            argString += arg.required || true ? `<${arg.trigger}> ` : `[${arg.trigger}] `;
+        }
     });
     argString = argString.substring(0, argString.length - 1);
 
