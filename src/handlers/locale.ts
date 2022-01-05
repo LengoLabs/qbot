@@ -57,6 +57,23 @@ export const getInvalidRobloxUserEmbed = (): MessageEmbed => {
     return embed;
 }
 
+export const addedActivityEmbed = (time: string, username: string): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Success!',checkIconUrl)
+        .setColor(greenColor)
+        .setDescription(`Successfully added **${time}** minutes to **${username}**!`)
+    return embed
+}
+
+export const removedActivityEmbed = (time: string, username: string): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Success!',checkIconUrl)
+        .setColor(greenColor)
+        .setDescription(`Successfully removed **${time}** minutes from **${username}**!`)
+    return embed
+}
+
+
 export const getRobloxUserIsNotMemberEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Unable to Rank', xmarkIconUrl)

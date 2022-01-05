@@ -13,19 +13,19 @@ import {
 } from '../../handlers/locale';
 import { provider } from '../../database/router';
 
-class InfoCommand extends Command {
+class ActivityCommand extends Command {
     constructor() {
         super({
             trigger: 'activity',
-            description: 'Provides the amount of minutes a user is in game,',
+            description: 'Provides the amount of minutes a user is in game.',
             type: 'ChatInput',
-            module: 'information',
+            module: 'activity',
             args: [
                 {
                     trigger: 'roblox-user',
                     description: 'Who do you want to view the activity of?',
                     autocomplete: true,
-                    required: false,
+                    required: true,
                     type: 'String',
                 },
             ]
@@ -74,4 +74,4 @@ class InfoCommand extends Command {
     }
 }
 
-export default InfoCommand;
+export default ActivityCommand;
