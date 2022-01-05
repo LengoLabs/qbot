@@ -6,6 +6,7 @@ import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { config } from '../../config';
 import {
     getInvalidRobloxUserEmbed,
+    getNoDatabaseEmbed,
     getRobloxUserIsNotMemberEmbed,
     getUnexpectedErrorEmbed,
     getUserInfoEmbed,
@@ -32,7 +33,7 @@ class InfoCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        if(!config.database.enabled) return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ] });
+        if(!config.database.enabled) return ctx.reply({ embeds: [ getNoDatabaseEmbed() ] });
 
         let robloxUser: User | PartialUser;
         try {

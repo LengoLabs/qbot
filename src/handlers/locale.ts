@@ -60,6 +60,15 @@ export const getInvalidRobloxUserEmbed = (): MessageEmbed => {
     return embed;
 }
 
+export const getNoDatabaseEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Command Disabled', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('This command requires a database, and one is not configured for this bot.');
+
+    return embed;
+}
+
 export const getRobloxUserIsNotMemberEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Unable to Rank', xmarkIconUrl)
