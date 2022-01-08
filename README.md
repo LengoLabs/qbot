@@ -14,7 +14,7 @@ Setup instructions are available at https://docs.lengolabs.com/qbot/getting-star
 If you run into any problems while configuring Qbot, please do not hesitate to join our [community Discord server](https://discord.gg/GkUNhZmenn)! Our volunteer support team is happy to assist you to make sure that you have the best experience possible, and that the setup process goes smoothly.
 
 ## License
-We use the MIT License, due to its permissive structure and the peace of mind it provides for contributors. We highly recommend you read the license before maintaining this project, so you have an idea of what is allowed, and what is not allowed.
+We use the MIT License, due to its permissive structure and the piece of mind it provides for contributors. We highly recommend you read the license before maintaining this project, so you have an idea of what is allowed, and what is not allowed.
 
 > You can read the license here: https://github.com/LengoLabs/qbot/blob/master/LICENSE  
 

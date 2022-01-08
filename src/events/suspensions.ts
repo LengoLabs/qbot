@@ -1,3 +1,4 @@
+import { DatabaseUser } from '../structures/types';
 import { provider } from '../database/router';
 import { robloxGroup } from '../main';
 import { config } from '../config';
@@ -5,7 +6,7 @@ import { config } from '../config';
 const checkSuspensions = async () => {
     if(!config.database.enabled) return;
     const suspensions = await provider.findSuspendedUsers();
-    suspensions.forEach((async (suspension) => {
+    suspensions.forEach(async (suspension) => {
         try {
             const robloxMember = await robloxGroup.getMember(Number(suspension.robloxId));
             const groupRoles = await robloxGroup.getRoles();
@@ -21,7 +22,7 @@ const checkSuspensions = async () => {
         } catch(err) {
             console.error(err);
         }
-    }));
+    });
     setTimeout(checkSuspensions, 15000);
 }
 
