@@ -9,6 +9,7 @@ const User = model('User', new Schema({
     xp: Number,
     suspendedUntil: Date,
     unsuspendRank: Number,
+    isBanned: Boolean
 }));
 
 class MongoDBProvider extends DatabaseProvider {
@@ -20,7 +21,7 @@ class MongoDBProvider extends DatabaseProvider {
     async findUser(robloxId: string): Promise<DatabaseUser> {
         let userData = await User.findOne({ robloxId });
         if(!userData) {
-            userData = await User.create({ robloxId, xp: 0 });
+            userData = await User.create({ robloxId, xp: 0, isBanned: false });
         }
         return userData;
     }
@@ -32,7 +33,7 @@ class MongoDBProvider extends DatabaseProvider {
     async updateUser(robloxId: string, data: any) {
         let userData = await User.findOne({ robloxId });
         if(!userData) {
-            userData = await User.create({ robloxId, xp: 0 });
+            userData = await User.create({ robloxId, xp: 0, isBanned: false });
         }
         Object.keys(data).forEach((key) => {
             userData[key] = data[key];

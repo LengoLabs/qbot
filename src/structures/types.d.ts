@@ -190,6 +190,15 @@ export interface BotConfig {
         bypassRoleId?: string;
     }
     /**
+     * Configuration for group banning features. This allows people to ban others from the group (Roblox plz implement thx)
+     */
+    groupBan: {
+        /**
+         * Should the feature be enabled?
+         */
+        enabled: boolean
+    }
+    /**
      * Configuration for the bot's activity status (rich presence) on Discord.
      */
     activityStatus: {
@@ -319,4 +328,8 @@ export declare type DatabaseUser = {
      * What should they be ranked to once unsuspended?
      */
     unsuspendRank?: number;
+    /**
+     * Is the user banned from the group?
+     */
+    isBanned: boolean
 }
