@@ -2,7 +2,6 @@ import { DatabaseProvider } from '../structures/DatabaseProvider';
 import { DatabaseUser } from '../structures/types';
 import { Schema, connect, model } from 'mongoose';
 import { config } from '../config';
-import PromoteCommand from '../commands/ranking/demote';
 require('dotenv').config();
 
 const User = model('User', new Schema({
