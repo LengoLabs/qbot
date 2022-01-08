@@ -1,40 +1,40 @@
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import { discordClient, robloxClient, robloxGroup } from '../../main';
-
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
-
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { provider } from '../../database/router';
-
 import { logAction } from '../../handlers/handleLogging';
-
-import { getInvalidRobloxUserEmbed, getRobloxUserIsNotMemberEmbed, getVerificationChecksFailedEmbed, getUnexpectedErrorEmbed, getSuccessfulGroupBanEmbed } from '../../handlers/locale';
-
+import {
+    getInvalidRobloxUserEmbed,
+    getRobloxUserIsNotMemberEmbed,
+    getVerificationChecksFailedEmbed,
+    getUnexpectedErrorEmbed,
+    getSuccessfulGroupBanEmbed
+} from '../../handlers/locale';
 import { config } from '../../config';
 
 class GroupBanCommand extends Command {
     constructor() {
         super({
-            trigger: "groupban",
-            description: "Bans someone from the group",
-            type: "ChatInput",
-            module: "admin",
+            trigger: 'groupban',
+            description: 'Bans someone from the group',
+            type: 'ChatInput',
+            module: 'admin',
             args: [
                 {
-                    trigger: "roblox-user",
-                    description: "Who do you wish to ban from the group?",
+                    trigger: 'roblox-user',
+                    description: 'Who do you wish to ban from the group?',
                     autocomplete: true,
                     required: true,
-                    type: "RobloxUser"
+                    type: 'RobloxUser'
                 },
                 {
-                    trigger: "reason",
-                    description: "The reason for why you wish to ban from the group",
-                    autocomplete: true,
+                    trigger: 'reason',
+                    description: 'If you would like a reason to be supplied in the logs, put it here.',
                     required: false,
-                    type: "String"
+                    type: 'String'
                 }
             ]
         })
@@ -74,15 +74,12 @@ class GroupBanCommand extends Command {
             const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
-
-        let rbxId = robloxUser.id;
-
         try {
             await provider.updateUser(robloxUser.id.toString(), {
                 isBanned: true
             });
-            await robloxGroup.kickMember(rbxId);
-            logAction("Group Ban", ctx.user, ctx.args['reason'], robloxUser);
+            await robloxGroup.kickMember(robloxUser.id);
+            logAction('Group Ban', ctx.user, ctx.args['reason'], robloxUser);
         } catch(e) {
             console.log(e);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
