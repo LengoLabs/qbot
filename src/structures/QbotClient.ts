@@ -54,7 +54,7 @@ class QbotClient extends Client {
                     commands.push(command);
                     if(moduleIndex === rawModules.length - 1 && cmdIndex === rawCommands.length - 1) resolve(commands);
                 });
-            });
+            }); 
         });
         loadPromise.then(async (commands: Command[]) => {
             const slashCommands = commands.map((cmd: any) => new cmd().generateAPICommand());
