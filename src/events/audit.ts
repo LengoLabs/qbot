@@ -14,7 +14,7 @@ const recordAuditLogs = async () => {
         const mostRecentDate = new Date(auditLog.data[0].created).getTime();
         if(lastRecordedDate) {
             const groupRoles = await robloxGroup.getRoles();
-            auditLog.data.forEach(async (log) => {
+            auditLog.data.forEach((async (log) => {
                 if(robloxClient.user.id !== log.actor.user.userId) {
                     const logCreationDate = new Date(log.created);
                     if(Math.round(logCreationDate.getTime() / 1000) > Math.round(lastRecordedDate / 1000)) {
@@ -24,7 +24,7 @@ const recordAuditLogs = async () => {
                         logAction('Manual Set Rank', log.actor.user, null, target, `${oldRole.name} (${oldRole.rank}) → ${newRole.name} (${newRole.rank})`);
                     }
                 }
-            });
+            }));
             lastRecordedDate = mostRecentDate;
         } else {
             lastRecordedDate = mostRecentDate;

@@ -47,7 +47,7 @@ export const getMissingArgumentsEmbed = (cmdName: string, args: CommandArgument[
         .setColor(redColor)
         .setDescription(`Command Usage: \`${config.legacyCommands.prefixes[0]}${cmdName} ${argString}\``)
         .setFooter(config.slashCommands ? 'Tip: Slash commands automatically display the required arguments for commands.' : '');
-    
+
     return embed;
 }
 
@@ -374,7 +374,7 @@ export const getWallPostEmbed = async (post): Promise<MessageEmbed> => {
 
 export const getLogEmbed = async (action: string, moderator: DiscordUser | User | GroupMember | any, reason?: string, target?: User | PartialUser, rankChange?: string, endDate?: Date, body?: string, xpChange?: string): Promise<MessageEmbed> => {
     if(target && !target.name) target = null;
-    
+
     const embed = new MessageEmbed()
         .setColor(mainColor)
         .setTimestamp()
@@ -411,7 +411,7 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
         .setColor(mainColor)
         .setDescription(primaryGroup ? `Primary Group: [${primaryGroup.group.name}](https://roblox.com/groups/${primaryGroup.group.id})` : '')
         .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '150x150', isCircular: false })).imageUrl)
-        .setFooter(`User ID: ${user.id}`)
+        .setFooter(`User ID: ${user.id} • Powered by ${config.verificationAPI.service}`)
         .setTimestamp()
         .addField('Role', `${member.role.name} (${member.role.rank})`, true)
         .addField('XP', data.xp.toString() || '0', true)

@@ -1,6 +1,6 @@
-import { ActivityType, ApplicationCommandOptionChoice, ExcludeEnum } from 'discord.js';
-import { ChannelTypes } from 'discord.js/typings/enums';
-import { Command } from './Command';
+import {ApplicationCommandOptionChoice, ExcludeEnum} from 'discord.js';
+import {ChannelTypes} from 'discord.js/typings/enums';
+import {config} from "../config";
 
 export interface BotConfig {
     /**
@@ -9,7 +9,7 @@ export interface BotConfig {
     groupId: number;
     /**
      * Should slash commands be enabled? This is highly recommended, as it provides a way more interactive user experience.
-     * 
+     *
      * Learn more at https://discord.dev/interactions/application-commands.
      * @default true
      */
@@ -90,17 +90,28 @@ export interface BotConfig {
     }
     /**
      * Should the API be enabled? You are expected to have an environmental variable named API_KEY with a unique password-like string if this is enabled.
-    */
+     */
     api: boolean;
     /**
-     * What rank should be the maximum that can be ranked by your bot? 
-    */
+     * What Verification Service should qbot use to lookup a user's verification status?
+     */
+    verificationAPI: {
+        /**
+         * What Verification Service should qbot use to lookup a user's verification status?
+         * @default Bloxlink
+         */
+        service: 'Bloxlink' | 'Rowifi' | 'Rover';
+    }
+
+    /**
+     * What rank should be the maximum that can be ranked by your bot?
+     */
     maximumRank: number;
     /**
-     * Should users be required to verify through Bloxlink to rank users? This feature will ensure that users cannot rank themselves, users above them, or users with the same rank as them.
-     * 
-     * **We highly recommend disabling this feature if your server does not use Bloxlink.**
-    */
+     * Should users be required to verify through your chosen verification service to rank users? This feature will ensure that users cannot rank themselves, users above them, or users with the same rank as them.
+     *
+     * **We highly recommend disabling this feature if your server does not use Bloxlink, Rowifi or RoVer.**
+     */
     verificationChecks: boolean;
     /**
      * What rank should users be ranked to when they are fired?
@@ -181,7 +192,7 @@ export interface BotConfig {
          */
         threshold?: number;
         /**
-         * What rank number should users be demoted to if their actions exceed the 
+         * What rank number should users be demoted to if their actions exceed the
          */
         demotionRank?: number;
         /**
@@ -305,10 +316,52 @@ export declare type CommandExport = {
     default: any;
 }
 
-export declare type BloxlinkResponse = {
-    status: string;
-    primaryAccount?: string;
-    matchingAccount?: string;
+export declare type verificationResponses = {
+    Bloxlink: {
+        /**
+         * Will always be "ok" or "error". This is always included. If the status is "ok" the user was found and the user keys will be present.
+         */
+        status: string;
+        /**
+         * The verified user's Roblox user ID. Present if status is "ok".
+         */
+        primaryAccount?: string;
+        /**
+         * The verified user's Roblox user ID. Present if status is "ok".
+         */
+        matchingAccount?: string;
+    },
+    Rowifi: {
+        status: string;
+        discord_id?: number;
+        roblox_id?: number;
+    },
+    Rover: {
+        /**
+         * Will always be "ok" or "error". This is always included. If the status is "ok" the user was found and the user keys will be present.
+         */
+        status: string;
+        /**
+         * The verified user's Roblox username. Present if status is "ok".
+         */
+        robloxUsername?: string;
+        /**
+         * The verified user's Roblox user ID. Present if status is "ok".
+         */
+        robloxId?: number;
+        /**
+         * A textual description of the error. Only present if status is "error".
+         */
+        error?: string;
+        /**
+         * A value containing the appropriate HTTP status code for the error. Only present if status is "error".
+         */
+        errorCode?: string;
+        /**
+         * A value containing the amount of seconds before you can send another request. Only present if status is "error" and status code is "429" (Too Many Requests).
+         */
+        retryAfterSeconds?: number;
+    }
 }
 
 export declare type DatabaseUser = {
@@ -332,4 +385,11 @@ export declare type DatabaseUser = {
      * Is the user banned from the group?
      */
     isBanned: boolean
+}
+
+export declare type verificationAPI = {
+    URL: string,
+    endpoints: {
+        getUser: string
+    },
 }

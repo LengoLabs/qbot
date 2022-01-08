@@ -1,4 +1,4 @@
-import { BotConfig } from './structures/types'; 
+import { BotConfig } from './structures/types';
 
 export const config: BotConfig = {
     groupId: 0,
@@ -25,11 +25,14 @@ export const config: BotConfig = {
         type: 'mongodb',
     },
     api: true,
+    verificationAPI: {
+        service: "Bloxlink",
+    },
     maximumRank: 255,
     verificationChecks: true,
     firedRank: 1,
     suspendedRank: 1,
-    recordManualActions: true,
+    recordManualActions: false,
     memberCount: {
         enabled: false,
         channelId: '',
