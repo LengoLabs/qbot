@@ -51,7 +51,6 @@ export const getMissingArgumentsEmbed = (cmdName: string, args: CommandArgument[
     return embed;
 }
 
-
 export const getInvalidRobloxUserEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Query Unsuccessful', xmarkIconUrl)
@@ -61,22 +60,14 @@ export const getInvalidRobloxUserEmbed = (): MessageEmbed => {
     return embed;
 }
 
-export const addedActivityEmbed = (time: string, username: string): MessageEmbed => {
+export const getNoDatabaseEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
-        .setAuthor('Success!',checkIconUrl)
-        .setColor(greenColor)
-        .setDescription(`Successfully added **${time}** minutes to **${username}**!`)
-    return embed
-}
+        .setAuthor('Command Disabled', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('This command requires a database, and one is not configured for this bot.');
 
-export const removedActivityEmbed = (time: string, username: string): MessageEmbed => {
-    const embed = new MessageEmbed()
-        .setAuthor('Success!',checkIconUrl)
-        .setColor(greenColor)
-        .setDescription(`Successfully removed **${time}** minutes from **${username}**!`)
-    return embed
+    return embed;
 }
-
 
 export const getRobloxUserIsNotMemberEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
@@ -321,7 +312,6 @@ export const getVerificationChecksFailedEmbed = (): MessageEmbed => {
         .setColor(redColor)
         .setDescription(`
         To prevent you from ranking someone that you would not manually be able to rank, we check the following things before allowing you to rank a user. In this case, you have failed one or more, and therefore you are unable to rank this user.
-
         • You are verified on this server.
         • The user you are performing this action on is not you.
         • Your rank is above the rank of the user you are trying to perform this action on.
@@ -425,21 +415,6 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
         .addField('Role', `${member.role.name} (${member.role.rank})`, true)
         .addField('XP', data.xp.toString() || '0', true)
         .addField('Suspended', data.suspendedUntil ? `✅ (<t:${Math.round(data.suspendedUntil.getTime() / 1000)}:R>)` : '❌', true)
-
-        if(config.activity.enabled) embed.addField('Activity', `${data.activity} Minutes In-Game`)
-
-    return embed;
-}
-
-export const getActivityEmbed = async (user: User | PartialUser, member: GroupMember, data: DatabaseUser): Promise<MessageEmbed> => {
-    const primaryGroup = await user.getPrimaryGroup();
-    const embed = new MessageEmbed()
-        .setAuthor(`Activity: ${user.name}`, infoIconUrl)
-        .setColor(mainColor)
-        .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '150x150', isCircular: false })).imageUrl)
-        .setFooter(`User ID: ${user.id}`)
-        .setTimestamp()
-        .addField('Total Minutes', `${data.activity} Minutes In-Game`)
 
     return embed;
 }

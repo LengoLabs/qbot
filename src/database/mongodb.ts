@@ -27,7 +27,9 @@ class MongoDBProvider extends DatabaseProvider {
         return userData;
     }
 
-    async findAllUser(): Promise<DatabaseUser[]>
+    async findAllUsers(): Promise<DatabaseUser[]> {
+        return await User.find()
+    }
 
     async findSuspendedUsers(): Promise<DatabaseUser[]> {
         return await User.find({ suspendedUntil: { $ne: null } });
