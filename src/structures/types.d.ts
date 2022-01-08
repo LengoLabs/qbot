@@ -184,6 +184,27 @@ export interface BotConfig {
          * What is the minimum rank a user should be to earn xp from in-game?
          */
         minimumXpRankId: number;
+        /**
+         * Monthly Quota Settings
+         */
+        quota: {
+            /**
+             * Is the quota enabled?
+             */
+            enabled: boolean;
+            /**
+             * What is the minimum rank ID that needs to follow the quota?
+             */
+            minimumRank: number;
+            /**
+             * How many minutes per month do the ranks need to have?
+             */
+            requiredActivity: number;
+            /**
+             * What should people that don't follow the quota be ranked down to?
+             */
+            demoteTo: number;
+        }
     }
     /**
      * Configuration for the anti abuse feature. This works by demoting users who exceed the action threshold within the set amount of time.

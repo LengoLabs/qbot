@@ -53,6 +53,12 @@ export const config: BotConfig = {
         xpInGame: false,
         amountPerMinute: 5,
         minimumXpRankId: 1,
+        quota: {
+            enabled: false,
+            minimumRank: 255,
+            requiredActivity: 5,
+            demoteTo: 1,
+        }
     },
     antiAbuse: {
         enabled: false,

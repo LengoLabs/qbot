@@ -42,12 +42,38 @@ class AddActivityCommand extends Command {
 
     async run(ctx: CommandContext) {
         if(!config.database.enabled) return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ] });
-        let name = ctx.args['roblox-user'];
-        let id = robloxClient.getUserIdFromUsername(name);
-        let userData = await provider.findUser(id.toString());
+        let robloxUser: User | PartialUser;
+        try {
+            robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
+        } catch (err) {
+            try {
+                const robloxUsers = await robloxClient.getUsersByUsernames([ ctx.args['roblox-user'] as string ]);
+                if(robloxUsers.length === 0) throw new Error();
+                robloxUser = robloxUsers[0];
+            } catch (err) {
+                try {
+                    const idQuery = ctx.args['roblox-user'].replace(/[^0-9]/gm, '');
+                    const discordUser = await discordClient.users.fetch(idQuery);
+                    const linkedUser = await getLinkedRobloxUser(discordUser.id, ctx.guild.id);
+                    if(!linkedUser) throw new Error();
+                    robloxUser = linkedUser;
+                } catch (err) {
+                    return ctx.reply({ embeds: [ getInvalidRobloxUserEmbed() ]});
+                }
+            }
+        }
+
+        let robloxMember: GroupMember;
+        try {
+            robloxMember = await robloxGroup.getMember(robloxUser.id);
+            if(!robloxMember) throw new Error();
+        } catch (err) {
+            return ctx.reply({ embeds: [ getRobloxUserIsNotMemberEmbed() ]});
+        }
+        let userData = await provider.findUser(robloxUser.id.toString());
         let toAdd = userData.activity + ctx.args['amount'];
-        await provider.updateUser(id.toString(), { activity: toAdd });
-        return ctx.reply({embeds: [addedActivityEmbed(ctx.args['amount'],name)]})
+        await provider.updateUser(robloxUser.id.toString(), { activity: toAdd });
+        return ctx.reply({embeds: [addedActivityEmbed(ctx.args['amount'],robloxUser.name)]})
     }
 }
 
