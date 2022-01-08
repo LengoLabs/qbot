@@ -61,7 +61,6 @@ export const getInvalidRobloxUserEmbed = (): MessageEmbed => {
     return embed;
 }
 
-<<<<<<< HEAD
 export const addedActivityEmbed = (time: string, username: string): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Success!',checkIconUrl)
@@ -79,17 +78,6 @@ export const removedActivityEmbed = (time: string, username: string): MessageEmb
 }
 
 
-=======
-export const getNoDatabaseEmbed = (): MessageEmbed => {
-    const embed = new MessageEmbed()
-        .setAuthor('Command Disabled', xmarkIconUrl)
-        .setColor(redColor)
-        .setDescription('This command requires a database, and one is not configured for this bot.');
-
-    return embed;
-}
-
->>>>>>> origin/master
 export const getRobloxUserIsNotMemberEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Unable to Rank', xmarkIconUrl)
