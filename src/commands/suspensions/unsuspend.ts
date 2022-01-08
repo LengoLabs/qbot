@@ -11,6 +11,7 @@ import {
     getNotSuspendedEmbed,
     getAlreadySuspendedEmbed,
     noSuspendedRankLog,
+    getNoDatabaseEmbed,
 } from '../../handlers/locale';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
@@ -52,7 +53,7 @@ class UnsuspendCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        if(!config.database.enabled) return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ] });
+        if(!config.database.enabled) return ctx.reply({ embeds: [ getNoDatabaseEmbed() ] });
 
         let robloxUser: User | PartialUser;
         try {

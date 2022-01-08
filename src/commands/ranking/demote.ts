@@ -83,7 +83,7 @@ class PromoteCommand extends Command {
         const groupRoles = await robloxGroup.getRoles();
         const currentRoleIndex = groupRoles.findIndex((role) => role.rank === robloxMember.role.rank);
         const role = groupRoles[currentRoleIndex - 1];
-        if(!role || role.rank === 0) return ctx.reply({ embeds: [ getNoRankBelowEmbed() ]});
+        if(!role.rank || role.rank === 0) return ctx.reply({ embeds: [ getNoRankBelowEmbed() ]});
         if(role.rank > config.maximumRank || robloxMember.role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
 
         if(config.verificationChecks) {

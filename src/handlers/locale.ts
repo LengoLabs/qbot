@@ -34,7 +34,11 @@ export const getListeningText = (port) => `${consoleGreen}✓  ${consoleClear}Li
 export const getMissingArgumentsEmbed = (cmdName: string, args: CommandArgument[]): MessageEmbed => {
     let argString = '';
     args.forEach((arg) => {
-        argString += arg.required || true ? `<${arg.trigger}> ` : `[${arg.trigger}] `;
+        if(arg.isLegacyFlag) {
+            argString += arg.required || true ? `--<${arg.trigger}> ` : `--[${arg.trigger}] `;
+        } else {
+            argString += arg.required || true ? `<${arg.trigger}> ` : `[${arg.trigger}] `;
+        }
     });
     argString = argString.substring(0, argString.length - 1);
 
@@ -57,6 +61,7 @@ export const getInvalidRobloxUserEmbed = (): MessageEmbed => {
     return embed;
 }
 
+<<<<<<< HEAD
 export const addedActivityEmbed = (time: string, username: string): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Success!',checkIconUrl)
@@ -74,6 +79,17 @@ export const removedActivityEmbed = (time: string, username: string): MessageEmb
 }
 
 
+=======
+export const getNoDatabaseEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Command Disabled', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('This command requires a database, and one is not configured for this bot.');
+
+    return embed;
+}
+
+>>>>>>> origin/master
 export const getRobloxUserIsNotMemberEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Unable to Rank', xmarkIconUrl)
