@@ -64,7 +64,7 @@ export const getNoDatabaseEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Command Disabled', xmarkIconUrl)
         .setColor(redColor)
-        .setDescription('This command requires the database to be setup, one has not been set up for this bot.');
+        .setDescription('This command requires the database to be setup, and one has not been set up for this bot.');
 
     return embed;
 }
@@ -142,7 +142,7 @@ export const getSuccessfulShoutEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
-        .setDescription('The Group Shout has been updated to that message!');
+        .setDescription('The group shout has been updated to that message!');
 
     return embed;
 }

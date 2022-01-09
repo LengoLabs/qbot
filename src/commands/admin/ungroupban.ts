@@ -11,6 +11,7 @@ import {
     getSuccessfulUnGroupBanEmbed,
     getNoDatabaseEmbed
 } from '../../handlers/locale';
+import { config } from '../../config';
 
 class UnGroupBanCommand extends Command {
     constructor() {

@@ -30,6 +30,10 @@ class MongoDBProvider extends DatabaseProvider {
         return await User.find({ suspendedUntil: { $ne: null } });
     }
 
+    async findBannedUsers(): Promise<DatabaseUser[]> {
+        return await User.find({ isBanned: true });
+    }
+
     async updateUser(robloxId: string, data: any) {
         let userData = await User.findOne({ robloxId });
         if(!userData) {

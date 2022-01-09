@@ -9,7 +9,7 @@ import { checkSuspensions } from './events/suspensions';
 import { recordAuditLogs } from './events/audit';
 import { recordMemberCount } from './events/member';
 import { clearActions } from './handlers/abuseDetection';
-import { checkJoins } from './events/join';
+import { checkBans } from './events/bans';
 require('dotenv').config();
 require('./database/router');
 require('./api');
@@ -29,7 +29,7 @@ let robloxGroup: Group = null;
     if(config.recordManualActions) recordAuditLogs();
     if(config.memberCount.enabled) recordMemberCount();
     if(config.antiAbuse.enabled) clearActions();
-    if(config.groupBan.enabled) checkJoins();
+    if(config.groupBan.enabled) checkBans();
 })();
 
 // [Handlers]
