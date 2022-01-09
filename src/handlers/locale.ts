@@ -78,6 +78,15 @@ export const getRobloxUserIsNotMemberEmbed = (): MessageEmbed => {
     return embed;
 }
 
+export const getNoJoinRequestEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('No Join Request', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('This user does not have a pending join request to review.');
+
+    return embed;
+}
+
 export const getSuccessfulAddingAndRankupEmbed = async(user: User | PartialUser, newRole: string, xpChange: string): Promise<MessageEmbed> => {
     const embed = new MessageEmbed()
         .setAuthor('Success!',checkIconUrl)

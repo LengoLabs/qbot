@@ -5,6 +5,7 @@ import {
     getInvalidRobloxUserEmbed,
     getUnexpectedErrorEmbed,
     getSuccessfulAcceptJoinRequestEmbed,
+    getNoJoinRequestEmbed,
 } from '../../handlers/locale';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
@@ -64,6 +65,9 @@ class AcceptJoinCommand extends Command {
                 }
             }
         }
+
+        const joinRequest = await robloxUser.getJoinRequestInGroup(config.groupId);
+        if(!joinRequest) return ctx.reply({ embeds: [ getNoJoinRequestEmbed() ] });
 
         try {
             await robloxGroup.acceptJoinRequest(robloxUser.id);
