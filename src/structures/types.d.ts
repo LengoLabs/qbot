@@ -58,7 +58,7 @@ export interface BotConfig {
          */
         signal?: string[];
         /**
-         * Access to the revert-ranks, and exile command.
+         * Access to the revert-ranks, exile, groupban, and ungroupban command.
          */
         admin?: string[];
     }
@@ -188,15 +188,6 @@ export interface BotConfig {
          * Is there a role that can bypass this? If so, place the ID here.
          */
         bypassRoleId?: string;
-    }
-    /**
-     * Configuration for group banning features. This allows people to ban others from the group (Roblox plz implement thx)
-     */
-    groupBan: {
-        /**
-         * Should the feature be enabled?
-         */
-        enabled: boolean
     }
     /**
      * Configuration for the bot's activity status (rich presence) on Discord.

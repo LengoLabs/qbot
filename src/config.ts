@@ -17,14 +17,14 @@ export const config: BotConfig = {
         admin: [''],
     },
     logChannels: {
-        actions: '0',
-        shout: '0',
+        actions: '',
+        shout: '',
     },
     database: {
         enabled: false,
         type: 'mongodb',
     },
-    api: true,
+    api: false,
     maximumRank: 255,
     verificationChecks: true,
     firedRank: 1,
@@ -37,7 +37,7 @@ export const config: BotConfig = {
         onlyMilestones: false,
     },
     xpSystem: {
-        enabled: true,
+        enabled: false,
         autoRankup: false,
         roles: [
             /* Example:
@@ -54,9 +54,6 @@ export const config: BotConfig = {
         threshold: 5,
         demotionRank: 1,
         bypassRoleId: '',
-    },
-    groupBan: {
-        enabled: true
     },
     activityStatus: {
         enabled: false,
