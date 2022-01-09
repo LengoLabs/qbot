@@ -29,7 +29,7 @@ let robloxGroup: Group = null;
     if(config.recordManualActions) recordAuditLogs();
     if(config.memberCount.enabled) recordMemberCount();
     if(config.antiAbuse.enabled) clearActions();
-    if(config.groupBan.enabled) checkBans();
+    checkBans();
 })();
 
 // [Handlers]
