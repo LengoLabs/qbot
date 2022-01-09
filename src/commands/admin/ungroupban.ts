@@ -35,6 +35,13 @@ class UnGroupBanCommand extends Command {
                     required: false,
                     type: 'String'
                 }
+            ],
+            permissions: [
+                {
+                    type: 'role',
+                    ids: config.permissions.admin,
+                    value: true,
+                }
             ]
         })
     };
