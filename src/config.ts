@@ -24,7 +24,7 @@ export const config: BotConfig = {
         enabled: false,
         type: 'mongodb',
     },
-    api: true,
+    api: false,
     maximumRank: 255,
     verificationChecks: true,
     firedRank: 1,

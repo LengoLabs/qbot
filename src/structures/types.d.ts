@@ -58,7 +58,7 @@ export interface BotConfig {
          */
         signal?: string[];
         /**
-         * Access to the revert-ranks, and exile command.
+         * Access to the revert-ranks, exile, groupban, and ungroupban command.
          */
         admin?: string[];
     }
@@ -319,4 +319,8 @@ export declare type DatabaseUser = {
      * What should they be ranked to once unsuspended?
      */
     unsuspendRank?: number;
+    /**
+     * Is the user banned from the group?
+     */
+    isBanned: boolean
 }

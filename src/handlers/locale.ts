@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandArgument, DatabaseUser } from '../structures/types';
 import { config } from '../config';
-import { User, PartialUser, GroupShout, GroupMember, GroupWallPost, GroupJoinRequest } from 'bloxy/dist/structures';
+import { User, PartialUser, GroupShout, GroupMember, GroupWallPost, GroupJoinRequest, GroupRole } from 'bloxy/dist/structures';
 import { User as DiscordUser } from 'discord.js';
 import { Command } from '../structures/Command';
 import { robloxClient, robloxGroup } from '../main';
@@ -64,7 +64,7 @@ export const getNoDatabaseEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Command Disabled', xmarkIconUrl)
         .setColor(redColor)
-        .setDescription('This command requires a database, and one is not configured for this bot.');
+        .setDescription('This command requires the database to be setup, and one has not been set up for this bot.');
 
     return embed;
 }
@@ -92,7 +92,7 @@ export const getSuccessfulAddingAndRankupEmbed = async(user: User | PartialUser,
         .setAuthor('Success!',checkIconUrl)
         .setColor(greenColor)
         .setThumbnail(await (await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false})).imageUrl)
-        .setDescription(`**${user.name}** has been given **${xpChange}** XP and has been promoted to **${newRole}**, since they had enough XP!`)
+        .setDescription(`**${user.name}** has been given **${xpChange}** XP and has been promoted to **${newRole}**, becuase they had enough XP!`)
 
     return embed
 }
@@ -142,7 +142,7 @@ export const getSuccessfulSetRankEmbed = async (user: User | PartialUser, newRol
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
         .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
-        .setDescription(`**${user.name}** has been successfully ranked to the **${newRole}** role.`);
+        .setDescription(`**${user.name}** has successfully been ranked to the **${newRole}** role.`);
 
     return embed;
 }
@@ -151,7 +151,7 @@ export const getSuccessfulShoutEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
-        .setDescription('The specified message has been posted as the group shout.');
+        .setDescription('The group shout has been updated to that message!');
 
     return embed;
 }
@@ -169,7 +169,7 @@ export const getSuccessfulRevertRanksEmbed = (actionCount: number): MessageEmbed
     const embed = new MessageEmbed()
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
-        .setDescription(`Successfully started rolling back **${actionCount}** ranking actions.`);
+        .setDescription(`Successfully started reverting back **${actionCount}** ranking actions.`);
 
     return embed;
 }
@@ -179,7 +179,7 @@ export const getSuccessfulXPRankupEmbed = async (user: User | PartialUser, newRo
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
         .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
-        .setDescription(`**${user.name}** has been ranked up to **${newRole}**!`);
+        .setDescription(`**${user.name}** has been successfully ranked to **${newRole}**!`);
 
     return embed;
 }
@@ -189,7 +189,7 @@ export const getSuccessfulXPChangeEmbed = async (user: User | PartialUser, xp: n
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
         .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
-        .setDescription(`The XP of **${user.name}** has been updated, leaving them with a total of **${xp}** XP.`);
+        .setDescription(`The XP of **${user.name}** has been updated, they now have a total of **${xp}** XP.`);
 
     return embed;
 }
@@ -199,7 +199,7 @@ export const getSuccessfulSuspendEmbed = async (user: User | PartialUser, newRol
         .setAuthor('Success!', checkIconUrl)
         .setColor(greenColor)
         .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '48x48', isCircular: false })).imageUrl)
-        .setDescription(`**${user.name}** has been successfully suspended, and will have their current rank return <t:${Math.round(endDate.getTime() / 1000)}:R>.`);
+        .setDescription(`**${user.name}** has been successfully suspended, and will have their rank returned in <t:${Math.round(endDate.getTime() / 1000)}:R>.`);
 
     return embed;
 }
@@ -239,6 +239,24 @@ export const getUserSuspendedEmbed = (): MessageEmbed => {
         .setAuthor('User Is Suspended', xmarkIconUrl)
         .setColor(redColor)
         .setDescription('This user is suspended, and cannot be ranked. Please use the unsuspend command to revert this.');
+
+    return embed;
+}
+
+export const getUserBannedEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('User Is Banned', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('This user is already banned.');
+
+    return embed;
+}
+
+export const getUserNotBannedEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('User Not Banned', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('This user is not banned, so it is impossible to unban them.');
 
     return embed;
 }
@@ -292,7 +310,7 @@ export const getNoPermissionEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Unauthorized', xmarkIconUrl)
         .setColor(redColor)
-        .setDescription('You do not have permission to run this command.');
+        .setDescription('You do not have permission to use this command.');
 
     return embed;
 }
@@ -320,7 +338,7 @@ export const getVerificationChecksFailedEmbed = (): MessageEmbed => {
         .setAuthor('Verification Check Failed', xmarkIconUrl)
         .setColor(redColor)
         .setDescription(`
-        To prevent you from ranking someone that you would not manually be able to rank, we check the following things before allowing you to rank a user. In this case, you have failed one or more, and therefore you are unable to rank this user.
+        To prevent you from ranking someone that you would not manually be able to rank, the bot checks the following things before allowing you to rank a user. In this case, you have failed one or more, and therefore you are unable to rank this user.
 
         • You are verified on this server.
         • The user you are performing this action on is not you.
@@ -408,7 +426,7 @@ export const getAlreadyRankedEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('User Already Ranked', xmarkIconUrl)
         .setColor(redColor)
-        .setDescription('This user already has the role you are trying to rank them to.');
+        .setDescription('This user already has this rank.');
 
     return embed;
 }
@@ -429,17 +447,30 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
     return embed;
 }
 
+export const getRoleListEmbed = (roles: GroupRole[]): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Group Roles', infoIconUrl)
+        .setColor(mainColor)
+        .setDescription('Here is a list of all roles on the group.');
+
+    roles.forEach((role) => {
+        embed.addField(role.name, `Rank: \`${role.rank || '0'}\``, true);
+    });
+
+    return embed;
+}
+
 export const getNotSuspendedEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('User Not Suspended', xmarkIconUrl)
         .setColor(redColor)
-        .setDescription('This user is not suspended, so you cannot run this command on them.');
+        .setDescription('This user is not suspended, meaning you cannot run this command on them.');
 
     return embed;
 }
 
 export const getMemberCountMessage = (oldCount: number, newCount: number): string => {
-    if(oldCount > newCount) {
+    if(newCount > oldCount) {
         return `⬆️ The member count is now **${newCount}** (+${newCount - oldCount})`;
     } else {
         return `⬇️ The member count is now **${newCount}** (-${oldCount - newCount})`;
@@ -494,7 +525,23 @@ export const getJoinRequestsEmbed = (joinRequests: GroupJoinRequest[]): MessageE
     const embed = new MessageEmbed()
         .setAuthor('Join Requests', infoIconUrl)
         .setColor(mainColor)
-        .setDescription(`${joinRequests.length !== 0 ? `There is currently ${joinRequests.length} pending join requests:\n\n${requestString}` : 'There is no pending join requests.'}`);
+        .setDescription(`${joinRequests.length !== 0 ? `There is currently ${joinRequests.length} pending join requests:\n\n${requestString}` : 'There are currently no pending join requests.'}`);
 
+    return embed;
+}
+
+export const getSuccessfulGroupBanEmbed = (user: User | PartialUser) : MessageEmbed => {
+    const embed = new MessageEmbed();
+    embed.setAuthor("Success", checkIconUrl);
+    embed.setColor(greenColor);
+    embed.setDescription(`**${user.name}** has successfully been banned from the group.`);
+    return embed;
+}
+
+export const getSuccessfulGroupUnbanEmbed = (user: User | PartialUser) : MessageEmbed => {
+    const embed = new MessageEmbed();
+    embed.setAuthor("Success", checkIconUrl);
+    embed.setColor(greenColor);
+    embed.setDescription(`**${user.name}** has successfully been unbanned from the group.`);
     return embed;
 }

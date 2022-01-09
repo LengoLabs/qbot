@@ -18,8 +18,9 @@ class ShoutCommand extends Command {
             args: [
                 {
                     trigger: 'content',
-                    description: 'What would you like the content of the shout to be?',
+                    description: 'What should the content of the shout be? If none, the shout will be cleared.',
                     autocomplete: true,
+                    required: false,
                     type: 'String',
                 },
                 {
@@ -42,9 +43,9 @@ class ShoutCommand extends Command {
 
     async run(ctx: CommandContext) {
         try {
-            await robloxGroup.updateShout(ctx.args['content']);
+            await robloxGroup.updateShout(ctx.args['content'] || '');
             ctx.reply({ embeds: [ await getSuccessfulShoutEmbed() ]});
-            logAction('Shout', ctx.user, ctx.args['reason'], null, null, null, ctx.args['content']);
+            logAction('Shout', ctx.user, ctx.args['reason'], null, null, null, ctx.args['content'] || '*Cleared.*');
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
