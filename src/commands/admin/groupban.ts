@@ -66,11 +66,9 @@ class GroupBanCommand extends Command {
         try {
             robloxMember = await robloxGroup.getMember(robloxUser.id);
             if(!robloxMember) throw new Error();
-        } catch (err) {
-            return ctx.reply({ embeds: [ getRobloxUserIsNotMemberEmbed() ]});
-        }
+        } catch (err) {};
 
-        if(config.verificationChecks) {
+        if(config.verificationChecks && robloxMember) {
             const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
@@ -78,7 +76,7 @@ class GroupBanCommand extends Command {
             await provider.updateUser(robloxUser.id.toString(), {
                 isBanned: true
             });
-            await robloxGroup.kickMember(robloxUser.id);
+            if(robloxMember) await robloxGroup.kickMember(robloxUser.id);
             logAction('Group Ban', ctx.user, ctx.args['reason'], robloxUser);
         } catch(e) {
             console.log(e);
