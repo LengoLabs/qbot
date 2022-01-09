@@ -8,8 +8,9 @@ import { logAction } from '../../handlers/handleLogging';
 import {
     getInvalidRobloxUserEmbed,
     getUnexpectedErrorEmbed,
-    getSuccessfulUnGroupBanEmbed,
-    getNoDatabaseEmbed
+    getSuccessfulGroupUnbanEmbed,
+    getNoDatabaseEmbed,
+    getUserNotBannedEmbed
 } from '../../handlers/locale';
 import { config } from '../../config';
 
@@ -62,17 +63,21 @@ class UnGroupBanCommand extends Command {
             }
         }
 
+        if(config.database.enabled) {
+            const userData = await provider.findUser(robloxUser.id.toString());
+            if(!userData.isBanned) return ctx.reply({ embeds: [ getUserNotBannedEmbed() ] });
+        }
+
         try {
             await provider.updateUser(robloxUser.id.toString(), {
                 isBanned: false
             });
             logAction('Ungroup Ban', ctx.user, ctx.args['reason'], robloxUser);
+            return ctx.reply({ embeds: [ getSuccessfulGroupUnbanEmbed(robloxUser) ]});
         } catch(e) {
             console.log(e);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
         }
-
-        return ctx.reply({ embeds: [ getSuccessfulUnGroupBanEmbed() ]});
     }
 }
 

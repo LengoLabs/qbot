@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandArgument, DatabaseUser } from '../structures/types';
 import { config } from '../config';
-import { User, PartialUser, GroupShout, GroupMember, GroupWallPost, GroupJoinRequest } from 'bloxy/dist/structures';
+import { User, PartialUser, GroupShout, GroupMember, GroupWallPost, GroupJoinRequest, GroupRole } from 'bloxy/dist/structures';
 import { User as DiscordUser } from 'discord.js';
 import { Command } from '../structures/Command';
 import { robloxClient, robloxGroup } from '../main';
@@ -234,6 +234,24 @@ export const getUserSuspendedEmbed = (): MessageEmbed => {
     return embed;
 }
 
+export const getUserBannedEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('User Is Banned', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('This user is already banned.');
+
+    return embed;
+}
+
+export const getUserNotBannedEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('User Not Banned', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('This user is not banned, so it is impossible to unban them.');
+
+    return embed;
+}
+
 export const getCommandNotFoundEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('Command Not Found', xmarkIconUrl)
@@ -420,6 +438,19 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
     return embed;
 }
 
+export const getRoleListEmbed = (roles: GroupRole[]): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Group Roles', infoIconUrl)
+        .setColor(mainColor)
+        .setDescription('Here is a list of all roles on the group.');
+
+    roles.forEach((role) => {
+        embed.addField(role.name, `Rank: \`${role.rank || '0'}\``, true);
+    });
+
+    return embed;
+}
+
 export const getNotSuspendedEmbed = (): MessageEmbed => {
     const embed = new MessageEmbed()
         .setAuthor('User Not Suspended', xmarkIconUrl)
@@ -490,18 +521,18 @@ export const getJoinRequestsEmbed = (joinRequests: GroupJoinRequest[]): MessageE
     return embed;
 }
 
-export const getSuccessfulGroupBanEmbed = () : MessageEmbed => {
+export const getSuccessfulGroupBanEmbed = (user: User | PartialUser) : MessageEmbed => {
     const embed = new MessageEmbed();
     embed.setAuthor("Success", checkIconUrl);
     embed.setColor(greenColor);
-    embed.setDescription(`You have successfully banned this user from the group`);
+    embed.setDescription(`**${user.name}** has successfully been banned from the group.`);
     return embed;
 }
 
-export const getSuccessfulUnGroupBanEmbed = () : MessageEmbed => {
+export const getSuccessfulGroupUnbanEmbed = (user: User | PartialUser) : MessageEmbed => {
     const embed = new MessageEmbed();
     embed.setAuthor("Success", checkIconUrl);
     embed.setColor(greenColor);
-    embed.setDescription(`You have successfully unbanned this user from the group`);
+    embed.setDescription(`**${user.name}** has successfully been unbanned from the group.`);
     return embed;
 }

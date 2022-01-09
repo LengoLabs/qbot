@@ -12,7 +12,8 @@ import {
     getVerificationChecksFailedEmbed,
     getUnexpectedErrorEmbed,
     getSuccessfulGroupBanEmbed,
-    getNoDatabaseEmbed
+    getNoDatabaseEmbed,
+    getUserBannedEmbed
 } from '../../handlers/locale';
 import { config } from '../../config';
 
@@ -75,18 +76,24 @@ class GroupBanCommand extends Command {
             const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
+
+        if(config.database.enabled) {
+            const userData = await provider.findUser(robloxUser.id.toString());
+            if(userData.isBanned) return ctx.reply({ embeds: [ getUserBannedEmbed() ] });
+        }
+        
         try {
             await provider.updateUser(robloxUser.id.toString(), {
                 isBanned: true
             });
             if(robloxMember) await robloxGroup.kickMember(robloxUser.id);
             logAction('Group Ban', ctx.user, ctx.args['reason'], robloxUser);
+            return ctx.reply({ embeds: [ getSuccessfulGroupBanEmbed(robloxUser) ]});
         } catch(e) {
             console.log(e);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
         }
 
-        return ctx.reply({ embeds: [ getSuccessfulGroupBanEmbed() ]});
     }
 }
 
