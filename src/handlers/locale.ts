@@ -430,7 +430,7 @@ export const getNotSuspendedEmbed = (): MessageEmbed => {
 }
 
 export const getMemberCountMessage = (oldCount: number, newCount: number): string => {
-    if(oldCount > newCount) {
+    if(newCount > oldCount) {
         return `⬆️ The member count is now **${newCount}** (+${newCount - oldCount})`;
     } else {
         return `⬇️ The member count is now **${newCount}** (-${oldCount - newCount})`;
