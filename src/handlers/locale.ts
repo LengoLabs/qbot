@@ -489,3 +489,25 @@ export const getJoinRequestsEmbed = (joinRequests: GroupJoinRequest[]): MessageE
 
     return embed;
 }
+
+export const getCommandEmbedByModule = (modules: { [key: string]: Command[] }, module: string): MessageEmbed => {
+    let formattedModuleString = module.replace('-', ' ').split(' ').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    let commands: Command[] = modules[module];
+    let description = "";
+    for(let i = 0; i < commands.length; i++) {
+        description += `\`${commands[i].trigger}\` - ${commands[i].description}\n`;
+    }
+    const embed = new MessageEmbed();
+    embed.setAuthor(formattedModuleString, infoIconUrl);
+    embed.setColor(mainColor);
+    embed.setDescription(description);
+    return embed;
+}
+
+export const getTimesUpEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed();
+    embed.setAuthor("Time is Up", infoIconUrl);
+    embed.setColor(mainColor);
+    embed.setDescription("Your time for this embed is up, if you wish to continue, please return the command");
+    return embed;
+}
