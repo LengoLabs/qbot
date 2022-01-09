@@ -1,4 +1,5 @@
 import { discordClient } from '../../main';
+import { config } from '../../config';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import { groupBy } from 'lodash';
@@ -9,7 +10,7 @@ import {
     getCommandEmbedByModule,
     getTimesUpEmbed
 } from '../../handlers/locale';
-import { Message, MessageEmbed, MessageReaction, User } from 'discord.js';
+import { Message, MessageEmbed, MessageActionRow, MessageButton, MessageButtonStyleResolvable, Interaction, ButtonInteraction, CommandInteraction } from 'discord.js';
 
 class HelpCommand extends Command {
     constructor() {
@@ -25,14 +26,15 @@ class HelpCommand extends Command {
                     required: false,
                     type: 'String',
                 },
-                {
-                    trigger: "page-based",
-                    description: "If any value is given, the command will be page based",
-                    required: false,
-                    type: "String"
-                }
             ]
         });
+    }
+
+    addButton(messageData : any, id : string, label : string, style : MessageButtonStyleResolvable) {
+        let components = messageData.components || [];
+        let newComponent = new MessageActionRow().addComponents(new MessageButton().setCustomId(id).setLabel(label).setStyle(style));
+        components.push(newComponent);
+        messageData.components = components;
     }
 
     async run(ctx: CommandContext) {
@@ -42,13 +44,13 @@ class HelpCommand extends Command {
             if(!command) return ctx.reply({ embeds: [ getCommandNotFoundEmbed() ] });
             return ctx.reply({ embeds: [ getCommandInfoEmbed(command) ] });
         } else {
-            if(!ctx.args['page-based']) {
+            if(!config.pageStyleHelpCommand) {
                 const categories = groupBy(commands, (cmd) => cmd.module);
                 return ctx.reply({ embeds: [ getCommandListEmbed(categories) ] });
             } else {
                 const categories = groupBy(commands, (cmd) => cmd.module);
-                let keys = Object.keys(categories);
-                let embeds = [];
+                const keys = Object.keys(categories);
+                const embeds = [];
                 for(let i = 0; i < keys.length; i++) {
                     embeds.push({
                         module: keys[i].replace('-', ' ').split(' ').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
@@ -59,14 +61,20 @@ class HelpCommand extends Command {
                 let previousModule = (embeds[index - 1] || embeds[embeds.length - 1]).module;
                 let nextModule = (embeds[index + 1] || embeds[0]).module;
                 let oldDescription = embeds[index].embed.description;
-                let msg = await ctx.reply({ embeds: [ embeds[index].embed.setDescription(embeds[index].embed.description += `\n**Previous Module**: ${previousModule} ; **Next Module**: ${nextModule}`) ] });
+                const msgData = { embeds: [ embeds[index].embed.setDescription(embeds[index].embed.description += `\n**Previous Module**: ${previousModule} ; **Next Module**: ${nextModule}`) ], components: []};
+                this.addButton(msgData, "previousButton", "Previous Module", "PRIMARY");
+                this.addButton(msgData, "nextButton", "Next Module", "PRIMARY");
+                let msg = await ctx.reply(msgData);
                 embeds[index].embed.setDescription(oldDescription);
-                await (msg as Message).react("⬅️");
-                await (msg as Message).react("➡️");
-                let filter = (reaction : MessageReaction, user : User) => (reaction.emoji.name === "⬅️" || reaction.emoji.name === "➡️") && user.id === ctx.user.id;
-                let reactionCollector = (msg as Message).createReactionCollector({filter: filter, time: 120000});
-                reactionCollector.on('collect', async reaction => {
-                    if(reaction.emoji.name === "⬅️") {
+                const filter = (filterInteraction : Interaction) => {
+                    if(!filterInteraction.isButton()) return false;
+                    if(filterInteraction.user.id !== ctx.user.id) return false;
+                    return true;
+                }
+                const componentCollector = (msg as Message).createMessageComponentCollector({filter: filter, time: 120000});
+                componentCollector.on('collect', async collectedButton => {
+                    let button = collectedButton as ButtonInteraction;
+                    if(button.customId === "previousButton") {
                         index = embeds.findIndex(embedObject => embedObject.module === previousModule);
                         previousModule = (embeds[index - 1] || embeds[embeds.length - 1]).module;
                         nextModule = (embeds[index + 1] || embeds[0]).module;
@@ -77,14 +85,14 @@ class HelpCommand extends Command {
                         nextModule = (embeds[index + 1] || embeds[0]).module;
                         oldDescription = embeds[index].embed.description;
                     }
-                    await (msg as Message).edit({ embeds: [ embeds[index].embed.setDescription(embeds[index].embed.description += `\n**Previous Module**: ${previousModule} ; **Next Module**: ${nextModule}`) ] });
+                    await (ctx.subject as CommandInteraction).editReply({ embeds: [ embeds[index].embed.setDescription(embeds[index].embed.description += `\n**Previous Module**: ${previousModule} ; **Next Module**: ${nextModule}`) ] });
                     embeds[index].embed.setDescription(oldDescription);
-                    await (msg as Message).reactions.removeAll();
-                    await (msg as Message).react("⬅️");
-                    await (msg as Message).react("➡️");
+                    await button.reply({content: "ㅤ"});
+                    await button.deleteReply();
                 });
-                reactionCollector.on('end', async () => {
-                    return await (msg as Message).reply({ embeds: [ getTimesUpEmbed() ] });
+                componentCollector.on('end', async () => {
+                    await (msg as Message).reply({ embeds: [ getTimesUpEmbed() ] });
+                    return;
                 });             
             }
         }

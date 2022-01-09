@@ -1,24 +1,24 @@
 import { BotConfig } from './structures/types'; 
 
 export const config: BotConfig = {
-    groupId: 0,
+    groupId: 5242495,
     slashCommands: true,
     legacyCommands: {
         enabled: true,
         prefixes: ['q!'],
     },
     permissions: {
-        all: [''],
+        all: ['759959415708450837'],
         ranking: [''],
         users: [''],
         shout: [''],
         join: [''],
-        signal: [''],
+        signal: ['759959415708450837'],
         admin: [''],
     },
     logChannels: {
-        actions: '',
-        shout: '',
+        actions: '759959421085417533',
+        shout: '759959421085417533',
     },
     database: {
         enabled: false,
@@ -60,4 +60,5 @@ export const config: BotConfig = {
         type: 'WATCHING',
         value: 'for commands.',
     },
+    pageStyleHelpCommand: true
 }

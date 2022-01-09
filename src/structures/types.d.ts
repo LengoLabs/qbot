@@ -201,6 +201,10 @@ export interface BotConfig {
         value?: string;
         url?: string;
     }
+    /**
+     * Enable the page based help command?
+     */
+    pageStyleHelpCommand: boolean
 }
 
 export declare type CommandPermission = {
