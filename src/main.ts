@@ -25,11 +25,11 @@ let robloxGroup: Group = null;
     
     // [Events]
     checkSuspensions();
+    checkBans();
     if(config.logChannels.shout) recordShout();
     if(config.recordManualActions) recordAuditLogs();
     if(config.memberCount.enabled) recordMemberCount();
     if(config.antiAbuse.enabled) clearActions();
-    checkBans();
 })();
 
 // [Handlers]
