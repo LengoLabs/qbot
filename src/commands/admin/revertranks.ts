@@ -83,6 +83,7 @@ class RevertRanksCommand extends Command {
         let duration: number;
         try {
             duration = Number(ms(ctx.args['duration']));
+            if(!duration) throw new Error();
             if(duration < 0.5 * 60000 && duration > 8.64e+7 ) return ctx.reply({ embeds: [ getInvalidDurationEmbed() ] });
         } catch (err) {
             return ctx.reply({ embeds: [ getInvalidDurationEmbed() ] });
