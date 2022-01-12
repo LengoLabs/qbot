@@ -53,6 +53,7 @@ if(config.api) {
                 xp: userData.xp,
                 suspendedUntil: userData.suspendedUntil,
                 unsuspendRank: userData.unsuspendRank,
+                isGroupBanned: userData.isBanned
             })
         } catch (err) {
             return res.send({ success: false, msg: 'Failed to get information.' });
