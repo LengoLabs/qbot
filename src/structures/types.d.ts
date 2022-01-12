@@ -200,7 +200,11 @@ export interface BotConfig {
         type?: 'PLAYING' | 'WATCHING' | 'STREAMING' | 'LISTENING' | 'COMPETING';
         value?: string;
         url?: string;
-    }
+    },
+    /**
+     * Should the help command be paged based or not?
+     */
+    pageStyleHelpCommand: boolean
 }
 
 export declare type CommandPermission = {
