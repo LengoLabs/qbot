@@ -25,6 +25,8 @@ const parseCommand = (s: string): [string, Args] | null => {
 }
 
 const handleLegacyCommand = async (message: Message) => {
+    if(!config.legacyCommands) return;
+    if(message.channel.type === 'DM') return;
     const out = parseCommand(message.content);
     if(!out) return;
     const commandQuery = out[0] || null;
@@ -40,7 +42,11 @@ const handleLegacyCommand = async (message: Message) => {
             context.reply({ embeds: [ getNoPermissionEmbed() ] });
         } else {
             await context.defer();
-            (new command()).run(context);
+            try {
+                (new command()).run(context);
+            } catch (err) {
+                console.error(err);
+            }
         }
     } catch (err) {
         return;

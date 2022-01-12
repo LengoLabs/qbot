@@ -11,6 +11,7 @@ import { handleRobloxRole } from '../arguments/handleRobloxRole';
 import { getNoPermissionEmbed } from '../handlers/locale';
 
 const handleInteraction = async (payload: Interaction) => {
+    if(payload.channel.type === 'DM') return;
     if(payload instanceof CommandInteraction) {
         const interaction = payload as CommandInteraction;
         const command = discordClient.commands.find((cmd) => (new cmd()).trigger === interaction.commandName);
@@ -20,7 +21,11 @@ const handleInteraction = async (payload: Interaction) => {
             context.reply({ embeds: [ getNoPermissionEmbed() ] });
         } else {
             await context.defer();
-            (new command()).run(context);
+            try {
+                (new command()).run(context);
+            } catch (err) {
+                console.error(err);
+            }
         }
     } else if(payload instanceof AutocompleteInteraction) {
         const interaction = payload as AutocompleteInteraction;
