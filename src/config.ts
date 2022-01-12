@@ -1,30 +1,30 @@
 import { BotConfig } from './structures/types'; 
 
 export const config: BotConfig = {
-    groupId: 5242495,
+    groupId: 0,
     slashCommands: true,
     legacyCommands: {
         enabled: true,
         prefixes: ['q!'],
     },
     permissions: {
-        all: ['759959415708450837'],
+        all: [''],
         ranking: [''],
         users: [''],
         shout: [''],
         join: [''],
-        signal: ['759959415708450837'],
+        signal: [''],
         admin: [''],
     },
     logChannels: {
-        actions: '759959421085417533',
-        shout: '759959421085417533',
+        actions: '',
+        shout: '',
     },
     database: {
         enabled: false,
         type: 'mongodb',
     },
-    api: true,
+    api: false,
     maximumRank: 255,
     verificationChecks: true,
     firedRank: 1,
