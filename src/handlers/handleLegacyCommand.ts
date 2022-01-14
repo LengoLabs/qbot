@@ -25,7 +25,7 @@ const parseCommand = (s: string): [string, Args] | null => {
 }
 
 const handleLegacyCommand = async (message: Message) => {
-    if(!config.legacyCommands) return;
+    if(!config.legacyCommands.enabled) return;
     if(message.channel.type === 'DM') return;
     const out = parseCommand(message.content);
     if(!out) return;
