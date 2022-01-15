@@ -1,5 +1,6 @@
 import { robloxClient, robloxGroup } from '../main';
 import { logAction } from '../handlers/handleLogging';
+import { config } from '../config';
 
 let lastRecordedDate: number;
 
