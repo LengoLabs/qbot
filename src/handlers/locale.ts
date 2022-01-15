@@ -424,6 +424,9 @@ export const getAlreadyRankedEmbed = (): MessageEmbed => {
 
 export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMember, data: DatabaseUser): Promise<MessageEmbed> => {
     const primaryGroup = await user.getPrimaryGroup();
+    let role;
+    let roleId;
+    if(member) { role = member.role.name; roleId = member.role.rank; } else { role = "Guest"; roleId = 0; };
     const embed = new MessageEmbed()
         .setAuthor(`Information: ${user.name}`, infoIconUrl)
         .setColor(mainColor)
@@ -431,9 +434,10 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
         .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '150x150', isCircular: false })).imageUrl)
         .setFooter(`User ID: ${user.id}`)
         .setTimestamp()
-        .addField('Role', `${member.role.name} (${member.role.rank})`, true)
+        .addField('Role', `${role} (${roleId})`, true)
         .addField('XP', data.xp.toString() || '0', true)
         .addField('Suspended', data.suspendedUntil ? `✅ (<t:${Math.round(data.suspendedUntil.getTime() / 1000)}:R>)` : '❌', true)
+        .addField('Group Banned', data.isBanned ? `✅` : '❌', true);
 
     return embed;
 }

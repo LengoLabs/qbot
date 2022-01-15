@@ -61,13 +61,7 @@ class InfoCommand extends Command {
             }
         }
 
-        let robloxMember: GroupMember;
-        try {
-            robloxMember = await robloxGroup.getMember(robloxUser.id);
-            if(!robloxMember) throw new Error();
-        } catch (err) {
-            return ctx.reply({ embeds: [ getRobloxUserIsNotMemberEmbed() ]});
-        }
+        let robloxMember: GroupMember = await robloxGroup.getMember(robloxUser.id);
 
         const userData = await provider.findUser(robloxUser.id.toString());
         return ctx.reply({ embeds: [ await getUserInfoEmbed(robloxUser, robloxMember, userData) ] });
