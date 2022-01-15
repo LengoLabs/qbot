@@ -2,6 +2,8 @@ import { discordClient, robloxClient, robloxGroup } from '../../main';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
+    getXPSystemNotEnabledEmbed,
+    getNoDatabaseEmbed,
     getInvalidRobloxUserEmbed,
     getRobloxUserIsNotMemberEmbed,
     getUnexpectedErrorEmbed,
@@ -40,7 +42,8 @@ class XPRankupCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        if(!config.database.enabled) return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ] });
+        if(!config.xpSystem.enabled) return ctx.reply({ embeds: [ getXPSystemNotEnabledEmbed() ] });
+        if(!config.database.enabled) return ctx.reply({ embeds: [ getNoDatabaseEmbed() ] });
 
         let robloxUser: User | PartialUser;
         try {

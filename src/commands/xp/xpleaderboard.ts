@@ -4,6 +4,7 @@ import { User } from 'bloxy/dist/structures';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { config } from '../../config';
 import {
+    getXPSystemNotEnabledEmbed,
     getNoDatabaseEmbed,
     getUnexpectedErrorEmbed,
     getNoUsersWithXPEmbed,
@@ -22,6 +23,7 @@ class XPLeaderBoardCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
+        if(!config.xpSystem.enabled) return ctx.reply({ embeds: [ getXPSystemNotEnabledEmbed() ] });
         if(!config.database.enabled) return ctx.reply({ embeds: [ getNoDatabaseEmbed() ] });
         let users;
         try {
