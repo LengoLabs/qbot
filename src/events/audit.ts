@@ -6,7 +6,7 @@ let lastRecordedDate: number;
 const recordAuditLogs = async () => {
     try {
         const auditLog = await robloxClient.apis.groupsAPI.getAuditLogs({
-            groupId: robloxGroup.id,
+            groupId: config.groupId,
             actionType: 'ChangeRank',
             limit: 10,
             sortOrder: 'Desc',
