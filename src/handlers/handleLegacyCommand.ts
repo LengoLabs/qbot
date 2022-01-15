@@ -6,7 +6,7 @@ import { config } from '../config';
 import { CommandContext } from '../structures/addons/CommandAddons';
 import { Lexer, Parser, Args, prefixedStrategy } from 'lexure';
 import { Command } from '../structures/Command';
-import { getNoPermissionEmbed } from '../handlers/locale';
+import { getUnknownCommandMessage, getNoPermissionEmbed } from '../handlers/locale';
 
 const parseCommand = (s: string): [string, Args] | null => {
     const lexer = new Lexer(s).setQuotes([ ['"', '"'], ['“', '”'] ]);
@@ -26,7 +26,7 @@ const parseCommand = (s: string): [string, Args] | null => {
 
 const handleLegacyCommand = async (message: Message) => {
     if(!config.legacyCommands.enabled) return;
-    if(message.channel.type === 'DM') return;
+    if(!message.channel || message.channel.type === 'DM') return;
     const out = parseCommand(message.content);
     if(!out) return;
     const commandQuery = out[0] || null;

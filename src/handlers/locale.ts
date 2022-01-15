@@ -31,6 +31,15 @@ export const noFiredRankLog = `Uh oh, you do not have a fired rank with the rank
 export const noSuspendedRankLog = `Uh oh, you do not have a suspended rank with the rank specified in your configuration file.`;
 export const getListeningText = (port) => `${consoleGreen}✓  ${consoleClear}Listening on port ${port}.`;
 
+export const getUnknownCommandMessage = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Command Unavailable', xmarkIconUrl)
+        .setColor(redColor)
+        .setDescription('This command is not available here, or there was an unexpected error finding it on our system.');
+
+    return embed;
+}
+
 export const getMissingArgumentsEmbed = (cmdName: string, args: CommandArgument[]): MessageEmbed => {
     let argString = '';
     args.forEach((arg) => {
