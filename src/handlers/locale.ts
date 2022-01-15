@@ -589,7 +589,7 @@ export const getXPLeaderBoardEmbed = async (users: DatabaseUser[]) : Promise<Mes
 
 export const getXPSystemNotEnabledEmbed = () : MessageEmbed => {
     const embed = new MessageEmbed();
-    embed.setAuthor("XP Module not Enabled", xmarkIconUrl);
+    embed.setAuthor("XP Module Disabled", xmarkIconUrl);
     embed.setColor(redColor);
     embed.setDescription("The XP module is currently not enabled, please enable it in order to use this command");
     return embed;
