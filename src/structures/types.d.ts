@@ -73,7 +73,7 @@ export interface BotConfig {
         /**
          * What type of database would you like to use? If it is MongoDB, you need to install mongoose separately.
          */
-        type: 'mongodb' | 'sqlite';
+        type: 'mongodb';
     }
     /**
      * Should actions be logged, and if so, where?
