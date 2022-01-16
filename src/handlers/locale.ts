@@ -579,7 +579,7 @@ export const getXPLeaderBoardEmbed = async (users: DatabaseUser[]) : Promise<Mes
     let numPlace = 1;
     for(let i = 0; i < users.length; i++) {
         let endingPlace;
-        if(numPlace === 1) { endingPlace = "st" } else if(numPlace === 2) { endingPlace = "nd" } else if(numPlace === 3) { endingPlace = "rd" } else { endingPlace = "st" };
+        if(numPlace === 1) { endingPlace = "st" } else if(numPlace === 2) { endingPlace = "nd" } else if(numPlace === 3) { endingPlace = "rd" } else { endingPlace = "th" };
         description += `**${numPlace}${endingPlace}** - ${(await robloxClient.getUsernameFromUserId(users[i].robloxId)).name} - ${users[i].xp}\n`;
         numPlace++;
     }
