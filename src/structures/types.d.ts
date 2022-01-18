@@ -192,15 +192,28 @@ export interface BotConfig {
     /**
      * Configuration for the bot's activity status (rich presence) on Discord.
      */
-    activityStatus: {
+    activity: {
         /**
          * Should there be an activity status for the bot?
          */
         enabled: boolean;
+        /**
+         * What should be displayed before your value?
+         */
         type?: 'PLAYING' | 'WATCHING' | 'STREAMING' | 'LISTENING' | 'COMPETING';
+        /**
+         * This is the text that is displayed after the type of status.
+         */
         value?: string;
+        /**
+         * If you set the type to STREAMING, where should the watch now button redirect to?
+         */
         url?: string;
     }
+    /**
+     * Configuration for the bot's status (online/idle/dnd).
+     */
+    status: 'online' | 'idle' | 'dnd';
 }
 
 export declare type CommandPermission = {
