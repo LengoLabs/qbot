@@ -452,6 +452,7 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
         .addField('Role', `${member.role.name} (${member.role.rank})`, true)
         .addField('XP', data.xp.toString() || '0', true)
         .addField('Suspended', data.suspendedUntil ? `✅ (<t:${Math.round(data.suspendedUntil.getTime() / 1000)}:R>)` : '❌', true)
+        .addField('Banned', data.isBanned ? `✅` : '❌', true);
 
     return embed;
 }
