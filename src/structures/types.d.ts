@@ -214,6 +214,10 @@ export interface BotConfig {
      * Configuration for the bot's status (online/idle/dnd).
      */
     status: 'online' | 'idle' | 'dnd';
+    /**
+     * Should the bot delete URLs in your group wall?
+     */
+    deleteWallURLs: boolean;
 }
 
 export declare type CommandPermission = {
