@@ -9,12 +9,12 @@ const checkWallForAds = async () => {
         posts.data.forEach((post) => {
             if(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/gm.test(post.content)) {
                 group.deleteWallPost(post.id);
-                logAction('Delete Wall Post', 'Auto-moderator', 'Posted a link with their wall post.', post.creator);
             }
         });
     } catch (err) {
         console.error(err);
     }
+    setTimeout(checkWallForAds, 30000);
 }
 
 export { checkWallForAds };

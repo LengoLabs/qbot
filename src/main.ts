@@ -10,6 +10,7 @@ import { recordAuditLogs } from './events/audit';
 import { recordMemberCount } from './events/member';
 import { clearActions } from './handlers/abuseDetection';
 import { checkBans } from './events/bans';
+import { checkWallForAds } from './events/wall';
 require('dotenv').config();
 require('./database/router');
 require('./api');
@@ -30,6 +31,7 @@ let robloxGroup: Group = null;
     if(config.recordManualActions) recordAuditLogs();
     if(config.memberCount.enabled) recordMemberCount();
     if(config.antiAbuse.enabled) clearActions();
+    if(config.deleteWallURLs) checkWallForAds();
 })();
 
 // [Handlers]
