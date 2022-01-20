@@ -31,12 +31,14 @@ class QbotClient extends Client {
             this.loadCommands();
             getLogChannels();
 
-            if(config.activityStatus.enabled) {
-                this.user.setActivity(config.activityStatus.value, {
-                    type: config.activityStatus.type,
-                    url: config.activityStatus.url,
+            if(config.activity.enabled) {
+                this.user.setActivity(config.activity.value, {
+                    type: config.activity.type,
+                    url: config.activity.url,
                 });
             }
+
+            if(config.status !== 'online') this.user.setStatus(config.status);
         });
     }
 

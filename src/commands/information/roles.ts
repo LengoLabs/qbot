@@ -3,7 +3,7 @@ import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import { getRoleListEmbed } from '../../handlers/locale';
 
-class InfoCommand extends Command {
+class RolesCommand extends Command {
     constructor() {
         super({
             trigger: 'roles',
@@ -19,4 +19,4 @@ class InfoCommand extends Command {
     }
 }
 
-export default InfoCommand;
+export default RolesCommand;
