@@ -11,9 +11,7 @@ const checkWallForAds = async () => {
                 group.deleteWallPost(post.id);
             }
         });
-    } catch (err) {
-        console.error(err);
-    }
+    } catch (err) {};
     setTimeout(checkWallForAds, 30000);
 }
 
