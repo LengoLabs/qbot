@@ -440,6 +440,21 @@ export const getAlreadyRankedEmbed = (): MessageEmbed => {
     return embed;
 }
 
+export const getPartialUserInfoEmbed = async (user: User | PartialUser, data: DatabaseUser): Promise<MessageEmbed> => {
+    const primaryGroup = await user.getPrimaryGroup();
+    const embed = new MessageEmbed()
+        .setAuthor(`Information: ${user.name}`, infoIconUrl)
+        .setColor(mainColor)
+        .setDescription(primaryGroup ? `Primary Group: [${primaryGroup.group.name}](https://roblox.com/groups/${primaryGroup.group.id})` : '')
+        .setThumbnail((await user.getAvatarHeadShotImage({ format: 'png', size: '150x150', isCircular: false })).imageUrl)
+        .setFooter(`User ID: ${user.id}`)
+        .setTimestamp()
+        .addField('Role', 'Guest (0)', true)
+        .addField('Banned', data.isBanned ? `✅` : '❌', true)
+
+    return embed;
+}
+
 export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMember, data: DatabaseUser): Promise<MessageEmbed> => {
     const primaryGroup = await user.getPrimaryGroup();
     const embed = new MessageEmbed()
@@ -452,7 +467,6 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
         .addField('Role', `${member.role.name} (${member.role.rank})`, true)
         .addField('XP', data.xp.toString() || '0', true)
         .addField('Suspended', data.suspendedUntil ? `✅ (<t:${Math.round(data.suspendedUntil.getTime() / 1000)}:R>)` : '❌', true)
-        .addField('Banned', data.isBanned ? `✅` : '❌', true);
 
     return embed;
 }

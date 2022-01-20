@@ -7,6 +7,7 @@ import { config } from '../../config';
 import {
     getInvalidRobloxUserEmbed,
     getNoDatabaseEmbed,
+    getPartialUserInfoEmbed,
     getRobloxUserIsNotMemberEmbed,
     getUnexpectedErrorEmbed,
     getUserInfoEmbed,
@@ -61,15 +62,16 @@ class InfoCommand extends Command {
             }
         }
 
+        const userData = await provider.findUser(robloxUser.id.toString());
+
         let robloxMember: GroupMember;
         try {
             robloxMember = await robloxGroup.getMember(robloxUser.id);
             if(!robloxMember) throw new Error();
         } catch (err) {
-            return ctx.reply({ embeds: [ getRobloxUserIsNotMemberEmbed() ]});
+            return ctx.reply({ embeds: [ await getPartialUserInfoEmbed(robloxUser, userData) ]});
         }
 
-        const userData = await provider.findUser(robloxUser.id.toString());
         return ctx.reply({ embeds: [ await getUserInfoEmbed(robloxUser, robloxMember, userData) ] });
     }
 }
