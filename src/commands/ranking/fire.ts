@@ -97,6 +97,7 @@ class FireCommand extends Command {
 
         if(config.database.enabled) {
             const userData = await provider.findUser(robloxUser.id.toString());
+            if(userData.xp !== 0) return provider.updateUser(robloxUser.id.toString(), { xp: 0 });
             if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
         }
 
