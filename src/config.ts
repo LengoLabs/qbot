@@ -61,4 +61,5 @@ export const config: BotConfig = {
         value: 'for commands.',
     },
     status: 'online',
+    deleteWallURLs: false,
 }
