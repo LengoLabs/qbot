@@ -24,7 +24,7 @@ const handleInteraction = async (payload: Interaction) => {
             try {
                 (new command()).run(context);
             } catch (err) {
-                console.error(err);
+                console.log(err);
             }
         }
     } else if(payload instanceof AutocompleteInteraction) {

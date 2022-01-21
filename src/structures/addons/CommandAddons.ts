@@ -110,28 +110,28 @@ export class CommandContext  {
      * 
      * @param payload
      */
-    reply(payload: string | MessageOptions | InteractionReplyOptions) {
+    async reply(payload: string | MessageOptions | InteractionReplyOptions) {
         this.replied = true;
         if(this.subject instanceof CommandInteraction) {
             try {
                 const subject = this.subject as CommandInteraction;
                 if(this.deferred) {
-                    return subject.editReply(payload);
+                    return await subject.editReply(payload);
                 } else {
-                    return subject.reply(payload);
+                    return await subject.reply(payload);
                 }
             } catch (err) {
                 const subject = this.subject as CommandInteraction;
                 try {
                     if(this.deferred) {
-                        return subject.editReply(payload);
+                        return await subject.editReply(payload);
                     } else {
-                        return subject.reply(payload);
+                        return await subject.reply(payload);
                     }
                 } catch (err) {};
             }
         } else {
-            return this.subject.channel.send(payload);
+            return await this.subject.channel.send(payload);
         }
     }
 
@@ -139,12 +139,14 @@ export class CommandContext  {
      * Defers a reply.
      */
     async defer() {
-        if(this.subject instanceof CommandInteraction) {
-            const interaction = this.subject as CommandInteraction;
-            if(!interaction.deferred && !interaction.replied) await this.subject.deferReply();
-        } else {
-            await this.subject.channel.sendTyping();
-        }
-        this.deferred = true;
+        try {
+            if(this.subject instanceof CommandInteraction) {
+                const interaction = this.subject as CommandInteraction;
+                if(!interaction.deferred && !interaction.replied) await this.subject.deferReply();
+            } else {
+                await this.subject.channel.sendTyping();
+            }
+            this.deferred = true;
+        } catch (err) {};
     }
 }
