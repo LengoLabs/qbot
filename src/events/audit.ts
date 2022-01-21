@@ -12,7 +12,7 @@ const recordAuditLogs = async () => {
             limit: 10,
             sortOrder: 'Desc',
         });
-        const mostRecentDate = new Date(auditLog.data[0].created).getTime();
+        const mostRecentDate = new Date(auditLog.data?[0].created).getTime();
         if(lastRecordedDate) {
             const groupRoles = await robloxGroup.getRoles();
             auditLog.data.forEach(async (log) => {
