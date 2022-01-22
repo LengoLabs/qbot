@@ -61,7 +61,7 @@ class AddXPCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        if(!config.xpSystem.enabled) return ctx.reply({ embeds: [ getXPSystemNotEnabledEmbed() ] });
+        if(!config.xpSystem.enabled) return ctx.reply({ embeds: [ getXPSystemNotEnabledEmbed() ] })
         if(!config.database.enabled) return ctx.reply({ embeds: [ getNoDatabaseEmbed() ] });
         let enoughForRankUp: boolean;
         let robloxUser: User | PartialUser;
