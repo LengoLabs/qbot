@@ -3,7 +3,11 @@ import { robloxGroup } from '../main';
 
 const handleRobloxRole = async (interaction: AutocompleteInteraction, option: ApplicationCommandOptionChoice) => {
     try {
-        const allRoles = await robloxGroup.getRoles();
+        let allRoles = await robloxGroup.getRoles();
+        if(allRoles.length > 25) {
+            allRoles = allRoles.slice(0, 25);
+        }
+        allRoles = allRoles.filter((role) => role.rank !== 0);
         if(!option.value) return interaction.respond(allRoles.map((role) => {
             return {
                 name: `${role.name} (${role.rank || 0})`,
