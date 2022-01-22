@@ -569,3 +569,57 @@ export const getSuccessfulGroupUnbanEmbed = (user: User | PartialUser) : Message
     embed.setDescription(`**${user.name}** has successfully been unbanned from the group.`);
     return embed;
 }
+
+export const getCommandEmbedByModule = (modules: { [key: string]: Command[] }, module: string): MessageEmbed => {
+    let formattedModuleString = module.replace('-', ' ').split(' ').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    let commands: Command[] = modules[module];
+    let description = "";
+    for(let i = 0; i < commands.length; i++) {
+        description += `\`${commands[i].trigger}\` - ${commands[i].description}\n`;
+    }
+    const embed = new MessageEmbed();
+    embed.setAuthor(formattedModuleString, infoIconUrl);
+    embed.setColor(mainColor);
+    embed.setDescription(description);
+    return embed;
+}
+
+export const getTimesUpEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed();
+    embed.setAuthor("Time is Up", infoIconUrl);
+    embed.setColor(mainColor);
+    embed.setDescription("Your time for this embed is up, if you wish to continue, please return the command");
+    return embed;
+}
+
+export const getNoUsersWithXPEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed();
+    embed.setAuthor("No Users with XP", xmarkIconUrl);
+    embed.setColor(redColor);
+    embed.setDescription("There's currently no users with XP with this Qbot installaion, perhaps you should add some XP before seeing the leaderboard");
+    return embed;
+}
+
+export const getXPLeaderBoardEmbed = async (users: DatabaseUser[]) : Promise<MessageEmbed> => {
+    const embed = new MessageEmbed();
+    embed.setAuthor("XP Leadboard", infoIconUrl);
+    embed.setColor(mainColor);
+    let description = "";
+    let numPlace = 1;
+    for(let i = 0; i < users.length; i++) {
+        let endingPlace;
+        if(numPlace === 1) { endingPlace = "st" } else if(numPlace === 2) { endingPlace = "nd" } else if(numPlace === 3) { endingPlace = "rd" } else { endingPlace = "th" };
+        description += `**${numPlace}${endingPlace}** - ${(await robloxClient.getUsernameFromUserId(users[i].robloxId)).name} - ${users[i].xp}\n`;
+        numPlace++;
+    }
+    embed.setDescription(description);
+    return embed;
+}
+
+export const getXPSystemNotEnabledEmbed = () : MessageEmbed => {
+    const embed = new MessageEmbed();
+    embed.setAuthor("XP Module Disabled", xmarkIconUrl);
+    embed.setColor(redColor);
+    embed.setDescription("The XP module is currently not enabled, please enable it in order to use this command");
+    return embed;
+}

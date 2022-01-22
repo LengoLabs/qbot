@@ -18,6 +18,8 @@ class MongoDBProvider extends DatabaseProvider {
         if(config.database.enabled) connect(process.env.DB_URI).catch(console.error);
     }
 
+    rawUserDatabase = User;
+
     async findUser(robloxId: string): Promise<DatabaseUser> {
         let userData = await User.findOne({ robloxId });
         if(!userData) {
@@ -43,6 +45,17 @@ class MongoDBProvider extends DatabaseProvider {
             userData[key] = data[key];
         });
         return await userData.save();
+    }
+
+    async findTopUsers(): Promise<DatabaseUser[]> {
+        const usersWithXP = (await User.find({}).sort({ xp: -1 })).filter(userData => userData.xp > 0);
+        const users = [];
+        let increment;
+        if(usersWithXP.length >= 10) { increment = 10 } else { increment = usersWithXP.length; }
+        for(let i = 0; i < increment; i++) {
+            users.push(usersWithXP[i]);
+        }
+        return users;
     }
 }
 
