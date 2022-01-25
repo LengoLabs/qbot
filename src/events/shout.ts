@@ -16,8 +16,8 @@ const recordShout = async () => {
                 logChannel.send({ embeds: [ await getShoutLogEmbed(group.shout) ] });
             }
         }
-        setTimeout(recordShout, 30 * 1000);
-        lastShout = group.shout?.content;
+        setTimeout(recordShout, 60 * 1000);
+        if(lastShout) lastShout = group.shout?.content;
     } catch (err) {
         console.error(err);
     }
