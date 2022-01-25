@@ -17,7 +17,7 @@ const recordShout = async () => {
             }
         }
         setTimeout(recordShout, 60 * 1000);
-        if(lastShout) lastShout = group.shout?.content;
+        if(group.shout?.content) lastShout = group.shout?.content;
     } catch (err) {
         console.error(err);
     }
