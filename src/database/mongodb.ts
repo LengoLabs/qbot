@@ -9,7 +9,8 @@ const User = model('User', new Schema({
     xp: Number,
     suspendedUntil: Date,
     unsuspendRank: Number,
-    isBanned: Boolean
+    isBanned: Boolean,
+    reasonForBan: String,
 }));
 
 class MongoDBProvider extends DatabaseProvider {
