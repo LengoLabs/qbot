@@ -339,5 +339,9 @@ export declare type DatabaseUser = {
     /**
      * Is the user banned from the group?
      */
-    isBanned: boolean
+    isBanned: boolean;
+    /**
+	 * Reason for the ban? (If banned)
+	 */
+	reasonForBan?: string;
 }
