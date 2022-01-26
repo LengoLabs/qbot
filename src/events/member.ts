@@ -10,7 +10,7 @@ let firstRecord = true;
 let lastMemberCount: number;
 
 const recordMemberCount = async () => {
-    setTimeout(recordMemberCount, 30000);
+    setTimeout(recordMemberCount, 60 * 1000);
     try {
         if(!firstRecord) {
             const group = await robloxClient.getGroup(config.groupId);
