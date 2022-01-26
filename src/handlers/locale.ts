@@ -451,7 +451,7 @@ export const getPartialUserInfoEmbed = async (user: User | PartialUser, data: Da
         .setTimestamp()
         .addField('Role', 'Guest (0)', true)
         .addField('Banned', data.isBanned ? `✅` : '❌', true)
-        .addField('Reason', `${data.reasonForBan}` || `N/A`, true)
+        .addField('Reason', data.reasonForBan ? `${data.reasonForBan}`: `N/A`, true)
 
     return embed;
 }
@@ -469,7 +469,7 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
         .addField('XP', data.xp.toString() || '0', true)
         .addField('Suspended', data.suspendedUntil ? `✅ (<t:${Math.round(data.suspendedUntil.getTime() / 1000)}:R>)` : '❌', true)
         .addField('Banned', data.isBanned ? `✅` : '❌', true);
-        .addField('Reason', `${data.reasonForBan}` || `N/A`, true)
+        .addField('Reason', data.reasonForBan ? `${data.reasonForBan}`: `N/A`, true)
     
     return embed;
 }
