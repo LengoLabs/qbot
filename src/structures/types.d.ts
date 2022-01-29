@@ -218,6 +218,10 @@ export interface BotConfig {
      * Should the bot delete URLs in your group wall?
      */
     deleteWallURLs: boolean;
+    /**
+     * What should the verification provider be?
+     */
+    vericationProvider: VerificationProvider
 }
 
 export declare type CommandPermission = {
@@ -277,6 +281,7 @@ export declare type CommandArgument = {
 }
 
 export declare type CommandType = 'ChatInput' | 'User' | 'Message';
+export declare type VerificationProvider = 'bloxlink' | 'rowifi' | 'rover';
 
 export interface CommandConfig {
     /**
@@ -317,6 +322,18 @@ export declare type BloxlinkResponse = {
     status: string;
     primaryAccount?: string;
     matchingAccount?: string;
+}
+
+export declare type RoverResponse = {
+    status: string,
+    robloxUsername?: string,
+    robloxId?: number
+}
+
+export declare type RoWifiResponse = {
+    success: boolean,
+    discord_id?: number,
+    roblox_id?: number
 }
 
 export declare type DatabaseUser = {
