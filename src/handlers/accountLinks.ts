@@ -16,7 +16,11 @@ const getLinkedRobloxUser = async (discordId: string, guildId?: string) => {
         return robloxUser;
     } else if(provider === "rowifi") {
         let robloxStatus: RoWifiResponse;
-        robloxStatus = (await axios.get(`https://api.rowifi.link/v1/users/${discordId}`)).data;
+        if(guildId) {
+            robloxStatus = (await axios.get(`https://api.rowifi.link/v1/users/${discordId}?guild_id=${guildId}`)).data;
+        } else {
+            robloxStatus = (await axios.get(`https://api.rowifi.link/v1/users/${discordId}`)).data;
+        }
         if(robloxStatus.success === false) return null;
         const robloxUser = await robloxClient.getUser(robloxStatus.roblox_id);
         return robloxUser;
