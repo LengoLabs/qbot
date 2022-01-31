@@ -237,11 +237,11 @@ if(config.api) {
         try {
             const robloxMember = await robloxGroup.getMember(Number(id));
             if(!robloxMember) throw new Error();
-
+            const robloxUser = await robloxClient.getUser(id as string);
             const userData = await provider.findUser(robloxMember.id.toString());
             const xp = Number(userData.xp) + Number(amount);
 
-            logAction('Add XP', 'API Action', null, robloxMember, null, null, null, `${userData.xp} → ${xp} (+${Number(amount)})`);
+            logAction('Add XP', 'API Action', null, robloxUser, null, null, null, `${userData.xp} → ${xp} (+${Number(amount)})`);
             await provider.updateUser(robloxMember.id.toString(), { xp });
 
             return res.send({ success: true });
@@ -256,11 +256,11 @@ if(config.api) {
         try {
             const robloxMember = await robloxGroup.getMember(Number(id));
             if(!robloxMember) throw new Error();
-
+            const robloxUser = await robloxClient.getUser(id as string);
             const userData = await provider.findUser(robloxMember.id.toString());
             const xp = Number(userData.xp) - Number(amount);
 
-            logAction('Remove XP', 'API Action', null, robloxMember, null, null, null, `${userData.xp} → ${xp} (+${Number(amount)})`);
+            logAction('Remove XP', 'API Action', null, robloxUser, null, null, null, `${userData.xp} → ${xp} (+${Number(amount)})`);
             await provider.updateUser(robloxMember.id.toString(), { xp });
 
             return res.send({ success: true });
