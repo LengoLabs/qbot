@@ -260,7 +260,7 @@ if(config.api) {
             const userData = await provider.findUser(robloxMember.id.toString());
             const xp = Number(userData.xp) - Number(amount);
 
-            logAction('Remove XP', 'API Action', null, robloxUser, null, null, null, `${userData.xp} → ${xp} (+${Number(amount)})`);
+            logAction('Remove XP', 'API Action', null, robloxUser, null, null, null, `${userData.xp} → ${xp} (-${Number(amount)})`);
             await provider.updateUser(robloxMember.id.toString(), { xp });
 
             return res.send({ success: true });
