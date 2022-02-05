@@ -218,6 +218,10 @@ export interface BotConfig {
      * Should the bot delete URLs in your group wall?
      */
     deleteWallURLs: boolean;
+    /**
+     * Are there any locked ranks that the bot shouldn't be able to rank to?
+     */
+    lockedRanks: Array<number>
 }
 
 export declare type CommandPermission = {

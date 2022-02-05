@@ -10,6 +10,8 @@ import {
     getRoleNotFoundEmbed,
     getVerificationChecksFailedEmbed,
     getUserSuspendedEmbed,
+    getRankLockedEmbed,
+    getCancelledEmbed,
 } from '../../handlers/locale';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
@@ -17,6 +19,16 @@ import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { provider } from '../../database/router';
+
+import {
+    Message,
+    Interaction,
+    ButtonInteraction,
+    MessageButton,
+    MessageButtonStyleResolvable,
+    MessageActionRow,
+    CommandInteraction,
+} from 'discord.js';
 
 class PromoteCommand extends Command {
     constructor() {
@@ -48,6 +60,13 @@ class PromoteCommand extends Command {
                 }
             ]
         });
+    }
+
+    addButton(messageData : any, id : string, label : string, style : MessageButtonStyleResolvable) {
+        let components = messageData.components || [];
+        let newComponent = new MessageActionRow().addComponents(new MessageButton().setCustomId(id).setLabel(label).setStyle(style));
+        components.push(newComponent);
+        messageData.components = components;
     }
 
     async run(ctx: CommandContext) {
@@ -82,7 +101,7 @@ class PromoteCommand extends Command {
 
         const groupRoles = await robloxGroup.getRoles();
         const currentRoleIndex = groupRoles.findIndex((role) => role.rank === robloxMember.role.rank);
-        const role = groupRoles[currentRoleIndex + 1];
+        let role = groupRoles[currentRoleIndex + 1];
         if(!role) return ctx.reply({ embeds: [ getNoRankAboveEmbed() ]});
         if(role.rank > config.maximumRank || robloxMember.role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
 
@@ -96,13 +115,72 @@ class PromoteCommand extends Command {
             if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
         }
 
-        try {
-            await robloxGroup.updateMember(robloxUser.id, role.id);
-            ctx.reply({ embeds: [ await getSuccessfulPromotionEmbed(robloxUser, role.name) ]});
-            logAction('Promote', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
-        } catch (err) {
-            console.log(err);
-            return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
+        if(config.lockedRanks.find(v => v === role.rank)) {
+            let oldRole = role.name;
+            for(let i = currentRoleIndex; i < groupRoles.length; i++) {
+                role = groupRoles[i + 1];
+                if(!role) return ctx.reply({ embeds: [ getNoRankAboveEmbed() ]});
+                if(role.rank > config.maximumRank) continue;
+                if(config.lockedRanks.find(v => v === role.rank)) continue;
+                break;
+            }
+            let msgData = { embeds: [ getRankLockedEmbed(oldRole, role.name) ] };
+            this.addButton(msgData, "continueButton", "Continue", "SUCCESS");
+            this.addButton(msgData, "cancelButton", "Cancel", "DANGER");
+            let msg = await ctx.reply(msgData);
+            const filter = (filterInteraction : Interaction) => {
+                if(!filterInteraction.isButton()) return false;
+                if(filterInteraction.user.id !== ctx.user.id) return false;
+                return true;
+            }
+            const componentCollector = (msg as Message).createMessageComponentCollector({filter: filter, time: 60000, max: 1});
+            componentCollector.on('end', async collectedButtons => {
+                if(collectedButtons.size === 0) {
+                    if(ctx.subject instanceof CommandInteraction) {
+                        await (ctx.subject as CommandInteraction).editReply({ embeds: [ getCancelledEmbed() ] });
+                    } else {
+                        await (msg as Message).edit({ embeds: [ getCancelledEmbed() ] });
+                    }
+                    return;
+                }
+                let button = [...collectedButtons.values()][0] as ButtonInteraction;
+                if(button.customId === "continueButton") {
+                    try {
+                        await robloxGroup.updateMember(robloxUser.id, role.id);
+                        if(ctx.subject instanceof CommandInteraction) {
+                            await (ctx.subject as CommandInteraction).editReply({ embeds: [ await getSuccessfulPromotionEmbed(robloxUser, role.name) ]})
+                        } else {
+                            await (msg as Message).edit({ embeds: [ await getSuccessfulPromotionEmbed(robloxUser, role.name) ]})
+                        }
+                        logAction('Promote', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
+                    } catch (err) {
+                        console.log(err);
+                        if(ctx.subject instanceof CommandInteraction) {
+                            await (ctx.subject as CommandInteraction).editReply({ embeds: [ getUnexpectedErrorEmbed() ]});
+                        } else {
+                            await (msg as Message).edit({ embeds: [ getUnexpectedErrorEmbed() ]});
+                        }
+                    }
+                } else {
+                    if(ctx.subject instanceof CommandInteraction) {
+                        await (ctx.subject as CommandInteraction).editReply({ embeds: [ getCancelledEmbed() ] });   
+                    } else {
+                        await (msg as Message).edit({ embeds: [ getCancelledEmbed() ] })
+                    }
+                }
+                await button.reply({content: "ㅤ"});
+                await button.deleteReply();
+                return;
+            });
+        } else {
+            try {
+                await robloxGroup.updateMember(robloxUser.id, role.id);
+                ctx.reply({ embeds: [ await getSuccessfulPromotionEmbed(robloxUser, role.name) ]});
+                logAction('Promote', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
+            } catch (err) {
+                console.log(err);
+                return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
+            }
         }
     }
 }
