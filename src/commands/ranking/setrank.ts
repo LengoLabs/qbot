@@ -10,6 +10,7 @@ import {
     getVerificationChecksFailedEmbed,
     getAlreadyRankedEmbed,
     getUserSuspendedEmbed,
+    getRankLockedEmbed,
 } from '../../handlers/locale';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
@@ -100,6 +101,8 @@ class SetRankCommand extends Command {
             const userData = await provider.findUser(robloxUser.id.toString());
             if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
         }
+
+        if(config.lockedRanks.find(v => v === role.rank)) return ctx.reply({ embeds: [ getRankLockedEmbed() ] })
 
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);

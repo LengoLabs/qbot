@@ -569,3 +569,27 @@ export const getSuccessfulGroupUnbanEmbed = (user: User | PartialUser) : Message
     embed.setDescription(`**${user.name}** has successfully been unbanned from the group.`);
     return embed;
 }
+
+export const getRankLockedEmbed = (oldRank?: string, newRank?: string) : MessageEmbed => {
+    if(newRank) {
+        const embed = new MessageEmbed();
+        embed.setAuthor("Rank Locked", infoIconUrl);
+        embed.setColor(mainColor);
+        embed.setDescription(`The rank that you tried to rank this user to (**${oldRank}**) is currently locked, do you wish to rank them to **${newRank}**?`);
+        return embed;
+    } else {
+        const embed = new MessageEmbed();
+        embed.setAuthor("Rank Locked", xmarkIconUrl);
+        embed.setColor(redColor);
+        embed.setDescription("The rank that you tried to rank this user to is currently locked, please try a different rank");
+        return embed;
+    }
+}
+
+export const getCancelledEmbed = () : MessageEmbed => {
+    let embed = new MessageEmbed();
+    embed.setAuthor("Cancelled", infoIconUrl);
+    embed.setColor(mainColor);
+    embed.setDescription("You've successfully cancelled this action");
+    return embed;
+}
