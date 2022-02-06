@@ -124,10 +124,10 @@ class PromoteCommand extends Command {
                 if(config.lockedRanks.find(v => v === role.rank)) continue;
                 break;
             }
-            let msgData = { embeds: [ getRankLockedEmbed(oldRole, role.name) ] };
+            let msgData = { embeds: [ getRankLockedEmbed(oldRole, role.name) ], components: [] };
             this.addButton(msgData, "continueButton", "Continue", "SUCCESS");
             this.addButton(msgData, "cancelButton", "Cancel", "DANGER");
-            let msg = await ctx.reply(msgData);
+            let msg = await ctx.reply(msgData) as Message;
             const filter = (filterInteraction : Interaction) => {
                 if(!filterInteraction.isButton()) return false;
                 if(filterInteraction.user.id !== ctx.user.id) return false;
@@ -137,9 +137,18 @@ class PromoteCommand extends Command {
             componentCollector.on('end', async collectedButtons => {
                 if(collectedButtons.size === 0) {
                     if(ctx.subject instanceof CommandInteraction) {
-                        await (ctx.subject as CommandInteraction).editReply({ embeds: [ getCancelledEmbed() ] });
+                        msg = await (ctx.subject as CommandInteraction).editReply({ embeds: [ getCancelledEmbed() ] }) as Message;
                     } else {
-                        await (msg as Message).edit({ embeds: [ getCancelledEmbed() ] });
+                        msg = await (msg as Message).edit({ embeds: [ getCancelledEmbed() ] });
+                        for(let i = 0; i < msg.components.length; i++) {
+                            msg.components[i].components[0].setDisabled(true);
+                        }
+                        msgData = { embeds: [...msg.embeds], components: [...msg.components] };
+                        if(ctx.subject instanceof CommandInteraction) {
+                            await (ctx.subject as CommandInteraction).editReply(msgData);   
+                        } else {
+                            await msg.edit(msgData);
+                        }
                     }
                     return;
                 }
@@ -148,28 +157,37 @@ class PromoteCommand extends Command {
                     try {
                         await robloxGroup.updateMember(robloxUser.id, role.id);
                         if(ctx.subject instanceof CommandInteraction) {
-                            await (ctx.subject as CommandInteraction).editReply({ embeds: [ await getSuccessfulPromotionEmbed(robloxUser, role.name) ]})
+                            msg = await (ctx.subject as CommandInteraction).editReply({ embeds: [ await getSuccessfulPromotionEmbed(robloxUser, role.name) ]}) as Message;
                         } else {
-                            await (msg as Message).edit({ embeds: [ await getSuccessfulPromotionEmbed(robloxUser, role.name) ]})
+                            msg = await (msg as Message).edit({ embeds: [ await getSuccessfulPromotionEmbed(robloxUser, role.name) ]})
                         }
                         logAction('Promote', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
                     } catch (err) {
                         console.log(err);
                         if(ctx.subject instanceof CommandInteraction) {
-                            await (ctx.subject as CommandInteraction).editReply({ embeds: [ getUnexpectedErrorEmbed() ]});
+                            msg = await (ctx.subject as CommandInteraction).editReply({ embeds: [ getUnexpectedErrorEmbed() ]}) as Message;
                         } else {
-                            await (msg as Message).edit({ embeds: [ getUnexpectedErrorEmbed() ]});
+                            msg = await (msg as Message).edit({ embeds: [ getUnexpectedErrorEmbed() ]});
                         }
                     }
                 } else {
                     if(ctx.subject instanceof CommandInteraction) {
-                        await (ctx.subject as CommandInteraction).editReply({ embeds: [ getCancelledEmbed() ] });   
+                        msg = await (ctx.subject as CommandInteraction).editReply({ embeds: [ getCancelledEmbed() ] }) as Message;
                     } else {
-                        await (msg as Message).edit({ embeds: [ getCancelledEmbed() ] })
+                        msg = await (msg as Message).edit({ embeds: [ getCancelledEmbed() ] });
                     }
                 }
                 await button.reply({content: "ㅤ"});
                 await button.deleteReply();
+                for(let i = 0; i < msg.components.length; i++) {
+                    msg.components[i].components[0].setDisabled(true);
+                }
+                msgData = { embeds: [...msg.embeds], components: [...msg.components] };
+                if(ctx.subject instanceof CommandInteraction) {
+                    await (ctx.subject as CommandInteraction).editReply(msgData);   
+                } else {
+                    await msg.edit(msgData);
+                }
                 return;
             });
         } else {
