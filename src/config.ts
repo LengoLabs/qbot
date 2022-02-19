@@ -62,4 +62,5 @@ export const config: BotConfig = {
     },
     status: 'online',
     deleteWallURLs: false,
+    requestChannel: '785555396914970658'
 }

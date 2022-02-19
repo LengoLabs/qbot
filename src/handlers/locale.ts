@@ -96,6 +96,22 @@ export const getNoJoinRequestEmbed = (): MessageEmbed => {
     return embed;
 }
 
+export const getPromotionRequestEmbed = (reason, discordTag): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('New Promotion Request!',infoIconUrl)
+        .setColor(mainColor)
+        .setDescription(`Reason provided:\n\n**${reason}**`)
+        .setFooter(`Requested by ${discordTag}`)
+    return embed
+}
+export const getSuccessfulRequestEmbed = (): MessageEmbed => {
+    const embed = new MessageEmbed()
+        .setAuthor('Success!',checkIconUrl)
+        .setColor(greenColor)
+        .setDescription(`Successfully requested a promotion.`)
+    return embed
+}
+
 export const getSuccessfulAddingAndRankupEmbed = async(user: User | PartialUser, newRole: string, xpChange: string): Promise<MessageEmbed> => {
     const embed = new MessageEmbed()
         .setAuthor('Success!',checkIconUrl)

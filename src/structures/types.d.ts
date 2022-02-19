@@ -218,6 +218,10 @@ export interface BotConfig {
      * Should the bot delete URLs in your group wall?
      */
     deleteWallURLs: boolean;
+    /**
+     * What is the channel Id for rank requests?
+     */
+    requestChannel: string;
 }
 
 export declare type CommandPermission = {
@@ -340,4 +344,23 @@ export declare type DatabaseUser = {
      * Is the user banned from the group?
      */
     isBanned: boolean
+}
+
+export declare type RankRequest = {
+    /**
+     * Is it a promote or demotion request>
+     */
+    type: String;
+    /**
+     * What is the roblox Id?
+     */
+    robloxId: Number;
+    /**
+     * What is the discord Id?
+     */
+    discordId: Number;
+    /**
+     * What is the unique rank request Id?
+     */
+    id: String;
 }
