@@ -55,10 +55,12 @@ export const config: BotConfig = {
         demotionRank: 1,
         bypassRoleId: '',
     },
-    activity: {
-        enabled: false,
-        type: 'WATCHING',
-        value: 'for commands.',
+    activities: {
+        enabled: true,
+        options: [
+           { type: "LISTENING", name: "Lil Nas X." },
+           { type: "WATCHING", name: "for commands."},
+        ]
     },
     status: 'online',
     deleteWallURLs: false,

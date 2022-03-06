@@ -31,14 +31,25 @@ class QbotClient extends Client {
             this.loadCommands();
             getLogChannels();
 
-            if(config.activity.enabled) {
-                this.user.setActivity(config.activity.value, {
-                    type: config.activity.type,
-                    url: config.activity.url,
-                });
+            if(config.activities.enabled) {
+                
+                let pickRandom = () => {
+                    setInterval(() => {
+                      this.user?.setPresence({
+                        activities: [
+                          config.activities.options[Math.floor(Math.random() * (config.activities.options.length - 0) + 0)],
+                        ],
+                        status: config.status,
+                      });
+                    }, 60000);
+                  };
+                  
+                  pickRandom()
+
+
+                
             }
 
-            if(config.status !== 'online') this.user.setStatus(config.status);
         });
     }
 
