@@ -546,7 +546,7 @@ export const getCommandListEmbed = (modules: { [key: string]: Command[] }): Mess
 }
 
 export const getJoinRequestsEmbed = (joinRequests: GroupJoinRequest[]): MessageEmbed => {
-    const requestString = joinRequests.map((request) => `- \`${request['requester'].username}\``).join('\n');
+    const requestString = joinRequests.map?((request) => `- \`${request['requester'].username}\``).join('\n');
     const embed = new MessageEmbed()
         .setAuthor('Join Requests', infoIconUrl)
         .setColor(mainColor)
