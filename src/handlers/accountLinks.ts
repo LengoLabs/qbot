@@ -9,9 +9,9 @@ const getLinkedRobloxUser = async (discordId: string, guildId?: string) => {
     requestCount += 1;
     let robloxStatus: BloxlinkResponse;
     if(guildId) {
-        robloxStatus = (await axios.get(`https://v3.blox.link/developer/discord/${discordId}?guild=${guildId}`, { headers: { 'api-key': process.env.BLOXLINK_API_KEY } })).data;
+        robloxStatus = (await axios.get(`https://v3.blox.link/developer/discord/${discordId}?guild=${guildId}`, { headers: { 'api-key': process.env.BLOXLINK_API_KEY as string } })).data;
     } else {
-        robloxStatus = (await axios.get(`https://v3.blox.link/developer/discord/${discordId}`, { headers: { 'api-key': process.env.BLOXLINK_API_KEY } })).data;
+        robloxStatus = (await axios.get(`https://v3.blox.link/developer/discord/${discordId}`, { headers: { 'api-key': process.env.BLOXLINK_API_KEY as string } })).data;
     }
     if(!robloxStatus.status) return null;
     const robloxUser = await robloxClient.getUser(robloxStatus.user.primaryAccount);
