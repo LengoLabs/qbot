@@ -1,14 +1,14 @@
 import { BotConfig } from './structures/types'; 
 
 export const config: BotConfig = {
-    groupId: 3281575,
+    groupId: 0,
     slashCommands: true,
     legacyCommands: {
         enabled: true,
         prefixes: ['q!'],
     },
     permissions: {
-        all: ['792147377209344000'],
+        all: [''],
         ranking: [''],
         users: [''],
         shout: [''],
@@ -21,12 +21,12 @@ export const config: BotConfig = {
         shout: '',
     },
     database: {
-        enabled: true,
+        enabled: false,
         type: 'mongodb',
     },
     api: false,
     maximumRank: 255,
-    verificationChecks: true,
+    verificationChecks: false,
     firedRank: 1,
     suspendedRank: 1,
     recordManualActions: true,
