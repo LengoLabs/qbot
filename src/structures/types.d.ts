@@ -314,9 +314,11 @@ export declare type CommandExport = {
 }
 
 export declare type BloxlinkResponse = {
-    status: string;
-    primaryAccount?: string;
-    matchingAccount?: string;
+    status: boolean;
+    user: {
+        primaryAccount?: string;
+        matchingAccount?: string;
+    };
 }
 
 export declare type DatabaseUser = {

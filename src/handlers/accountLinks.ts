@@ -1,6 +1,7 @@
 import { robloxClient } from '../main';
 import { BloxlinkResponse } from '../structures/types';
 import axios from 'axios';
+require('dotenv').config();
 let requestCount = 0;
 
 const getLinkedRobloxUser = async (discordId: string, guildId?: string) => {
@@ -8,12 +9,12 @@ const getLinkedRobloxUser = async (discordId: string, guildId?: string) => {
     requestCount += 1;
     let robloxStatus: BloxlinkResponse;
     if(guildId) {
-        robloxStatus = (await axios.get(`https://api.blox.link/v1/user/${discordId}?guild=${guildId}`)).data;
+        robloxStatus = (await axios.get(`https://api.blox.link/v1/user/${discordId}?guild=${guildId}`, { headers: { 'api-key': process.env.BLOXLINK_API_KEY } })).data;
     } else {
-        robloxStatus = (await axios.get(`https://api.blox.link/v1/user/${discordId}`)).data;
+        robloxStatus = (await axios.get(`https://api.blox.link/v1/user/${discordId}`, { headers: { 'api-key': process.env.BLOXLINK_API_KEY } })).data;
     }
-    if(robloxStatus.status !== 'ok') return null;
-    const robloxUser = await robloxClient.getUser(robloxStatus.primaryAccount);
+    if(!robloxStatus.status) return null;
+    const robloxUser = await robloxClient.getUser(robloxStatus.user.primaryAccount);
     return robloxUser;
 }
 
