@@ -13,7 +13,8 @@ const getLinkedRobloxUser = async (discordId: string, guildId?: string) => {
     } else {
         robloxStatus = (await axios.get(`https://v3.blox.link/developer/discord/${discordId}`, { headers: { 'api-key': process.env.BLOXLINK_API_KEY as string } })).data;
     }
-    if(!robloxStatus.status) return null;
+    console.log(robloxStatus);
+    if(!robloxStatus.success) return null;
     const robloxUser = await robloxClient.getUser(robloxStatus.user.primaryAccount);
     return robloxUser;
 }

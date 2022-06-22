@@ -314,7 +314,7 @@ export declare type CommandExport = {
 }
 
 export declare type BloxlinkResponse = {
-    status: boolean;
+    success: boolean;
     user: {
         primaryAccount?: string;
         matchingAccount?: string;
