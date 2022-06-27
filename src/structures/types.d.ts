@@ -316,8 +316,8 @@ export declare type CommandExport = {
 export declare type BloxlinkResponse = {
     success: boolean;
     user: {
+        robloxId?: string;
         primaryAccount?: string;
-        matchingAccount?: string;
     };
 }
 
