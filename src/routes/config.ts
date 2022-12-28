@@ -1,5 +1,5 @@
 import { Router } from 'itty-router';
-const router = Router({ base: '/config' });
+const router = Router({ base: '/' });
 
 router.get('/', async (req) => {
   return new Response('Config Route');
