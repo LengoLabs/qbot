@@ -8,6 +8,7 @@ declare global {
   const ADMIN_PASSWORD: string;
 }
 
+
 const requireUser = async (request: any) => {
   const cookie = parse(request.headers.get('Cookie') || '');
   const password = cookie['password'];
