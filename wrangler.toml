@@ -1,3 +1,4 @@
 name = "qbot"
 main = "src/index.ts"
 compatibility_date = "2022-12-25"
+node_compat = true
