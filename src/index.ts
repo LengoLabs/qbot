@@ -8,12 +8,11 @@ declare global {
   const ADMIN_PASSWORD: string;
 }
 
-const ADMIN_PASS = "password"
 
 const requireUser = async (request: any) => {
   const cookie = parse(request.headers.get('Cookie') || '');
   const password = cookie['password'];
-  if(!password || password !== ADMIN_PASS) {
+  if(!password || password !== ADMIN_PASSWORD) {
     const url = new URL(request.url);
     url.pathname = '/auth/login';
     return new Response('', {
