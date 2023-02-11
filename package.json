@@ -14,7 +14,7 @@
   "author": "LengoLabs",
   "license": "MIT",
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.20"
   },
   "dependencies": {
     "@types/express": "^4.17.13",
