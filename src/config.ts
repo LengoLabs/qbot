@@ -20,6 +20,10 @@ export const config: BotConfig = {
         actions: '',
         shout: '',
     },
+    database: {
+        enabled: false,
+        type: 'mongodb',
+    },
     api: false,
     maximumRank: 255,
     verificationChecks: false,

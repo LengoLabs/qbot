@@ -3,7 +3,7 @@ import { Command } from '../../structures/Command';
 import { discordClient, robloxClient } from '../../main';
 import { User, PartialUser } from 'bloxy/dist/structures';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
-import { provider } from '../../database';
+import { provider } from '../../database/router';
 import { logAction } from '../../handlers/handleLogging';
 import {
     getInvalidRobloxUserEmbed,

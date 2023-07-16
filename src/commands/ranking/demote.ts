@@ -16,7 +16,7 @@ import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
-import { provider } from '../../database';
+import { provider } from '../../database/router';
 
 class PromoteCommand extends Command {
     constructor() {
