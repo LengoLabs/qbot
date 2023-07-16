@@ -12,7 +12,7 @@ import {
     getUnexpectedErrorEmbed,
     getUserInfoEmbed,
 } from '../../handlers/locale';
-import { provider } from '../../database/router';
+import { provider } from '../../database';
 
 class InfoCommand extends Command {
     constructor() {
