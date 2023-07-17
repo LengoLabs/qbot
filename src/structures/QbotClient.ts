@@ -1,4 +1,4 @@
-import { Client } from 'discord.js';
+import { Client, GatewayIntentBits } from 'discord.js';
 import { BotConfig, CommandExport } from './types';
 import { Command } from './Command';
 import { config } from '../config';
@@ -15,12 +15,12 @@ class QbotClient extends Client {
     constructor() {
         super({
             intents: [
-                'GUILDS',
-                'GUILD_MESSAGES',
-                'GUILD_MEMBERS',
-                'GUILD_MESSAGE_REACTIONS',
+                GatewayIntentBits.Guilds,
+                GatewayIntentBits.GuildMessages,
+                GatewayIntentBits.GuildMembers,
+                GatewayIntentBits.GuildMessageReactions,
             ]
-        })
+        });
         this.config = config;
         this.on('ready', () => {
             console.log(qbotLaunchTextDisplay);

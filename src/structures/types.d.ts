@@ -1,5 +1,8 @@
-import { ApplicationCommandOptionChoice, ExcludeEnum } from 'discord.js';
-import { ChannelTypes } from 'discord.js/typings/enums';
+import {
+    ActivityType,
+    ApplicationCommandOptionChoiceData,
+    ApplicationCommandOptionAllowedChannelTypes
+} from 'discord.js';
 
 export interface BotConfig {
     /**
@@ -199,7 +202,7 @@ export interface BotConfig {
         /**
          * What should be displayed before your value?
          */
-        type?: 'PLAYING' | 'WATCHING' | 'STREAMING' | 'LISTENING' | 'COMPETING';
+        type?: ActivityType.Playing | ActivityType.Streaming | ActivityType.Listening | ActivityType.Watching | ActivityType.Competing;
         /**
          * This is the text that is displayed after the type of status.
          */
@@ -264,7 +267,7 @@ export declare type CommandArgument = {
     /**
      * The choices that the user can pick from.
      */
-    choices?: ApplicationCommandOptionChoice[];
+    choices?: ApplicationCommandOptionChoiceData<string>[];
     /**
      * If this is a subcommand (group), command arguments.
      */
@@ -272,7 +275,7 @@ export declare type CommandArgument = {
     /**
      * If the type of this argument is set to DiscordChannel, what channel types are allowed?
      */
-    channelTypes?: ExcludeEnum<typeof ChannelTypes, 'UNKNOWN'>[];
+    channelTypes?: ApplicationCommandOptionAllowedChannelTypes[];
 }
 
 export declare type CommandType = 'ChatInput' | 'User' | 'Message';
@@ -313,11 +316,9 @@ export declare type CommandExport = {
 }
 
 export declare type BloxlinkResponse = {
-    success: boolean;
-    user: {
-        primaryAccount?: string;
-        matchingAccount?: string;
-    };
+    error?: string;
+    robloxID: string;
+    resolved: any;
 }
 
 export declare type DatabaseUser = {

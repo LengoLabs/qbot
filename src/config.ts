@@ -1,3 +1,4 @@
+import { ActivityType } from 'discord.js';
 import { BotConfig } from './structures/types'; 
 
 export const config: BotConfig = {
@@ -53,7 +54,7 @@ export const config: BotConfig = {
     },
     activity: {
         enabled: false,
-        type: 'WATCHING',
+        type: ActivityType.Watching,
         value: 'for commands.',
     },
     status: 'online',
