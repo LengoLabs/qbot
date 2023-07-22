@@ -37,14 +37,7 @@ export const config: BotConfig = {
     xpSystem: {
         enabled: false,
         autoRankup: false,
-        roles: [
-            /* Example:
-            {
-                rank: 3,
-                xp: 30,
-            },
-            */
-        ],
+        roles: [],
     },
     antiAbuse: {
         enabled: false,
