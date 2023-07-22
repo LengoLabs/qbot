@@ -6,7 +6,7 @@ require('dotenv').config();
 let requestCount = 0;
 
 const getLinkedRobloxUser = async (discordId: string) => {
-    if(requestCount >= 500) return null;
+    if(requestCount >= 60) return null;
     requestCount += 1;
     
     try {
