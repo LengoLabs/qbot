@@ -33,7 +33,8 @@ const mapArgument = (arg: CommandArgument) => {
         name: arg.trigger,
         description: arg.description || 'No description provided.',
         type: argumentTypeMappings[arg.type],
-        autocomplete: arg.autocomplete,
+        // @ts-ignore
+        autocomplete: arg.autocomplete || false,
         required: arg.required !== null && arg.required !== undefined ? arg.required : true,
         choices: arg.choices || [],
         options: arg.args ? arg.args.map(mapArgument) : [],
