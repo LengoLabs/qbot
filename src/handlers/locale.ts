@@ -449,7 +449,7 @@ export const getPartialUserInfoEmbed = async (user: User | PartialUser, data: Da
     const embed = new EmbedBuilder()
         .setAuthor({ name: `Information: ${user.name}`, iconURL: infoIconUrl })
         .setColor(mainColor)
-        .setDescription(primaryGroup ? `Primary Group: [${primaryGroup.group.name}](https://roblox.com/groups/${primaryGroup.group.id})` : '')
+        .setDescription(primaryGroup ? `Primary Group: [${primaryGroup.group.name}](https://roblox.com/groups/${primaryGroup.group.id})` : null)
         .setThumbnail((await getHeadshotImage(user.id)).imageUrl)
         .setFooter({ text: `User ID: ${user.id}` })
         .setTimestamp()
@@ -474,7 +474,7 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
     const embed = new EmbedBuilder()
         .setAuthor({ name: `Information: ${user.name}`, iconURL: infoIconUrl })
         .setColor(mainColor)
-        .setDescription(primaryGroup ? `Primary Group: [${primaryGroup.group.name}](https://roblox.com/groups/${primaryGroup.group.id})` : '')
+        .setDescription(primaryGroup ? `Primary Group: [${primaryGroup.group.name}](https://roblox.com/groups/${primaryGroup.group.id})` : null)
         .setThumbnail((await robloxClient.apis.thumbnailsAPI.getUsersAvatarHeadShotImages({ userIds: [ user.id ], size: '150x150', format: 'png', isCircular: false })).data[0].imageUrl)
         .setFooter({ text: `User ID: ${user.id}` })
         .setTimestamp()
@@ -580,7 +580,7 @@ export const getCommandListEmbed = (modules: { [key: string]: Command[] }): Embe
     const embed = new EmbedBuilder()
         .setAuthor({ name: 'Command List', iconURL: infoIconUrl })
         .setColor(mainColor)
-        .setDescription(config.slashCommands && config.legacyCommands ? 'Tip: Slash commands automatically display a list of available commands, and their required usage.' : '');
+        .setDescription(config.slashCommands && config.legacyCommands ? 'Tip: Slash commands automatically display a list of available commands, and their required usage.' : null);
 
     Object.keys(modules).forEach((key) => {
         const moduleCommands = modules[key];
