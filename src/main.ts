@@ -42,7 +42,7 @@ let robloxGroup: Group = null;
 })();
 
 // [Handlers]
-discordClient.on('interactionCreate', handleInteraction);
+discordClient.on('interactionCreate', handleInteraction as any);
 discordClient.on('messageCreate', handleLegacyCommand);
 
 // [Module]
