@@ -1,5 +1,5 @@
 import {
-    ApplicationCommandOptionData,
+    ApplicationCommandOptionData, ApplicationCommandOptionType, ApplicationCommandType,
 } from 'discord.js';
 import {
     CommandConfig,
@@ -10,22 +10,22 @@ import {
 import { CommandContext } from './addons/CommandAddons';
 
 const commandTypeMappings = {
-    ChatInput: 'CHAT_INPUT',
-    Message: 'MESSAGE',
-    User: 'USER'
+    ChatInput: ApplicationCommandType.ChatInput,
+    Message: ApplicationCommandType.Message,
+    User: ApplicationCommandType.User
 }
 
 const argumentTypeMappings = {
-    Subcommand: 'SUB_COMMAND',
-    SubcommandGroup: 'SUB_COMMAND_GROUP',
-    String: 'STRING',
-    Number: 'INTEGER',
-    RobloxUser: 'STRING',
-    RobloxRole: 'STRING',
-    DiscordUser: 'USER',
-    DiscordRole: 'ROLE',
-    DiscordChannel: 'CHANNEL',
-    DiscordMentionable: 'MENTIONABLE',
+    Subcommand: ApplicationCommandOptionType.Subcommand,
+    SubcommandGroup: ApplicationCommandOptionType.SubcommandGroup,
+    String: ApplicationCommandOptionType.String,
+    Number: ApplicationCommandOptionType.Integer,
+    RobloxUser: ApplicationCommandOptionType.String,
+    RobloxRole: ApplicationCommandOptionType.String,
+    DiscordUser: ApplicationCommandOptionType.User,
+    DiscordRole: ApplicationCommandOptionType.Role,
+    DiscordChannel: ApplicationCommandOptionType.Channel,
+    DiscordMentionable: ApplicationCommandOptionType.Mentionable,
 }
 
 const mapArgument = (arg: CommandArgument) => {
