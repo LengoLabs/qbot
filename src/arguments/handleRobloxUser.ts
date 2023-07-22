@@ -15,11 +15,12 @@ const handleRobloxUser = async (interaction: AutocompleteInteraction, option: AP
             let userIndex = 0;
             if(discordUsers.size === 0) return resolve([]);
             discordUsers.forEach(async (member) => {
+                if(userIndex >= 3) return;
                 userIndex += 1;
                 const linkedRobloxUser = await getLinkedRobloxUser(member.id);
                 if(!linkedRobloxUser) return;
                 linkedRobloxUsers.push({
-                    name: `💬 ${member.user.tag}: ${linkedRobloxUser.name} (${linkedRobloxUser.id})`,
+                    name: `💬 ${member.user.username}: ${linkedRobloxUser.name} (${linkedRobloxUser.id})`,
                     value: linkedRobloxUser.id.toString(),
                 });
                 if(userIndex === discordUsers.size) return resolve(linkedRobloxUsers);

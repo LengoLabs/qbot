@@ -424,7 +424,7 @@ export const getLogEmbed = async (action: string, moderator: DiscordUser | User 
         embed.setAuthor({ name: moderator });
     } else {
         if(moderator instanceof DiscordUser) {
-            embed.setAuthor({ name: moderator.tag, iconURL: moderator.displayAvatarURL() });
+            embed.setAuthor({ name: moderator.username, iconURL: moderator.displayAvatarURL() });
             embed.setFooter({ text: `Moderator ID: ${moderator.id}` });
         } else {
             embed.setAuthor({ name: moderator.username });
