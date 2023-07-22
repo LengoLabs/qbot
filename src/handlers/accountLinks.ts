@@ -10,7 +10,7 @@ const getLinkedRobloxUser = async (discordId: string, guildId?: string) => {
     
     try {
         const robloxStatus: BloxlinkResponse = (await axios.get(guildId ? `https://api.blox.link/v4/public/guilds/${guildId}/discord-to-roblox/${discordId}` : `https://api.blox.link/v4/public/discord-to-roblox/${discordId}`, { headers: { 'Authorization': process.env.BLOXLINK_KEY } })).data;
-        if(robloxStatus.error) return null;
+        if(robloxStatus.error) throw new Error(robloxStatus.error);
     
         const robloxUser = await robloxClient.getUser(parseInt(robloxStatus.robloxID));
         return robloxUser;
