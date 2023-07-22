@@ -25,7 +25,6 @@ class InfoCommand extends Command {
                 {
                     trigger: 'roblox-user',
                     description: 'Who do you want to view the information of?',
-                    autocomplete: true,
                     required: false,
                     type: 'String',
                 },
