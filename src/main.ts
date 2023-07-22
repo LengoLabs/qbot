@@ -19,7 +19,7 @@ if(!process.env.ROBLOX_COOKIE) {
     process.exit(1);
 }
 
-require('./database/router');
+require('./database');
 require('./api');
 
 // [Clients]
