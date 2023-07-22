@@ -20,7 +20,7 @@ const handleRobloxUser = async (interaction: AutocompleteInteraction, option: AP
                 const linkedRobloxUser = await getLinkedRobloxUser(member.id);
                 if(!linkedRobloxUser) return;
                 linkedRobloxUsers.push({
-                    name: `💬 ${member.user.username}: ${linkedRobloxUser.name} (${linkedRobloxUser.id})`,
+                    name: `💬 @${member.user.username}: ${linkedRobloxUser.name} (${linkedRobloxUser.id})`,
                     value: linkedRobloxUser.id.toString(),
                 });
                 if(userIndex === discordUsers.size) return resolve(linkedRobloxUsers);
