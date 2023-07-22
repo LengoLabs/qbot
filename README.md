@@ -2,7 +2,7 @@
 <p align="center">
   <a href="https://github.com/LengoLabs/qbot/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/LengoLabs/qbot?color=E76F51"></a>
   <a href="https://github.com/LengoLabs/qbot/commits/master"><img alt="Checks" src="https://img.shields.io/github/checks-status/LengoLabs/qbot/master?color=F4A261"></a>
-  <a href="https://discord.gg/GkUNhZmenn"><img alt="Discord" src="https://img.shields.io/badge/chat-on%20discord-E9C46A"></a>
+  <a href="https://lengolabs.com/discord"><img alt="Discord" src="https://img.shields.io/badge/chat-on%20discord-E9C46A"></a>
   <a href="https://github.com/LengoLabs/qbot/graphs/contributors"><img alt="Contributors" src="https://img.shields.io/github/contributors/LengoLabs/qbot?color=2A9D8F"></a>
   <a href="https://github.com/LengoLabs/qbot/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/LengoLabs/qbot?color=264653"></a>
 </p>
@@ -11,7 +11,7 @@ An advanced, easy to setup, free, and unbranded Discord-Roblox ranking bot. With
 ## Installation
 Setup instructions are available at https://docs.lengolabs.com/qbot/getting-started. This project can be hosted on shared hosts, such as Replit, as well as any Linux distribution that supports Node.js v16 or higher.
 
-If you run into any problems while configuring Qbot, please do not hesitate to join our [community Discord server](https://discord.gg/GkUNhZmenn)! Our volunteer support team is happy to assist you to make sure that you have the best experience possible, and that the setup process goes smoothly.
+If you run into any problems while configuring Qbot, please do not hesitate to join our [community Discord server](https://lengolabs.com/discord)! Our volunteer support team is happy to assist you to make sure that you have the best experience possible, and that the setup process goes smoothly.
 
 ## License
 We use the MIT License, due to its permissive structure and the piece of mind it provides for contributors. We highly recommend you read the license before maintaining this project, so you have an idea of what is allowed, and what is not allowed.
@@ -28,10 +28,10 @@ Specifically, this is something very relevant to hosting Qbot:
 It is your responsibility to implement a privacy policy, as mentioned in this quote from the API above. We recommend you join the [Discord Developers](https://discord.gg/discord-developers) server if you have any questions about this policy.
 
 ## Have feedback? Suggestions?
-We'd be thrilled to hear them! You can utilize the [#feedback](https://discord.gg/vtbdakK), or [#suggestions](https://discord.gg/5RnAPvrYTU) channel on our Discord server for this. Alternatively, you can [open an issue](https://github.com/LengoLabs/qbot/issues) on this repository.
+We'd be thrilled to hear them! You can utilize the [#feedback](https://lengolabs.com/discord), or [#suggestions](https://lengolabs.com/discord) channel on our Discord server for this. Alternatively, you can [open an issue](https://github.com/LengoLabs/qbot/issues) on this repository.
 
 ## Contributing
-First of all, thank you for looking into contributing to Qbot! We greatly appreciate all pull requests and issues, as they help us provide a better experience to the thousands of Qbot users. We recommend you join our [community Discord server](https://discord.gg/GkUNhZmenn) if you are looking to contribute, because you can talk with the developers of this project, and get feedback on potential pull requests before starting to work on them.
+First of all, thank you for looking into contributing to Qbot! We greatly appreciate all pull requests and issues, as they help us provide a better experience to the thousands of Qbot users. We recommend you join our [community Discord server](https://lengolabs.com/discord) if you are looking to contribute, because you can talk with the developers of this project, and get feedback on potential pull requests before starting to work on them.
 
 Upon finding a topic, feel free to get started coding it! When you are done, please thoroughly test this on your own bot. Then, [submit a pull request](https://github.com/LengoLabs/qbot/compare)! If your pull request gets approved, you will be listed as a contributor on this Github page, and will receive the shiny Contributor role if you are in our Discord server. Please note that it is up to the developers to choose if you get the contributor role.
 

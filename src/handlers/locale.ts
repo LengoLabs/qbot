@@ -23,7 +23,7 @@ export const consoleRed = '\x1b[31m';
 export const consoleClear = '\x1b[0m';
 
 export const qbotLaunchTextDisplay = `${consoleMagenta}${textSync('Qbot')}`;
-export const welcomeText = `${consoleYellow}Hey, thanks for using Qbot! If you run into any issues, please do not hesitate to join our support server: https://discord.gg/ezxP5BJuDb`;
+export const welcomeText = `${consoleYellow}Hey, thanks for using Qbot! If you run into any issues, please do not hesitate to join our support server: https://lengolabs.com/discord`;
 export const startedText = `\n${consoleGreen}✓  ${consoleClear}Your bot has been started.`;
 export const securityText = `\n${consoleRed}⚠  ${consoleClear}URGENT: For security reasons, public bot must be DISABLED for the bot to start. For more information, please refer to this section of our documentation: https://docs.lengolabs.com/qbot/setup/replit-guide#discord`;
 
