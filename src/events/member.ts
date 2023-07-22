@@ -7,6 +7,7 @@ import {
 } from '../handlers/locale';
 
 let firstRecord = true;
+let lastRemainder: number;
 let lastMemberCount: number;
 
 const recordMemberCount = async () => {
@@ -18,7 +19,7 @@ const recordMemberCount = async () => {
             if(group.memberCount === lastMemberCount) return;
     
             if(config.memberCount.milestone) {
-                if(group.memberCount % config.memberCount.milestone === 0) {
+                if((group.memberCount % config.memberCount.milestone === 0) || (lastRemainder > (group.memberCount % config.memberCount.milestone))) {
                     memberCountChannel.send({ embeds: [ getMemberCountMilestoneEmbed(group.memberCount) ] });
                 } else {
                     if(!config.memberCount.onlyMilestones) {
@@ -31,6 +32,7 @@ const recordMemberCount = async () => {
         } else {
             const group = await robloxClient.getGroup(config.groupId);
             lastMemberCount = group.memberCount;
+            if(config.memberCount.milestone) lastRemainder = group.memberCount % config.memberCount.milestone;
             firstRecord = false;
         }
     } catch (err) {
