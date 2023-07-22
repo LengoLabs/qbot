@@ -5,12 +5,13 @@ import {
     CommandInteraction,
     AutocompleteInteraction,
     ChannelType,
+    CacheType,
 } from 'discord.js';
 import { handleRobloxUser } from '../arguments/handleRobloxUser';
 import { handleRobloxRole } from '../arguments/handleRobloxRole';
 import { getUnknownCommandMessage, getNoPermissionEmbed } from '../handlers/locale';
 
-const handleInteraction = async (payload: Interaction) => {
+const handleInteraction = async (payload: Interaction<CacheType>) => {
     if(payload instanceof CommandInteraction) {
         const interaction = payload as CommandInteraction;
         if(!interaction.channel || !interaction.guild) return interaction.reply({ embeds: [ getUnknownCommandMessage() ] });

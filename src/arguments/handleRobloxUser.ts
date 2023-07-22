@@ -1,8 +1,8 @@
-import { AutocompleteInteraction, ApplicationCommandOptionChoice } from 'discord.js';
+import { AutocompleteInteraction, APIApplicationCommandOptionChoice } from 'discord.js';
 import { getLinkedRobloxUser } from '../handlers/accountLinks';
 import { robloxClient, robloxGroup } from '../main';
 
-const handleRobloxUser = async (interaction: AutocompleteInteraction, option: ApplicationCommandOptionChoice) => {
+const handleRobloxUser = async (interaction: AutocompleteInteraction, option: APIApplicationCommandOptionChoice) => {
     if(!option.value) return;
     try {
         const discordUsers = await interaction.guild.members.search({
