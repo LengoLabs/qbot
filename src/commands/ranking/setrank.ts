@@ -69,7 +69,7 @@ class SetRankCommand extends Command {
                 try {
                     const idQuery = ctx.args['roblox-user'].replace(/[^0-9]/gm, '');
                     const discordUser = await discordClient.users.fetch(idQuery);
-                    const linkedUser = await getLinkedRobloxUser(discordUser.id, ctx.guild.id);
+                    const linkedUser = await getLinkedRobloxUser(discordUser.id);
                     if(!linkedUser) throw new Error();
                     robloxUser = linkedUser;
                 } catch (err) {

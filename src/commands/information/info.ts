@@ -39,7 +39,7 @@ class InfoCommand extends Command {
             if(ctx.args['roblox-user']) {
                 robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
             } else {
-                robloxUser = await getLinkedRobloxUser(ctx.user.id, ctx.guild.id);
+                robloxUser = await getLinkedRobloxUser(ctx.user.id);
             }
             if(!robloxUser) throw new Error();
         } catch (err) {
@@ -51,7 +51,7 @@ class InfoCommand extends Command {
                 try {
                     const idQuery = ctx.args['roblox-user'].replace(/[^0-9]/gm, '');
                     const discordUser = await discordClient.users.fetch(idQuery);
-                    const linkedUser = await getLinkedRobloxUser(discordUser.id, ctx.guild.id);
+                    const linkedUser = await getLinkedRobloxUser(discordUser.id);
                     if(!linkedUser) throw new Error();
                     robloxUser = linkedUser;
                 } catch (err) {

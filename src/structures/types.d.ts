@@ -105,6 +105,10 @@ export interface BotConfig {
     */
     verificationChecks: boolean;
     /**
+     * Required if verificationChecks is provided, which guild is your Bloxlink API Key registered under? Verifications in this guild will be used for all verification checks.
+     */
+    bloxlinkGuildId?: string;
+    /**
      * What rank should users be ranked to when they are fired?
      * @default 1
      */

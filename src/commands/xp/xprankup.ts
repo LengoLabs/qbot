@@ -43,7 +43,7 @@ class XPRankupCommand extends Command {
         let robloxUser: User | PartialUser;
         try {
             if(!ctx.args['roblox-user']) {
-                robloxUser = await getLinkedRobloxUser(ctx.user.id, ctx.guild.id);
+                robloxUser = await getLinkedRobloxUser(ctx.user.id);
                 if(!robloxUser) throw new Error();
             } else {
                 robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
@@ -58,7 +58,7 @@ class XPRankupCommand extends Command {
                 try {
                     const idQuery = ctx.args['roblox-user'].replace(/[^0-9]/gm, '');
                     const discordUser = await discordClient.users.fetch(idQuery);
-                    const linkedUser = await getLinkedRobloxUser(discordUser.id, ctx.guild.id);
+                    const linkedUser = await getLinkedRobloxUser(discordUser.id);
                     if(!linkedUser) throw new Error();
                     robloxUser = linkedUser;
                 } catch (err) {

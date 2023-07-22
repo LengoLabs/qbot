@@ -16,7 +16,7 @@ const handleRobloxUser = async (interaction: AutocompleteInteraction, option: AP
             if(discordUsers.size === 0) return resolve([]);
             discordUsers.forEach(async (member) => {
                 userIndex += 1;
-                const linkedRobloxUser = await getLinkedRobloxUser(member.id, interaction.guild.id);
+                const linkedRobloxUser = await getLinkedRobloxUser(member.id);
                 if(!linkedRobloxUser) return;
                 linkedRobloxUsers.push({
                     name: `💬 ${member.user.tag}: ${linkedRobloxUser.name} (${linkedRobloxUser.id})`,
