@@ -59,7 +59,6 @@ class AddXPCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        if(!config.database.enabled) return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ] });
         let enoughForRankUp: boolean;
         let robloxUser: User | PartialUser;
         try {

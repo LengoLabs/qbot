@@ -50,8 +50,6 @@ class GroupBanCommand extends Command {
     };
 
     async run(ctx: CommandContext) {
-        if(!config.database.enabled) return ctx.reply({ embeds: [ getNoDatabaseEmbed() ] });
-
         let robloxUser: User | PartialUser;
         try {
             robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
@@ -84,10 +82,8 @@ class GroupBanCommand extends Command {
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 
-        if(config.database.enabled) {
-            const userData = await provider.findUser(robloxUser.id.toString());
-            if(userData.isBanned) return ctx.reply({ embeds: [ getUserBannedEmbed() ] });
-        }
+        const userData = await provider.findUser(robloxUser.id.toString());
+        if(userData.isBanned) return ctx.reply({ embeds: [ getUserBannedEmbed() ] });
         
         try {
             await provider.updateUser(robloxUser.id.toString(), {

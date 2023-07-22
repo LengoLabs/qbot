@@ -34,8 +34,6 @@ class InfoCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        if(!config.database.enabled) return ctx.reply({ embeds: [ getNoDatabaseEmbed() ] });
-
         let robloxUser: User | PartialUser;
         try {
             if(ctx.args['roblox-user']) {
