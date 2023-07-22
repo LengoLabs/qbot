@@ -2,7 +2,7 @@ import { ActivityType } from 'discord.js';
 import { BotConfig } from './structures/types'; 
 
 export const config: BotConfig = {
-    groupId: 3281575,
+    groupId: 0,
     slashCommands: true,
     legacyCommands: {
         enabled: true,
