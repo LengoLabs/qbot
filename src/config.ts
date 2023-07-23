@@ -42,9 +42,8 @@ export const config: BotConfig = {
     antiAbuse: {
         enabled: false,
         clearDuration: 1 * 60,
-        threshold: 5,
+        threshold: 10,
         demotionRank: 1,
-        bypassRoleId: '',
     },
     activity: {
         enabled: false,
