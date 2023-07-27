@@ -1,5 +1,5 @@
 import { DatabaseUser } from '../structures/types';
-import { provider } from '../database';
+import { provider } from '../database/router';
 import { robloxGroup } from '../main';
 import { config } from '../config';
 
