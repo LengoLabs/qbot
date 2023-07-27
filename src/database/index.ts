@@ -1,6 +1,5 @@
-import { MongoDBProvider } from './mongodb';
-import { config } from '../config';
+import { PrismaProvider } from './prisma';
 
-const provider = config.database.enabled ? (config.database.type === 'mongodb' ? MongoDBProvider : null) : null;
+let provider = new PrismaProvider();
 
 export { provider };

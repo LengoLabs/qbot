@@ -1,19 +1,17 @@
 import {
     Message,
-    Interaction,
-    MessageOptions,
     InteractionReplyOptions,
     CommandInteraction,
     User,
     Guild,
     GuildMember,
+    BaseInteraction,
+    MessageCreateOptions,
 } from 'discord.js';
 import { Command } from '../Command';
 import { Args } from 'lexure';
-import { getMissingArgumentsEmbed, getInvalidRobloxUserEmbed } from '../../handlers/locale';
-import { robloxClient } from '../../main';
+import { getMissingArgumentsEmbed } from '../../handlers/locale';
 import { config } from '../../config';
-import { CommandPermission } from '../types';
 
 export class CommandContext  {
     type: 'interaction' | 'message';
@@ -31,9 +29,9 @@ export class CommandContext  {
      * 
      * @param payload
      */
-    constructor(payload: Interaction | CommandInteraction | Message, command: any, args?: Args) {
+    constructor(payload: BaseInteraction | CommandInteraction | Message, command: any, args?: Args) {
         this.type = payload instanceof Message ? 'message' : 'interaction';
-        this.subject = payload instanceof Interaction ? payload as CommandInteraction : payload;
+        this.subject = payload instanceof BaseInteraction ? payload as CommandInteraction : payload;
         this.user = payload instanceof Message ? payload.author : payload.user;
         this.member = payload.member as GuildMember;
         this.guild = payload.guild;
@@ -42,7 +40,7 @@ export class CommandContext  {
         this.deferred = false;
 
         this.args = {};
-        if(payload instanceof Interaction) {
+        if(payload instanceof BaseInteraction) {
             const interaction = payload as CommandInteraction;
             interaction.options.data.forEach(async (arg) => {
                 this.args[arg.name] = interaction.options.get(arg.name).value;
@@ -110,7 +108,7 @@ export class CommandContext  {
      * 
      * @param payload
      */
-    async reply(payload: string | MessageOptions | InteractionReplyOptions) {
+    async reply(payload: string | InteractionReplyOptions | MessageCreateOptions | InteractionReplyOptions) {
         this.replied = true;
         if(this.subject instanceof CommandInteraction) {
             try {
@@ -118,20 +116,20 @@ export class CommandContext  {
                 if(this.deferred) {
                     return await subject.editReply(payload);
                 } else {
-                    return await subject.reply(payload);
+                    return await subject.reply(payload as InteractionReplyOptions);
                 }
             } catch (err) {
                 const subject = this.subject as CommandInteraction;
                 try {
                     if(this.deferred) {
-                        return await subject.editReply(payload);
+                        return await subject.editReply(payload as InteractionReplyOptions);
                     } else {
-                        return await subject.reply(payload);
+                        return await subject.reply(payload as InteractionReplyOptions);
                     }
                 } catch (err) {};
             }
         } else {
-            return await this.subject.channel.send(payload);
+            return await this.subject.channel.send(payload as MessageCreateOptions);
         }
     }
 

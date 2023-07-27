@@ -4,7 +4,7 @@ import { discordClient, robloxClient, robloxGroup } from '../../main';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
-import { provider } from '../../database/router';
+import { provider } from '../../database';
 import { logAction } from '../../handlers/handleLogging';
 import {
     getInvalidRobloxUserEmbed,
@@ -50,8 +50,6 @@ class GroupBanCommand extends Command {
     };
 
     async run(ctx: CommandContext) {
-        if(!config.database.enabled) return ctx.reply({ embeds: [ getNoDatabaseEmbed() ] });
-
         let robloxUser: User | PartialUser;
         try {
             robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
@@ -64,7 +62,7 @@ class GroupBanCommand extends Command {
                 try {
                     const idQuery = ctx.args['roblox-user'].replace(/[^0-9]/gm, '');
                     const discordUser = await discordClient.users.fetch(idQuery);
-                    const linkedUser = await getLinkedRobloxUser(discordUser.id, ctx.guild.id);
+                    const linkedUser = await getLinkedRobloxUser(discordUser.id);
                     if(!linkedUser) throw new Error();
                     robloxUser = linkedUser;
                 } catch (err) {
@@ -84,10 +82,8 @@ class GroupBanCommand extends Command {
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 
-        if(config.database.enabled) {
-            const userData = await provider.findUser(robloxUser.id.toString());
-            if(userData.isBanned) return ctx.reply({ embeds: [ getUserBannedEmbed() ] });
-        }
+        const userData = await provider.findUser(robloxUser.id.toString());
+        if(userData.isBanned) return ctx.reply({ embeds: [ getUserBannedEmbed() ] });
         
         try {
             await provider.updateUser(robloxUser.id.toString(), {

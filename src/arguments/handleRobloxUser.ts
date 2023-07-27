@@ -1,8 +1,8 @@
-import { AutocompleteInteraction, ApplicationCommandOptionChoice } from 'discord.js';
+import { AutocompleteInteraction, APIApplicationCommandOptionChoice } from 'discord.js';
 import { getLinkedRobloxUser } from '../handlers/accountLinks';
 import { robloxClient, robloxGroup } from '../main';
 
-const handleRobloxUser = async (interaction: AutocompleteInteraction, option: ApplicationCommandOptionChoice) => {
+const handleRobloxUser = async (interaction: AutocompleteInteraction, option: APIApplicationCommandOptionChoice) => {
     if(!option.value) return;
     try {
         const discordUsers = await interaction.guild.members.search({
@@ -15,11 +15,12 @@ const handleRobloxUser = async (interaction: AutocompleteInteraction, option: Ap
             let userIndex = 0;
             if(discordUsers.size === 0) return resolve([]);
             discordUsers.forEach(async (member) => {
+                if(userIndex >= 3) return;
                 userIndex += 1;
-                const linkedRobloxUser = await getLinkedRobloxUser(member.id, interaction.guild.id);
+                const linkedRobloxUser = await getLinkedRobloxUser(member.id);
                 if(!linkedRobloxUser) return;
                 linkedRobloxUsers.push({
-                    name: `💬 ${member.user.tag}: ${linkedRobloxUser.name} (${linkedRobloxUser.id})`,
+                    name: `💬 @${member.user.username}: ${linkedRobloxUser.name} (${linkedRobloxUser.id})`,
                     value: linkedRobloxUser.id.toString(),
                 });
                 if(userIndex === discordUsers.size) return resolve(linkedRobloxUsers);

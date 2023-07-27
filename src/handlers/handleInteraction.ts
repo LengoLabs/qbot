@@ -3,17 +3,18 @@ import { CommandContext } from '../structures/addons/CommandAddons';
 import {
     Interaction,
     CommandInteraction,
-    CommandInteractionOption,
     AutocompleteInteraction,
+    ChannelType,
+    CacheType,
 } from 'discord.js';
 import { handleRobloxUser } from '../arguments/handleRobloxUser';
 import { handleRobloxRole } from '../arguments/handleRobloxRole';
 import { getUnknownCommandMessage, getNoPermissionEmbed } from '../handlers/locale';
 
-const handleInteraction = async (payload: Interaction) => {
+const handleInteraction = async (payload: Interaction<CacheType>) => {
     if(payload instanceof CommandInteraction) {
         const interaction = payload as CommandInteraction;
-        if(!interaction.channel || interaction.channel.type === 'DM') return interaction.reply({ embeds: [ getUnknownCommandMessage() ] });
+        if(!interaction.channel || !interaction.guild) return interaction.reply({ embeds: [ getUnknownCommandMessage() ] });
         const command = discordClient.commands.find((cmd) => (new cmd()).trigger === interaction.commandName);
         const context = new CommandContext(interaction, command);
         const permission = context.checkPermissions();
@@ -29,7 +30,7 @@ const handleInteraction = async (payload: Interaction) => {
         }
     } else if(payload instanceof AutocompleteInteraction) {
         const interaction = payload as AutocompleteInteraction;
-        if(!interaction.channel || interaction.channel.type === 'DM') return;
+        if(!interaction.channel || !interaction.guild) return;
         const focusedOption = payload.options.getFocused(true);
         const command = await discordClient.commands.find((cmd) => (new cmd()).trigger === interaction.commandName);
         if(!command) return;

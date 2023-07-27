@@ -16,7 +16,7 @@ import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
-import { provider } from '../../database/router';
+import { provider } from '../../database';
 
 class RemoveXPCommand extends Command {
     constructor() {
@@ -56,8 +56,6 @@ class RemoveXPCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        if(!config.database.enabled) return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ] });
-
         let robloxUser: User | PartialUser;
         try {
             robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
@@ -70,7 +68,7 @@ class RemoveXPCommand extends Command {
                 try {
                     const idQuery = ctx.args['roblox-user'].replace(/[^0-9]/gm, '');
                     const discordUser = await discordClient.users.fetch(idQuery);
-                    const linkedUser = await getLinkedRobloxUser(discordUser.id, ctx.guild.id);
+                    const linkedUser = await getLinkedRobloxUser(discordUser.id);
                     if(!linkedUser) throw new Error();
                     robloxUser = linkedUser;
                 } catch (err) {

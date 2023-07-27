@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:qbotdata.db"
+}
+
+model User {
+  id             String    @id @default(uuid())
+  robloxId       String    @unique
+  xp             Int       @default(0)
+  suspendedUntil DateTime?
+  unsuspendRank  Int?
+  isBanned       Boolean   @default(false)
+}

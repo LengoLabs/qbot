@@ -19,7 +19,6 @@ class ShoutCommand extends Command {
                 {
                     trigger: 'content',
                     description: 'What should the content of the shout be? If none, the shout will be cleared.',
-                    autocomplete: true,
                     required: false,
                     type: 'String',
                 },

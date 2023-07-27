@@ -17,7 +17,7 @@ import { config } from '../../config';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
-import { provider } from '../../database/router';
+import { provider } from '../../database';
 
 class FireCommand extends Command {
     constructor() {
@@ -64,7 +64,7 @@ class FireCommand extends Command {
                 try {
                     const idQuery = ctx.args['roblox-user'].replace(/[^0-9]/gm, '');
                     const discordUser = await discordClient.users.fetch(idQuery);
-                    const linkedUser = await getLinkedRobloxUser(discordUser.id, ctx.guild.id);
+                    const linkedUser = await getLinkedRobloxUser(discordUser.id);
                     if(!linkedUser) throw new Error();
                     robloxUser = linkedUser;
                 } catch (err) {
@@ -95,11 +95,9 @@ class FireCommand extends Command {
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 
-        if(config.database.enabled) {
-            const userData = await provider.findUser(robloxUser.id.toString());
-            if(userData.xp !== 0) return provider.updateUser(robloxUser.id.toString(), { xp: 0 });
-            if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
-        }
+        const userData = await provider.findUser(robloxUser.id.toString());
+        if(userData.xp !== 0) return provider.updateUser(robloxUser.id.toString(), { xp: 0 });
+        if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
 
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);

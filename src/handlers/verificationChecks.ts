@@ -5,7 +5,7 @@ import { getLinkedRobloxUser } from './accountLinks';
 const checkActionEligibility = async (discordId: string, guildId: string, targetMember: GroupMember, rankingTo: number): Promise<boolean>  => {
     let robloxUser: User;
     try {
-        robloxUser = await getLinkedRobloxUser(discordId, guildId);
+        robloxUser = await getLinkedRobloxUser(discordId);
     } catch (err) {
         return false;
     }

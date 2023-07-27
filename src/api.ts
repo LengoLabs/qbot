@@ -1,6 +1,6 @@
 import express from 'express';
 import { config } from './config';
-import { provider } from './database/router';
+import { provider } from './database';
 import { logAction } from './handlers/handleLogging';
 import { robloxClient, robloxGroup } from './main';
 import ms from 'ms';

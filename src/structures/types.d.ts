@@ -1,6 +1,8 @@
-import { ActivityType, ApplicationCommandOptionChoice, ExcludeEnum } from 'discord.js';
-import { ChannelTypes } from 'discord.js/typings/enums';
-import { Command } from './Command';
+import {
+    ActivityType,
+    ApplicationCommandOptionChoiceData,
+    ApplicationCommandOptionAllowedChannelTypes
+} from 'discord.js';
 
 export interface BotConfig {
     /**
@@ -62,19 +64,19 @@ export interface BotConfig {
          */
         admin?: string[];
     }
-    /**
-     * Configuration for the built-in database module used by suspension and XP-related commands.
-     */
-    database: {
-        /**
-         * Should the database module be enabled? Disabling this will also disable a few essential commands.
-         */
-        enabled: boolean;
-        /**
-         * What type of database would you like to use? If it is MongoDB, you need to install mongoose separately.
-         */
-        type: 'mongodb' | 'sqlite';
-    }
+    // /**
+    //  * Configuration for the built-in database module used by suspension and XP-related commands.
+    //  */
+    // database: {
+    //     /**
+    //      * Should the database module be enabled? Disabling this will also disable a few essential commands.
+    //      */
+    //     enabled: boolean;
+    //     /**
+    //      * What type of database would you like to use? If it is MongoDB, you need to install mongoose separately.
+    //      */
+    //     type: 'mongodb' | 'sqlite';
+    // }
     /**
      * Should actions be logged, and if so, where?
      */
@@ -102,6 +104,10 @@ export interface BotConfig {
      * **We highly recommend disabling this feature if your server does not use Bloxlink.**
     */
     verificationChecks: boolean;
+    /**
+     * Required if verificationChecks is provided, which guild is your Bloxlink API Key registered under? Verifications in this guild will be used for all verification checks.
+     */
+    bloxlinkGuildId?: string;
     /**
      * What rank should users be ranked to when they are fired?
      * @default 1
@@ -200,7 +206,7 @@ export interface BotConfig {
         /**
          * What should be displayed before your value?
          */
-        type?: 'PLAYING' | 'WATCHING' | 'STREAMING' | 'LISTENING' | 'COMPETING';
+        type?: ActivityType.Playing | ActivityType.Streaming | ActivityType.Listening | ActivityType.Watching | ActivityType.Competing;
         /**
          * This is the text that is displayed after the type of status.
          */
@@ -265,7 +271,7 @@ export declare type CommandArgument = {
     /**
      * The choices that the user can pick from.
      */
-    choices?: ApplicationCommandOptionChoice[];
+    choices?: ApplicationCommandOptionChoiceData<string>[];
     /**
      * If this is a subcommand (group), command arguments.
      */
@@ -273,7 +279,7 @@ export declare type CommandArgument = {
     /**
      * If the type of this argument is set to DiscordChannel, what channel types are allowed?
      */
-    channelTypes?: ExcludeEnum<typeof ChannelTypes, 'UNKNOWN'>[];
+    channelTypes?: ApplicationCommandOptionAllowedChannelTypes[];
 }
 
 export declare type CommandType = 'ChatInput' | 'User' | 'Message';
@@ -314,14 +320,16 @@ export declare type CommandExport = {
 }
 
 export declare type BloxlinkResponse = {
-    success: boolean;
-    user: {
-        primaryAccount?: string;
-        matchingAccount?: string;
-    };
+    error?: string;
+    robloxID: string;
+    resolved: any;
 }
 
 export declare type DatabaseUser = {
+    /**
+     * Database-generated UUID for this user. No relevance to the Roblox or Discord IDs; you should ignore this value.
+     */
+    id: string;
     /**
      * The Roblox ID of the user belonging to this database entry.
      */

@@ -1,3 +1,4 @@
+import { ActivityType } from 'discord.js';
 import { BotConfig } from './structures/types'; 
 
 export const config: BotConfig = {
@@ -20,13 +21,10 @@ export const config: BotConfig = {
         actions: '',
         shout: '',
     },
-    database: {
-        enabled: false,
-        type: 'mongodb',
-    },
     api: false,
     maximumRank: 255,
     verificationChecks: false,
+    bloxlinkGuildId: '',
     firedRank: 1,
     suspendedRank: 1,
     recordManualActions: true,
@@ -39,25 +37,17 @@ export const config: BotConfig = {
     xpSystem: {
         enabled: false,
         autoRankup: false,
-        roles: [
-            /* Example:
-            {
-                rank: 3,
-                xp: 30,
-            },
-            */
-        ],
+        roles: [],
     },
     antiAbuse: {
         enabled: false,
         clearDuration: 1 * 60,
-        threshold: 5,
+        threshold: 10,
         demotionRank: 1,
-        bypassRoleId: '',
     },
     activity: {
         enabled: false,
-        type: 'WATCHING',
+        type: ActivityType.Watching,
         value: 'for commands.',
     },
     status: 'online',
