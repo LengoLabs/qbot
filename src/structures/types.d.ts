@@ -64,19 +64,19 @@ export interface BotConfig {
          */
         admin?: string[];
     }
-    /**
-     * Configuration for the built-in database module used by suspension and XP-related commands.
-     */
-    database: {
-        /**
-         * Should the database module be enabled? Disabling this will also disable a few essential commands.
-         */
-        enabled: boolean;
-        /**
-         * What type of database would you like to use? If it is MongoDB, you need to install mongoose separately.
-         */
-        type: 'mongodb' | 'sqlite';
-    }
+    // /**
+    //  * Configuration for the built-in database module used by suspension and XP-related commands.
+    //  */
+    // database: {
+    //     /**
+    //      * Should the database module be enabled? Disabling this will also disable a few essential commands.
+    //      */
+    //     enabled: boolean;
+    //     /**
+    //      * What type of database would you like to use? If it is MongoDB, you need to install mongoose separately.
+    //      */
+    //     type: 'mongodb' | 'sqlite';
+    // }
     /**
      * Should actions be logged, and if so, where?
      */
@@ -326,6 +326,10 @@ export declare type BloxlinkResponse = {
 }
 
 export declare type DatabaseUser = {
+    /**
+     * Database-generated UUID for this user. No relevance to the Roblox or Discord IDs; you should ignore this value.
+     */
+    id: string;
     /**
      * The Roblox ID of the user belonging to this database entry.
      */

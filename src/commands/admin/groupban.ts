@@ -4,7 +4,7 @@ import { discordClient, robloxClient, robloxGroup } from '../../main';
 import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
-import { provider } from '../../database/router';
+import { provider } from '../../database';
 import { logAction } from '../../handlers/handleLogging';
 import {
     getInvalidRobloxUserEmbed,

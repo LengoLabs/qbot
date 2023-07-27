@@ -19,7 +19,7 @@ import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import ms from 'ms';
-import { provider } from '../../database/router';
+import { provider } from '../../database';
 
 class SuspendCommand extends Command {
     constructor() {
