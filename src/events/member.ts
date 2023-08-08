@@ -19,13 +19,18 @@ const recordMemberCount = async () => {
             if(group.memberCount === lastMemberCount) return;
     
             if(config.memberCount.milestone) {
-                if((group.memberCount % config.memberCount.milestone === 0) || (lastRemainder > (group.memberCount % config.memberCount.milestone))) {
+                const currentRemainder = group.memberCount % config.memberCount.milestone;
+                if (lastMemberCount < group.memberCount && (currentRemainder === 0 || lastRemainder > currentRemainder)) {
                     memberCountChannel.send({ embeds: [ getMemberCountMilestoneEmbed(group.memberCount) ] });
                 } else {
-                    if(!config.memberCount.onlyMilestones) {
+                    if (!config.memberCount.onlyMilestones) {
                         memberCountChannel.send({ content: getMemberCountMessage(lastMemberCount, group.memberCount) });
                     }
                 }
+                
+                lastRemainder = currentRemainder;
+            } else {
+                memberCountChannel.send({ content: getMemberCountMessage(lastMemberCount, group.memberCount) });
             }
     
             lastMemberCount = group.memberCount;
