@@ -8,7 +8,7 @@ import {
     getNoJoinRequestEmbed,
 } from '../../handlers/locale';
 import { config } from '../../config';
-import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
+import { User, PartialUser } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 

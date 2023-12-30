@@ -1,4 +1,3 @@
-import { DatabaseUser } from '../structures/types';
 import { provider } from '../database';
 import { robloxGroup } from '../main';
 import { config } from '../config';

@@ -5,8 +5,6 @@ import {
     getInvalidRobloxUserEmbed,
     getRobloxUserIsNotMemberEmbed,
     getUnexpectedErrorEmbed,
-    getNoRankAboveEmbed,
-    getRoleNotFoundEmbed,
     getVerificationChecksFailedEmbed,
     getSuccessfulXPRankupEmbed,
     getNoRankupAvailableEmbed,

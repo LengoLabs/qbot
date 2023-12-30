@@ -5,12 +5,9 @@ import {
     getInvalidRobloxUserEmbed,
     getRobloxUserIsNotMemberEmbed,
     getUnexpectedErrorEmbed,
-    getNoRankAboveEmbed,
-    getRoleNotFoundEmbed,
     getVerificationChecksFailedEmbed,
     getSuccessfulXPChangeEmbed,
     getInvalidXPEmbed,
-    getNoRankupAvailableEmbed,
     getSuccessfulAddingAndRankupEmbed,
 } from '../../handlers/locale';
 import { checkActionEligibility } from '../../handlers/verificationChecks';

@@ -4,7 +4,6 @@ import {
     Interaction,
     CommandInteraction,
     AutocompleteInteraction,
-    ChannelType,
     CacheType,
 } from 'discord.js';
 import { handleRobloxUser } from '../arguments/handleRobloxUser';

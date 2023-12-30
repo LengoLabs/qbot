@@ -1,5 +1,4 @@
 import { config } from '../config';
-import { logAction } from '../handlers/handleLogging';
 import { robloxClient } from '../main';
 
 const checkWallForAds = async () => {

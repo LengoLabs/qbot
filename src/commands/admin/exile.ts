@@ -6,8 +6,6 @@ import {
     getRobloxUserIsNotMemberEmbed,
     getSuccessfulExileEmbed,
     getUnexpectedErrorEmbed,
-    getNoRankBelowEmbed,
-    getRoleNotFoundEmbed,
     getVerificationChecksFailedEmbed,
     getUserSuspendedEmbed,
 } from '../../handlers/locale';

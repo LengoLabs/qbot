@@ -8,11 +8,9 @@ import { provider } from '../../database';
 import { logAction } from '../../handlers/handleLogging';
 import {
     getInvalidRobloxUserEmbed,
-    getRobloxUserIsNotMemberEmbed,
     getVerificationChecksFailedEmbed,
     getUnexpectedErrorEmbed,
     getSuccessfulGroupBanEmbed,
-    getNoDatabaseEmbed,
     getUserBannedEmbed
 } from '../../handlers/locale';
 import { config } from '../../config';

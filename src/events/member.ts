@@ -1,6 +1,6 @@
 import { TextChannel } from 'discord.js';
 import { config } from '../config';
-import { discordClient, robloxClient, robloxGroup } from '../main';
+import { discordClient, robloxClient } from '../main';
 import {
     getMemberCountMessage,
     getMemberCountMilestoneEmbed,

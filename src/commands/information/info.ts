@@ -6,10 +6,7 @@ import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { config } from '../../config';
 import {
     getInvalidRobloxUserEmbed,
-    getNoDatabaseEmbed,
     getPartialUserInfoEmbed,
-    getRobloxUserIsNotMemberEmbed,
-    getUnexpectedErrorEmbed,
     getUserInfoEmbed,
 } from '../../handlers/locale';
 import { provider } from '../../database';

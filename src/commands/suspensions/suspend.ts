@@ -11,7 +11,6 @@ import {
     getInvalidDurationEmbed,
     getAlreadySuspendedEmbed,
     noSuspendedRankLog,
-    getNoDatabaseEmbed,
 } from '../../handlers/locale';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
