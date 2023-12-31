@@ -1,12 +1,14 @@
-import { robloxGroup } from '../../main';
+import { robloxGroup as defaultRobloxGroup, robloxClient } from '../../main';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
     getUnexpectedErrorEmbed,
     getSuccessfulShoutEmbed,
+    getInvalidRobloxGroupEmbed,
 } from '../../handlers/locale';
 import { config } from '../../config';
 import { logAction } from '../../handlers/handleLogging';
+import { Group } from 'bloxy/dist/structures';
 
 class ShoutCommand extends Command {
     constructor() {
@@ -29,6 +31,14 @@ class ShoutCommand extends Command {
                     required: false,
                     type: 'String',
                 },
+                {
+                    trigger: 'group',
+                    description: 'Which secondary group would you like to run this action in, if any?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: false,
+                    type: 'SecondaryGroup',
+                }
             ],
             permissions: [
                 {
@@ -41,6 +51,13 @@ class ShoutCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
+        let robloxGroup: Group = defaultRobloxGroup;
+        if(ctx.args['group']) {
+            const secondaryGroup = config.secondaryGroups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+            if(!secondaryGroup) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+            robloxGroup = await robloxClient.getGroup(secondaryGroup.id);
+        }
+
         try {
             await robloxGroup.updateShout(ctx.args['content'] || '');
             ctx.reply({ embeds: [ await getSuccessfulShoutEmbed() ]});

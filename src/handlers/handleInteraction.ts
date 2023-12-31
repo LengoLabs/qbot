@@ -8,6 +8,7 @@ import {
 } from 'discord.js';
 import { handleRobloxUser } from '../arguments/handleRobloxUser';
 import { handleRobloxRole } from '../arguments/handleRobloxRole';
+import { handleSecondaryGroup } from '../arguments/handleSecondaryGroup';
 import { getUnknownCommandMessage, getNoPermissionEmbed } from '../handlers/locale';
 
 const handleInteraction = async (payload: Interaction<CacheType>) => {
@@ -36,6 +37,8 @@ const handleInteraction = async (payload: Interaction<CacheType>) => {
         const focusedArg = (new command()).args.find((arg) => arg.trigger === focusedOption.name);
         if(focusedArg.type === 'RobloxUser') handleRobloxUser(interaction, focusedOption);
         if(focusedArg.type === 'RobloxRole') await handleRobloxRole(interaction, focusedOption);
+        if(focusedArg.type === 'SecondaryGroup') await handleSecondaryGroup(interaction, focusedOption);
+
     }
 }
 

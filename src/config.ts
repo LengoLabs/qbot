@@ -28,6 +28,7 @@ export const config: BotConfig = {
     firedRank: 1,
     suspendedRank: 1,
     recordManualActions: true,
+    secondaryGroups: [],
     memberCount: {
         enabled: false,
         channelId: '',

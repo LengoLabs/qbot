@@ -119,6 +119,19 @@ export interface BotConfig {
      */
     suspendedRank: number;
     /**
+     * Secondary groups allows users to run actions on multiple groups but one bot.
+     */
+    secondaryGroups: {
+        /**
+         * The name of the group, to be uniquely identified by.
+         */
+        name: string;
+        /**
+         * The Roblox ID of the group.
+         */
+        id: number;
+    }[];
+    /**
      * Should the user being given xp using add-xp be automatically ranked up if they have the right amount of xp?
      */
     recordManualActions: boolean;
@@ -253,7 +266,7 @@ export declare type CommandArgument = {
     /**
      * How should the value be resolved or what should be prompted for slash commands?
      */
-    type: 'Subcommand' | 'SubcommandGroup' | 'String' | 'Number' | 'Boolean' | 'Subcommand' | 'RobloxUser' | 'RobloxRole' | 'DiscordUser' | 'DiscordRole' | 'DiscordChannel' | 'DiscordMentionable';
+    type: 'Subcommand' | 'SubcommandGroup' | 'String' | 'Number' | 'Boolean' | 'Subcommand' | 'RobloxUser' | 'RobloxRole' | 'DiscordUser' | 'DiscordRole' | 'DiscordChannel' | 'DiscordMentionable' | 'SecondaryGroup';
     /**
      * Should the bot be sent requests to autocomplete everything they type?
      * @default false;

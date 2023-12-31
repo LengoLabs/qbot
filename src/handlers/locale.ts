@@ -412,13 +412,13 @@ export const getWallPostEmbed = async (post): Promise<EmbedBuilder> => {
     return embed;
 }
 
-export const getLogEmbed = async (action: string, moderator: DiscordUser | User | GroupMember | any, reason?: string, target?: User | PartialUser, rankChange?: string, endDate?: Date, body?: string, xpChange?: string): Promise<EmbedBuilder> => {
+export const getLogEmbed = async (action: string, moderator: DiscordUser | User | GroupMember | any, reason?: string, target?: User | PartialUser, rankChange?: string, endDate?: Date, body?: string, xpChange?: string, secondaryGroup?: string): Promise<EmbedBuilder> => {
     if(target && !target.name) target = null;
     
     const embed = new EmbedBuilder()
         .setColor(mainColor)
         .setTimestamp()
-        .setDescription(`**Action:** ${action}\n${target ? `**Target:** ${target.name} (${target.id})\n` : ''}${rankChange ? `**Rank Change:** ${rankChange}\n` : ''}${xpChange ? `**XP Change:** ${xpChange}\n` : ''}${endDate ? `**Duration:** <t:${Math.round(endDate.getTime() / 1000)}:R>\n` : ''}${reason ? `**Reason:** ${reason}\n` : ''}${body ? `**Body:** ${body}\n` : ''}`);
+        .setDescription(`**Action:** ${action}\n${target ? `**Target:** ${target.name} (${target.id})\n` : ''}${rankChange ? `**Rank Change:** ${rankChange}\n` : ''}${xpChange ? `**XP Change:** ${xpChange}\n` : ''}${endDate ? `**Duration:** <t:${Math.round(endDate.getTime() / 1000)}:R>\n` : ''}${secondaryGroup ? `**Group:** ${secondaryGroup}\n` : ''}${reason ? `**Reason:** ${reason}\n` : ''}${body ? `**Body:** ${body}\n` : ''}`);
 
     if(typeof moderator === 'string') {
         embed.setAuthor({ name: moderator });
@@ -619,5 +619,14 @@ export const getSuccessfulGroupUnbanEmbed = (user: User | PartialUser) : EmbedBu
         .setColor(greenColor)
         .setDescription(`**${user.name}** has successfully been unbanned from the group.`);
     
+    return embed;
+}
+
+export const getInvalidRobloxGroupEmbed = (): EmbedBuilder => {
+    const embed = new EmbedBuilder()
+        .setAuthor({ name: 'Invalid Group', iconURL: xmarkIconUrl })
+        .setColor(redColor)
+        .setDescription('The secondary group you provided for this action is not setup.');
+
     return embed;
 }

@@ -1,4 +1,4 @@
-import { discordClient, robloxClient, robloxGroup } from '../../main';
+import { discordClient, robloxClient, robloxGroup as defaultRobloxGroup } from '../../main';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
@@ -9,10 +9,11 @@ import {
     getVerificationChecksFailedEmbed,
     getRoleNotFoundEmbed,
     getNotSuspendedEmbed,
+    getInvalidRobloxGroupEmbed,
 } from '../../handlers/locale';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
-import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
+import { User, PartialUser, GroupMember, Group } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { provider } from '../../database';
@@ -38,6 +39,14 @@ class UnsuspendCommand extends Command {
                     required: false,
                     type: 'String',
                 },
+                {
+                    trigger: 'group',
+                    description: 'Which secondary group would you like to run this action in, if any?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: false,
+                    type: 'SecondaryGroup',
+                }
             ],
             permissions: [
                 {
@@ -50,6 +59,13 @@ class UnsuspendCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
+        let robloxGroup: Group = defaultRobloxGroup;
+        if(ctx.args['group']) {
+            const secondaryGroup = config.secondaryGroups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+            if(!secondaryGroup) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+            robloxGroup = await robloxClient.getGroup(secondaryGroup.id);
+        }
+
         let robloxUser: User | PartialUser;
         try {
             robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
