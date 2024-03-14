@@ -2,11 +2,17 @@ import { AutocompleteInteraction, APIApplicationCommandOptionChoice } from 'disc
 import { config } from '../config';
 
 const handleSecondaryGroup = async (interaction: AutocompleteInteraction, option: APIApplicationCommandOptionChoice) => {
-    if(!option.value) return;
-    await interaction.respond(config.secondaryGroups.map((group) => ({
+    let options = config.secondaryGroups.map((group) => ({
         name: group.name,
         value: group.name,
-    })));
+    }));
+
+    if(option.value) {
+        options = options.filter((o) => o.name.toLowerCase().includes((option.value as string).toLowerCase()));
+    }
+
+
+    await interaction.respond(options.slice(0, 25));
 }
 
 export { handleSecondaryGroup };
