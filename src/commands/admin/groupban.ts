@@ -76,7 +76,7 @@ class GroupBanCommand extends Command {
         } catch (err) {};
 
         if(config.verificationChecks && robloxMember) {
-            const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
+            const actionEligibility = await checkActionEligibility(robloxGroup, ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 

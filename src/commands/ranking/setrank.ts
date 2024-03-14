@@ -108,7 +108,7 @@ class SetRankCommand extends Command {
         if(robloxMember.role.id === role.id) return ctx.reply({ embeds: [ getAlreadyRankedEmbed() ] });
 
         if(config.verificationChecks) {
-            const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
+            const actionEligibility = await checkActionEligibility(robloxGroup, ctx.user.id, ctx.guild.id, robloxMember, role.rank);
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 

@@ -86,7 +86,7 @@ class RemoveXPCommand extends Command {
         if(!Number.isInteger(Number(ctx.args['decrement'])) || Number(ctx.args['decrement']) < 0) return ctx.reply({ embeds: [ getInvalidXPEmbed() ] });
 
         if(config.verificationChecks) {
-            const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
+            const actionEligibility = await checkActionEligibility(robloxGroup, ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 

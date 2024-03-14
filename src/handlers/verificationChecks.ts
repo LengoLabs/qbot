@@ -1,8 +1,7 @@
-import { GroupMember, User } from 'bloxy/dist/structures';
-import { robloxGroup } from '../main';
+import { User, Group, GroupMember } from 'bloxy/dist/structures';
 import { getLinkedRobloxUser } from './accountLinks';
 
-const checkActionEligibility = async (discordId: string, guildId: string, targetMember: GroupMember, rankingTo: number): Promise<boolean>  => {
+const checkActionEligibility = async (group: Group, discordId: string, guildId: string, targetMember: GroupMember, rankingTo: number): Promise<boolean>  => {
     let robloxUser: User;
     try {
         robloxUser = await getLinkedRobloxUser(discordId);
@@ -12,7 +11,7 @@ const checkActionEligibility = async (discordId: string, guildId: string, target
 
     let robloxMember: GroupMember;
     try {
-        robloxMember = await robloxGroup.getMember(robloxUser.id);
+        robloxMember = await group.getMember(robloxUser.id);
         if(!robloxMember) throw new Error();
     } catch (err) {
         return false;
