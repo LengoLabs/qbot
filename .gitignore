@@ -1,3 +1,5 @@
 node_modules
 .env
 dist
+src/database/qbotdata.db
+src/resources/commands.json

@@ -102,8 +102,8 @@ class PromoteCommand extends Command {
         if(!role.rank || role.rank === 0) return ctx.reply({ embeds: [ getNoRankBelowEmbed() ]});
         if(role.rank > config.maximumRank || robloxMember.role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
 
-        if(config.verificationChecks) {
-            const actionEligibility = await checkActionEligibility(robloxGroup, ctx.user.id, ctx.guild.id, robloxMember, role.rank);
+        if(config.verificationChecks.enabled) {
+            const actionEligibility = await checkActionEligibility(robloxGroup, ctx.user.id, ctx.member.roles.cache.map((r) => r.id), ctx.guild.id, robloxMember, role.rank);
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 

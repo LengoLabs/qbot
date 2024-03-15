@@ -1,7 +1,11 @@
 import { User, Group, GroupMember } from 'bloxy/dist/structures';
 import { getLinkedRobloxUser } from './accountLinks';
+import { discordClient } from '../main';
+import { config } from '../config';
 
-const checkActionEligibility = async (group: Group, discordId: string, guildId: string, targetMember: GroupMember, rankingTo: number): Promise<boolean>  => {
+const checkActionEligibility = async (group: Group, discordId: string, memberRoles: string[], guildId: string, targetMember: GroupMember, rankingTo: number): Promise<boolean>  => {
+    if(memberRoles.some((r) => config.verificationChecks.bypassRoleIds.includes(r))) return true;    
+
     let robloxUser: User;
     try {
         robloxUser = await getLinkedRobloxUser(discordId);

@@ -94,8 +94,8 @@ class ExileCommand extends Command {
             return ctx.reply({ embeds: [ getRobloxUserIsNotMemberEmbed() ]});
         }
 
-        if(config.verificationChecks) {
-            const actionEligibility = await checkActionEligibility(robloxGroup, ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
+        if(config.verificationChecks.enabled) {
+            const actionEligibility = await checkActionEligibility(robloxGroup, ctx.user.id, ctx.member.roles.cache.map((r) => r.id), ctx.guild.id, robloxMember, robloxMember.role.rank);
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 

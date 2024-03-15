@@ -99,15 +99,24 @@ export interface BotConfig {
     */
     maximumRank: number;
     /**
-     * Should users be required to verify through Bloxlink to rank users? This feature will ensure that users cannot rank themselves, users above them, or users with the same rank as them.
-     * 
-     * **We highly recommend disabling this feature if your server does not use Bloxlink.**
+     * Verification checks allows Qbot to integrate with Bloxlink to prevent users from ranking themselves, or uses above or at the same rank as them in your group.
     */
-    verificationChecks: boolean;
-    /**
-     * Required if verificationChecks is provided, which guild is your Bloxlink API Key registered under? Verifications in this guild will be used for all verification checks.
-     */
-    bloxlinkGuildId?: string;
+    verificationChecks: {
+        /**
+         * Should verification checks be ran? This will require users to be verified with Bloxlink to use the bot.
+         * 
+         * **We highly recommend disabling this feature if your server does not use Bloxlink.**
+        */
+        enabled: boolean;
+        /**
+         * If you have Discord roles you would like to be exempt from verification checks, place their IDs in an array here.
+         */
+        bypassRoleIds: string[];
+        /**
+         * To check for Bloxlink verification status specifically in your server, paste your Discord server ID here. Required if verification checks are enabled.
+         */
+        bloxlinkGuildId?: string;
+    };
     /**
      * What rank should users be ranked to when they are fired?
      * @default 1
