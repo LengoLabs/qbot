@@ -5,8 +5,6 @@ import {
     getInvalidRobloxUserEmbed,
     getRobloxUserIsNotMemberEmbed,
     getUnexpectedErrorEmbed,
-    getNoRankAboveEmbed,
-    getRoleNotFoundEmbed,
     getVerificationChecksFailedEmbed,
     getSuccessfulXPRankupEmbed,
     getNoRankupAvailableEmbed,
@@ -84,8 +82,8 @@ class XPRankupCommand extends Command {
             if(!ctx.member.roles.cache.some((role) => config.permissions.users.includes(role.id)) && (config.permissions.all ? !ctx.member.roles.cache.some((role) => config.permissions.all.includes(role.id)) : false)) {
                 return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
             }
-            if(config.verificationChecks) {
-                const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
+            if(config.verificationChecks.enabled) {
+                const actionEligibility = await checkActionEligibility(robloxGroup, ctx.user.id, ctx.member.roles.cache.map((r) => r.id), ctx.guild.id, robloxMember, robloxMember.role.rank);
                 if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
             }
         }

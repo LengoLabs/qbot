@@ -9,7 +9,6 @@ import {
     getInvalidRobloxUserEmbed,
     getUnexpectedErrorEmbed,
     getSuccessfulGroupUnbanEmbed,
-    getNoDatabaseEmbed,
     getUserNotBannedEmbed
 } from '../../handlers/locale';
 import { config } from '../../config';

@@ -1,6 +1,5 @@
-import { robloxClient, robloxGroup } from '../main';
+import { robloxGroup } from '../main';
 import { config } from '../config';
-import { GroupMember } from 'bloxy/dist/structures';
 import { provider } from '../database';
 
 const checkBans = async () => {

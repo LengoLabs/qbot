@@ -99,15 +99,24 @@ export interface BotConfig {
     */
     maximumRank: number;
     /**
-     * Should users be required to verify through Bloxlink to rank users? This feature will ensure that users cannot rank themselves, users above them, or users with the same rank as them.
-     * 
-     * **We highly recommend disabling this feature if your server does not use Bloxlink.**
+     * Verification checks allows Qbot to integrate with Bloxlink to prevent users from ranking themselves, or uses above or at the same rank as them in your group.
     */
-    verificationChecks: boolean;
-    /**
-     * Required if verificationChecks is provided, which guild is your Bloxlink API Key registered under? Verifications in this guild will be used for all verification checks.
-     */
-    bloxlinkGuildId?: string;
+    verificationChecks: {
+        /**
+         * Should verification checks be ran? This will require users to be verified with Bloxlink to use the bot.
+         * 
+         * **We highly recommend disabling this feature if your server does not use Bloxlink.**
+        */
+        enabled: boolean;
+        /**
+         * If you have Discord roles you would like to be exempt from verification checks, place their IDs in an array here.
+         */
+        bypassRoleIds: string[];
+        /**
+         * To check for Bloxlink verification status specifically in your server, paste your Discord server ID here. Required if verification checks are enabled.
+         */
+        bloxlinkGuildId?: string;
+    };
     /**
      * What rank should users be ranked to when they are fired?
      * @default 1
@@ -118,6 +127,19 @@ export interface BotConfig {
      * @default 1
      */
     suspendedRank: number;
+    /**
+     * Secondary groups allows users to run actions on multiple groups but one bot.
+     */
+    secondaryGroups: {
+        /**
+         * The name of the group, to be uniquely identified by.
+         */
+        name: string;
+        /**
+         * The Roblox ID of the group.
+         */
+        id: number;
+    }[];
     /**
      * Should the user being given xp using add-xp be automatically ranked up if they have the right amount of xp?
      */
@@ -253,7 +275,7 @@ export declare type CommandArgument = {
     /**
      * How should the value be resolved or what should be prompted for slash commands?
      */
-    type: 'Subcommand' | 'SubcommandGroup' | 'String' | 'Number' | 'Boolean' | 'Subcommand' | 'RobloxUser' | 'RobloxRole' | 'DiscordUser' | 'DiscordRole' | 'DiscordChannel' | 'DiscordMentionable';
+    type: 'Subcommand' | 'SubcommandGroup' | 'String' | 'Number' | 'Boolean' | 'Subcommand' | 'RobloxUser' | 'RobloxRole' | 'DiscordUser' | 'DiscordRole' | 'DiscordChannel' | 'DiscordMentionable' | 'SecondaryGroup';
     /**
      * Should the bot be sent requests to autocomplete everything they type?
      * @default false;

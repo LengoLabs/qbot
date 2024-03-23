@@ -1,4 +1,4 @@
-import { discordClient, robloxClient, robloxGroup } from '../../main';
+import { discordClient, robloxClient, robloxGroup as defaultRobloxGroup } from '../../main';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
@@ -10,10 +10,11 @@ import {
     getRoleNotFoundEmbed,
     getVerificationChecksFailedEmbed,
     getUserSuspendedEmbed,
+    getInvalidRobloxGroupEmbed,
 } from '../../handlers/locale';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
-import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
+import { User, PartialUser, GroupMember, Group } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { provider } from '../../database';
@@ -39,6 +40,14 @@ class PromoteCommand extends Command {
                     required: false,
                     type: 'String',
                 },
+                {
+                    trigger: 'group',
+                    description: 'Which secondary group would you like to run this action in, if any?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: false,
+                    type: 'SecondaryGroup',
+                },
             ],
             permissions: [
                 {
@@ -51,6 +60,13 @@ class PromoteCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
+        let robloxGroup: Group = defaultRobloxGroup;
+        if(ctx.args['group']) {
+            const secondaryGroup = config.secondaryGroups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+            if(!secondaryGroup) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+            robloxGroup = await robloxClient.getGroup(secondaryGroup.id);
+        }
+
         let robloxUser: User | PartialUser;
         try {
             robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
@@ -86,8 +102,8 @@ class PromoteCommand extends Command {
         if(!role) return ctx.reply({ embeds: [ getNoRankAboveEmbed() ]});
         if(role.rank > config.maximumRank || robloxMember.role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
 
-        if(config.verificationChecks) {
-            const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
+        if(config.verificationChecks.enabled) {
+            const actionEligibility = await checkActionEligibility(robloxGroup, ctx.user.id, ctx.member.roles.cache.map((r) => r.id), ctx.guild.id, robloxMember, role.rank);
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 
@@ -97,7 +113,7 @@ class PromoteCommand extends Command {
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);
             ctx.reply({ embeds: [ await getSuccessfulPromotionEmbed(robloxUser, role.name) ]});
-            logAction('Promote', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
+            logAction('Promote', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`, null, null, null, ctx.args['group']);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});

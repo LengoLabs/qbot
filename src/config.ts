@@ -23,11 +23,15 @@ export const config: BotConfig = {
     },
     api: false,
     maximumRank: 255,
-    verificationChecks: false,
-    bloxlinkGuildId: '',
+    verificationChecks: {
+        enabled: false,
+        bypassRoleIds: [],
+        bloxlinkGuildId: '',
+    },
     firedRank: 1,
     suspendedRank: 1,
     recordManualActions: true,
+    secondaryGroups: [],
     memberCount: {
         enabled: false,
         channelId: '',

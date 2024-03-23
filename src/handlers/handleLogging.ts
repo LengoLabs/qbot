@@ -12,10 +12,10 @@ const getLogChannels = async () => {
     }
 }
 
-const logAction = async (action: string, moderator: DiscordUser | RobloxUser | GroupMember | any, reason?: string, target?: RobloxUser | PartialUser, rankChange?: string, endDate?: Date, body?: string, xpChange?: string) => {
+const logAction = async (action: string, moderator: DiscordUser | RobloxUser | GroupMember | any, reason?: string, target?: RobloxUser | PartialUser, rankChange?: string, endDate?: Date, body?: string, xpChange?: string, secondaryGroup?: string) => {
     if(moderator.id !== discordClient.user.id) recordAction(moderator);
     if(!actionLogChannel) return;
-    actionLogChannel.send({ embeds: [ await getLogEmbed(action, moderator, reason, target, rankChange, endDate, body, xpChange) ] });
+    actionLogChannel.send({ embeds: [ await getLogEmbed(action, moderator, reason, target, rankChange, endDate, body, xpChange, secondaryGroup) ] });
 }
 
 export { logAction, getLogChannels };

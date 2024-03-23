@@ -1,4 +1,4 @@
-import { discordClient, robloxClient, robloxGroup } from '../../main';
+import { discordClient, robloxClient, robloxGroup as defaultRobloxGroup } from '../../main';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
@@ -10,9 +10,10 @@ import {
     getVerificationChecksFailedEmbed,
     getAlreadyRankedEmbed,
     getUserSuspendedEmbed,
+    getInvalidRobloxGroupEmbed,
 } from '../../handlers/locale';
 import { config } from '../../config';
-import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
+import { User, PartialUser, GroupMember, Group } from 'bloxy/dist/structures';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
@@ -45,6 +46,14 @@ class SetRankCommand extends Command {
                     required: false,
                     type: 'String',
                 },
+                {
+                    trigger: 'group',
+                    description: 'Which secondary group would you like to run this action in, if any?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: false,
+                    type: 'SecondaryGroup',
+                }
             ],
             permissions: [
                 {
@@ -57,6 +66,13 @@ class SetRankCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
+        let robloxGroup: Group = defaultRobloxGroup;
+        if(ctx.args['group']) {
+            const secondaryGroup = config.secondaryGroups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+            if(!secondaryGroup) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+            robloxGroup = await robloxClient.getGroup(secondaryGroup.id);
+        }
+
         let robloxUser: User | PartialUser;
         try {
             robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
@@ -91,8 +107,8 @@ class SetRankCommand extends Command {
         if(!role || !role.rank || role.rank === 0 || role.rank > config.maximumRank || robloxMember.role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ]});
         if(robloxMember.role.id === role.id) return ctx.reply({ embeds: [ getAlreadyRankedEmbed() ] });
 
-        if(config.verificationChecks) {
-            const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, role.rank);
+        if(config.verificationChecks.enabled) {
+            const actionEligibility = await checkActionEligibility(robloxGroup, ctx.user.id, ctx.member.roles.cache.map((r) => r.id), ctx.guild.id, robloxMember, role.rank);
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 

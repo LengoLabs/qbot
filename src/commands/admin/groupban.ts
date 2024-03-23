@@ -8,11 +8,9 @@ import { provider } from '../../database';
 import { logAction } from '../../handlers/handleLogging';
 import {
     getInvalidRobloxUserEmbed,
-    getRobloxUserIsNotMemberEmbed,
     getVerificationChecksFailedEmbed,
     getUnexpectedErrorEmbed,
     getSuccessfulGroupBanEmbed,
-    getNoDatabaseEmbed,
     getUserBannedEmbed
 } from '../../handlers/locale';
 import { config } from '../../config';
@@ -77,8 +75,8 @@ class GroupBanCommand extends Command {
             if(!robloxMember) throw new Error();
         } catch (err) {};
 
-        if(config.verificationChecks && robloxMember) {
-            const actionEligibility = await checkActionEligibility(ctx.user.id, ctx.guild.id, robloxMember, robloxMember.role.rank);
+        if(config.verificationChecks.enabled && robloxMember) {
+            const actionEligibility = await checkActionEligibility(robloxGroup, ctx.user.id, ctx.member.roles.cache.map((r) => r.id), ctx.guild.id, robloxMember, robloxMember.role.rank);
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 
