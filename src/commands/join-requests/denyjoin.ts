@@ -82,7 +82,7 @@ class DenyJoinCommand extends Command {
             }
         }
 
-        const joinRequest = await robloxUser.getJoinRequestInGroup(config.groupId);
+        const joinRequest = await robloxUser.getJoinRequestInGroup(robloxGroup.id);
         if(!joinRequest) return ctx.reply({ embeds: [ getNoJoinRequestEmbed() ] });
 
         try {
