@@ -72,7 +72,7 @@ class SetRankCommand extends Command {
         if(ctx.args['group']) {
             const secondaryGroup = config.secondaryGroups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
             if(!secondaryGroup) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
-            if(!ctx.checkSecondaryPermissions(secondaryGroup.permissions)) return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
+            if(!ctx.checkSecondaryPermissions(secondaryGroup.permissions, "ranking")) return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
             robloxGroup = await robloxClient.getGroup(secondaryGroup.id);
         }
 

@@ -72,15 +72,15 @@ export class CommandContext {
         }
     }
 
-    checkSecondaryPermissions(permissionConfig) {
+    checkSecondaryPermissions(permissionConfig: any, permissionGroup: string = "ranking") {
         if (permissionConfig.length === 0) return true;
 
         let hasPermission = null;
 
-        permissionConfig.forEach((roleId: string) => {
+        permissionConfig[permissionGroup].forEach((roleId: string) => {
             if (!hasPermission) {
-                const hasGlobalPermission: boolean = config.permissions.all && this.member.roles.cache.some((role) => config.permissions.all.includes(role.id));
-                const hasSecGroupPermission: boolean = permissionConfig.all && this.member.roles.cache.some((role) => permissionConfig.all.includes(role.id));
+                const hasGlobalPermission: boolean = config.permissions.all && this.member.roles.cache.some((role: any) => config.permissions.all.includes(role.id));
+                const hasSecGroupPermission: boolean = permissionConfig.all && this.member.roles.cache.some((role: any) => permissionConfig.all.includes(role.id));
 
                 hasPermission = (hasGlobalPermission || hasSecGroupPermission) ? true : this.member.roles.cache.has(roleId);
             }
