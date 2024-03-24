@@ -11,6 +11,7 @@ import {
     getVerificationChecksFailedEmbed,
     getUserSuspendedEmbed,
     getInvalidRobloxGroupEmbed,
+    getNoPermissionEmbed
 } from '../../handlers/locale';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
@@ -64,6 +65,7 @@ class PromoteCommand extends Command {
         if(ctx.args['group']) {
             const secondaryGroup = config.secondaryGroups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
             if(!secondaryGroup) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+            if(!ctx.checkSecondaryPermissions(secondaryGroup.permissions)) return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
             robloxGroup = await robloxClient.getGroup(secondaryGroup.id);
         }
 

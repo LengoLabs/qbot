@@ -11,6 +11,7 @@ import {
     getAlreadyRankedEmbed,
     getUserSuspendedEmbed,
     getInvalidRobloxGroupEmbed,
+    getNoPermissionEmbed
 } from '../../handlers/locale';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember, Group } from 'bloxy/dist/structures';
@@ -67,9 +68,11 @@ class SetRankCommand extends Command {
 
     async run(ctx: CommandContext) {
         let robloxGroup: Group = defaultRobloxGroup;
+
         if(ctx.args['group']) {
             const secondaryGroup = config.secondaryGroups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
             if(!secondaryGroup) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+            if(!ctx.checkSecondaryPermissions(secondaryGroup.permissions)) return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
             robloxGroup = await robloxClient.getGroup(secondaryGroup.id);
         }
 

@@ -13,7 +13,7 @@ import { Args } from 'lexure';
 import { getMissingArgumentsEmbed } from '../../handlers/locale';
 import { config } from '../../config';
 
-export class CommandContext  {
+export class CommandContext {
     type: 'interaction' | 'message';
     subject?: CommandInteraction | Message;
     user?: User;
@@ -40,40 +40,57 @@ export class CommandContext  {
         this.deferred = false;
 
         this.args = {};
-        if(payload instanceof BaseInteraction) {
+        if (payload instanceof BaseInteraction) {
             const interaction = payload as CommandInteraction;
             interaction.options.data.forEach(async (arg) => {
                 this.args[arg.name] = interaction.options.get(arg.name).value;
             });
         } else {
             this.subject.channel.sendTyping();
-            this.command.args.forEach((arg, index) => { if(!arg.isLegacyFlag) this.args[arg.trigger] = args.single() });
+            this.command.args.forEach((arg, index) => { if (!arg.isLegacyFlag) this.args[arg.trigger] = args.single() });
             const filledOutArgs = Object.keys(Object.fromEntries(Object.entries(this.args).filter(([_, v]) => v !== null)));
             const requiredArgs = this.command.args.filter((arg) => (arg.required === undefined || arg.required === null ? true : arg.required) && !arg.isLegacyFlag);
-            if(filledOutArgs.length < requiredArgs.length) {
-                this.reply({ embeds: [ getMissingArgumentsEmbed(this.command.trigger, this.command.args) ] });
+            if (filledOutArgs.length < requiredArgs.length) {
+                this.reply({ embeds: [getMissingArgumentsEmbed(this.command.trigger, this.command.args)] });
                 throw new Error('INVALID_USAGE');
             } else {
-                if(args.length > requiredArgs.length) {
+                if (args.length > requiredArgs.length) {
                     const extraArgs = args.many(1000, requiredArgs.length);
-                    this.args[Object.keys(this.args).filter((key) => !this.command.args.find((arg) => arg.trigger === key).isLegacyFlag).at(-1)] = [ this.args[Object.keys(this.args).filter((key) => !this.command.args.find((arg) => arg.trigger === key).isLegacyFlag).at(-1)], ...extraArgs.map((arg) => arg.value)].join(' ');
+                    this.args[Object.keys(this.args).filter((key) => !this.command.args.find((arg) => arg.trigger === key).isLegacyFlag).at(-1)] = [this.args[Object.keys(this.args).filter((key) => !this.command.args.find((arg) => arg.trigger === key).isLegacyFlag).at(-1)], ...extraArgs.map((arg) => arg.value)].join(' ');
                 }
                 let areAllRequiredFlagsEntered = true;
                 this.command.args.filter((arg) => arg.isLegacyFlag).forEach((arg) => {
                     const flagValue = args.option(arg.trigger);
-                    if(!flagValue && arg.required) areAllRequiredFlagsEntered = false;
+                    if (!flagValue && arg.required) areAllRequiredFlagsEntered = false;
                     this.args[arg.trigger] = flagValue;
                 });
-                if(!areAllRequiredFlagsEntered) {
-                    this.reply({ embeds: [ getMissingArgumentsEmbed(this.command.trigger, this.command.args) ] });
+                if (!areAllRequiredFlagsEntered) {
+                    this.reply({ embeds: [getMissingArgumentsEmbed(this.command.trigger, this.command.args)] });
                     throw new Error('INVALID_USAGE');
                 }
             }
         }
     }
 
+    checkSecondaryPermissions(permissionConfig) {
+        if (permissionConfig.length === 0) return true;
+
+        let hasPermission = null;
+
+        permissionConfig.forEach((roleId: string) => {
+            if (!hasPermission) {
+                const hasGlobalPermission: boolean = config.permissions.all && this.member.roles.cache.some((role) => config.permissions.all.includes(role.id));
+                const hasSecGroupPermission: boolean = permissionConfig.all && this.member.roles.cache.some((role) => permissionConfig.all.includes(role.id));
+
+                hasPermission = (hasGlobalPermission || hasSecGroupPermission) ? true : this.member.roles.cache.has(roleId);
+            }
+        });
+
+        return hasPermission || false;
+    }
+
     checkPermissions() {
-        if(!this.command.permissions || this.command.permissions.length === 0) {
+        if (!this.command.permissions || this.command.permissions.length === 0) {
             return true;
         } else {
             let hasPermission = null;
@@ -89,14 +106,14 @@ export class CommandContext  {
             });
             const permission = permissions.forEach((permission) => {
                 let fitsCriteria: boolean;
-                if(!hasPermission) {
-                    if(config.permissions.all && this.member.roles.cache.some((role) => config.permissions.all.includes(role.id))) {
+                if (!hasPermission) {
+                    if (config.permissions.all && this.member.roles.cache.some((role) => config.permissions.all.includes(role.id))) {
                         fitsCriteria = true;
                     } else {
-                        if(permission.type === 'role') fitsCriteria = this.member.roles.cache.has(permission.id);
-                        if(permission.type === 'user') fitsCriteria = this.member.id === permission.id;
+                        if (permission.type === 'role') fitsCriteria = this.member.roles.cache.has(permission.id);
+                        if (permission.type === 'user') fitsCriteria = this.member.id === permission.id;
                     }
-                    if(fitsCriteria) hasPermission = true;
+                    if (fitsCriteria) hasPermission = true;
                 }
             });
             return hasPermission || false;
@@ -110,10 +127,10 @@ export class CommandContext  {
      */
     async reply(payload: string | InteractionReplyOptions | MessageCreateOptions | InteractionReplyOptions) {
         this.replied = true;
-        if(this.subject instanceof CommandInteraction) {
+        if (this.subject instanceof CommandInteraction) {
             try {
                 const subject = this.subject as CommandInteraction;
-                if(this.deferred) {
+                if (this.deferred) {
                     return await subject.editReply(payload);
                 } else {
                     return await subject.reply(payload as InteractionReplyOptions);
@@ -121,12 +138,12 @@ export class CommandContext  {
             } catch (err) {
                 const subject = this.subject as CommandInteraction;
                 try {
-                    if(this.deferred) {
+                    if (this.deferred) {
                         return await subject.editReply(payload as InteractionReplyOptions);
                     } else {
                         return await subject.reply(payload as InteractionReplyOptions);
                     }
-                } catch (err) {};
+                } catch (err) { };
             }
         } else {
             return await this.subject.channel.send(payload as MessageCreateOptions);
@@ -138,13 +155,13 @@ export class CommandContext  {
      */
     async defer() {
         try {
-            if(this.subject instanceof CommandInteraction) {
+            if (this.subject instanceof CommandInteraction) {
                 const interaction = this.subject as CommandInteraction;
-                if(!interaction.deferred && !interaction.replied) await this.subject.deferReply();
+                if (!interaction.deferred && !interaction.replied) await this.subject.deferReply();
             } else {
                 await this.subject.channel.sendTyping();
             }
             this.deferred = true;
-        } catch (err) {};
+        } catch (err) { };
     }
 }
