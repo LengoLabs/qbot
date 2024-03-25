@@ -22,7 +22,7 @@ const recordAuditLogs = async () => {
                         const oldRole = groupRoles.find((role) => role.id === log.description['OldRoleSetId']);
                         const newRole = groupRoles.find((role) => role.id === log.description['NewRoleSetId']);
                         const target = await robloxClient.getUser(log.description['TargetId']);
-                        logAction('Manual Set Rank', log.actor.user, null, target, `${oldRole.name} (${oldRole.rank}) → ${newRole.name} (${newRole.rank})`);
+                        logAction('Manual Set Rank', log.actor.user, null, target, `${oldRole.name} (${oldRole.rank}) → ${newRole.name} (${newRole.rank})`, null, null, null, robloxGroup.name);
                     }
                 }
             });
