@@ -27,6 +27,7 @@ const discordClient = new QbotClient();
 discordClient.login(process.env.DISCORD_TOKEN);
 const robloxClient = new RobloxClient({ credentials: { cookie: process.env.ROBLOX_COOKIE } });
 let robloxGroup: Group = null;
+
 (async () => {
     await robloxClient.login().catch(console.error);
     robloxGroup = await robloxClient.getGroup(config.groupId);
@@ -39,6 +40,13 @@ let robloxGroup: Group = null;
     if(config.memberCount.enabled) recordMemberCount();
     if(config.antiAbuse.enabled) clearActions();
     if(config.deleteWallURLs) checkWallForAds();
+})();
+
+(async () => {
+    config.secondaryGroups.forEach(async (group) => {
+        const robloxGroup = await robloxClient.getGroup(group.id);
+        if (group.recordManualActions) recordAuditLogs(robloxGroup);
+    });
 })();
 
 // [Handlers]

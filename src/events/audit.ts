@@ -35,6 +35,7 @@ const recordAuditLogs = async (robloxGroup) => {
     } catch (err) {
         console.error(err);
     }
+
     setTimeout(recordAuditLogs, 60000);
 }
 
