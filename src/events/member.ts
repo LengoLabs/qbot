@@ -1,7 +1,7 @@
 import { TextChannel } from 'discord.js';
 import { Group as RobloxGroup } from "bloxy/dist/structures";
 import { GroupConfig } from '../structures/types';
-import { discordClient, robloxClient } from '../main';
+import { discordClient } from '../main';
 import {
     getMemberCountMessage,
     getMemberCountMilestoneEmbed,

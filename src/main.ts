@@ -12,6 +12,7 @@ import { clearActions } from './handlers/abuseDetection';
 import { checkBans } from './events/bans';
 import { checkWallForAds } from './events/wall';
 import { GroupConfig } from './structures/types';
+import { group } from 'console';
 require('dotenv').config();
 
 // [Ensure Setup]
@@ -30,11 +31,6 @@ discordClient.login(process.env.DISCORD_TOKEN);
 
 (async () => {
     await robloxClient.login().catch(console.error);
-    
-    // [Events]
-    checkSuspensions();
-    checkBans();
-
     if(config.antiAbuse.enabled) clearActions();
 
     config.groups.forEach(async (groupConfig: GroupConfig) => {
@@ -44,6 +40,8 @@ discordClient.login(process.env.DISCORD_TOKEN);
         if (groupConfig.memberCount.enabled) recordMemberCount(robloxGroup, groupConfig);
         if (groupConfig.deleteWallURLs) checkWallForAds(robloxGroup);
         if (groupConfig.recordManualActions) recordAuditLogs(robloxGroup);
+        checkBans(robloxGroup);
+        checkSuspensions(robloxGroup, groupConfig);
     });
 })();
 

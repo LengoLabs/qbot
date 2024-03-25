@@ -1,13 +1,13 @@
 import { robloxClient } from '../main';
 import { logAction } from '../handlers/handleLogging';
-import { config } from '../config';
+import { Group as RobloxGroup } from "bloxy/dist/structures";
 
 let lastRecordedDate: number;
 
-const recordAuditLogs = async (robloxGroup) => {
+const recordAuditLogs = async (robloxGroup: RobloxGroup) => {
     try {
         const auditLog = await robloxClient.apis.groupsAPI.getAuditLogs({
-            groupId: config.groupId,
+            groupId: robloxGroup.id,
             actionType: 'ChangeRank',
             limit: 10,
             sortOrder: 'Desc',
@@ -24,7 +24,7 @@ const recordAuditLogs = async (robloxGroup) => {
                         const oldRole = groupRoles.find((role) => role.id === log.description['OldRoleSetId']);
                         const newRole = groupRoles.find((role) => role.id === log.description['NewRoleSetId']);
                         const target = await robloxClient.getUser(log.description['TargetId']);
-                        logAction('Manual Set Rank', log.actor.user, null, target, `${oldRole.name} (${oldRole.rank}) → ${newRole.name} (${newRole.rank})`, null, null, null, robloxGroup.name);
+                        logAction(robloxGroup, 'Manual Set Rank', log.actor.user, null, target, `${oldRole.name} (${oldRole.rank}) → ${newRole.name} (${newRole.rank})`, null, null, null);
                     }
                 }
             });

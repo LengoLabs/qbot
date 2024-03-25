@@ -1,7 +1,6 @@
-import { config } from '../config';
-import { robloxClient } from '../main';
+import { Group as RobloxGroup } from "bloxy/dist/structures";
 
-const checkWallForAds = async (group) => {
+const checkWallForAds = async (group: RobloxGroup) => {
     setTimeout(checkWallForAds, 30000);
     
     try {
