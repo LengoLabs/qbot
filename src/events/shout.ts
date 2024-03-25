@@ -5,17 +5,13 @@ import { getShoutLogEmbed } from '../handlers/locale';
 let firstShout = true;
 let lastShout: string;
 
-const recordShout = async () => {
+const recordShout = async (group) => {
     try {
-        const group = await robloxClient.getGroup(config.groupId);
         const logChannel = await discordClient.channels.fetch(config.logChannels.shout) as TextChannel;
-        if(firstShout) {
-            firstShout = false;
-        } else {
-            if(group.shout !== null && lastShout !== group.shout.content) {
-                logChannel.send({ embeds: [ await getShoutLogEmbed(group.shout) ] });
-            }
-        }
+
+        if(firstShout) firstShout = false;
+        if(!firstShout && group.shout !== null && lastShout !== group.shout.content) logChannel.send({ embeds: [ await getShoutLogEmbed(group.shout) ] });
+
         setTimeout(recordShout, 60 * 1000);
         if(group.shout?.content) lastShout = group.shout?.content;
     } catch (err) {

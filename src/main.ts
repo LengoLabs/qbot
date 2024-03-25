@@ -35,7 +35,7 @@ let robloxGroup: Group = null;
     // [Events]
     checkSuspensions();
     checkBans();
-    if(config.logChannels.shout) recordShout();
+    if(config.logChannels.shout) recordShout(robloxGroup);
     if(config.recordManualActions) recordAuditLogs(robloxGroup);
     if(config.memberCount.enabled) recordMemberCount();
     if(config.antiAbuse.enabled) clearActions();
@@ -44,6 +44,7 @@ let robloxGroup: Group = null;
     config.secondaryGroups.forEach(async (group) => {
         const robloxGroup = await robloxClient.getGroup(group.id);
         if (group.recordManualActions) recordAuditLogs(robloxGroup);
+        if(config.logChannels.shout) recordShout(robloxGroup);
     });
 })();
 
