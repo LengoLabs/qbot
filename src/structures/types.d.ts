@@ -140,6 +140,8 @@ export interface BotConfig {
          */
         id: number;
 
+        recordManualActions: boolean;
+
         // Additional required permissions
         permissions: {
             all?: string[];
