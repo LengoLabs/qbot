@@ -435,6 +435,15 @@ export const getLogEmbed = async (robloxGroup: RobloxGroup|boolean, action: stri
     return embed;
 }
 
+export const getXPSysDisabledEmbed = (): EmbedBuilder => {
+    const embed = new EmbedBuilder()
+        .setAuthor({ name: 'XP System disabled', iconURL: xmarkIconUrl })
+        .setColor(redColor)
+        .setDescription('The group config has the XP system disabled for this group.');
+
+    return embed;
+}
+
 export const getAlreadyRankedEmbed = (): EmbedBuilder => {
     const embed = new EmbedBuilder()
         .setAuthor({ name: 'User Already Ranked', iconURL: xmarkIconUrl })

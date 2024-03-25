@@ -1,4 +1,4 @@
-import { discordClient, robloxClient, robloxGroup } from '../../main';
+import { discordClient, robloxClient } from '../../main';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
@@ -9,10 +9,12 @@ import {
     getSuccessfulXPRankupEmbed,
     getNoRankupAvailableEmbed,
     getNoPermissionEmbed,
+    getInvalidRobloxGroupEmbed,
+    getXPSysDisabledEmbed
 } from '../../handlers/locale';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
-import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
+import { User, PartialUser, GroupMember, Group } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { provider } from '../../database';
@@ -33,11 +35,26 @@ class XPRankupCommand extends Command {
                     autocomplete: true,
                     type: 'RobloxUser',
                 },
+                {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                }
             ]
         });
     }
 
     async run(ctx: CommandContext) {
+        let robloxGroup: Group;
+
+        const groupConfig = config.groups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+        if(!groupConfig) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+        if (!groupConfig.xpSystem.enabled) return ctx.reply({ embeds: [ getXPSysDisabledEmbed() ]});
+        robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
+
         let robloxUser: User | PartialUser;
         try {
             if(!ctx.args['roblox-user']) {
@@ -79,9 +96,10 @@ class XPRankupCommand extends Command {
         if(!role) return ctx.reply({ embeds: [ getNoRankupAvailableEmbed() ] });
 
         if(ctx.args['roblox-user']) {
-            if(!ctx.member.roles.cache.some((role) => config.permissions.users.includes(role.id)) && (config.permissions.all ? !ctx.member.roles.cache.some((role) => config.permissions.all.includes(role.id)) : false)) {
+            if(!ctx.member.roles.cache.some((role) => config.basePermissions.users.includes(role.id)) && (config.basePermissions.all ? !ctx.member.roles.cache.some((role) => config.basePermissions.all.includes(role.id)) : false)) {
                 return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
             }
+
             if(config.verificationChecks.enabled) {
                 const actionEligibility = await checkActionEligibility(robloxGroup, ctx.user.id, ctx.member.roles.cache.map((r) => r.id), ctx.guild.id, robloxMember, robloxMember.role.rank);
                 if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
@@ -91,7 +109,7 @@ class XPRankupCommand extends Command {
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);
             ctx.reply({ embeds: [ await getSuccessfulXPRankupEmbed(robloxUser, role.name) ]});
-            logAction('XP Rankup', ctx.user, null, robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
+            logAction(robloxGroup, 'XP Rankup', ctx.user, null, robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});

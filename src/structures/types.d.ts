@@ -236,7 +236,6 @@ export interface BotConfig {
         url?: string;
     }
 
-
     /**
     * Configuration for the anti abuse feature. This works by demoting users who exceed the action threshold within the set amount of time.
     */

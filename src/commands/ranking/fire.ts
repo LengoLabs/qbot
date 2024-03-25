@@ -100,10 +100,12 @@ class FireCommand extends Command {
 
         const groupRoles = await robloxGroup.getRoles();
         const role = groupRoles.find((role) => role.rank === groupConfig.firedRank);
+        
         if(!role) {
             console.error(noFiredRankLog);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
         }
+
         if(robloxMember.role.rank === groupConfig.firedRank) return ctx.reply({ embeds: [ getAlreadyFiredEmbed() ] });
         if(role.rank > groupConfig.maximumRank || robloxMember.role.rank > groupConfig.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
 

@@ -118,10 +118,12 @@ class SuspendCommand extends Command {
 
         const groupRoles = await robloxGroup.getRoles();
         const role = groupRoles.find((role) => role.rank === groupConfig.suspendedRank);
+        
         if(!role) {
             console.error(noSuspendedRankLog);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
         }
+        
         if(role.rank > groupConfig.maximumRank || robloxMember.role.rank > groupConfig.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
 
         if(config.verificationChecks.enabled) {
