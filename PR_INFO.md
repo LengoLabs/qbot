@@ -7,7 +7,6 @@ Forked from qbot/multi-group.
 
 # TODO:
 * Code & param cleanup.
-* Update logAction() first param to pass robloxGroup.
 * API re-write is last priority.
 
 # Status
