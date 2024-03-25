@@ -12,7 +12,7 @@ import { Command } from '../Command';
 import { Args } from 'lexure';
 import { getMissingArgumentsEmbed } from '../../handlers/locale';
 import { config } from '../../config';
-import { GroupConfig, PermissionsConfig } from '../types';
+import { PermissionsConfig } from '../types';
 
 export class CommandContext {
     type: 'interaction' | 'message';

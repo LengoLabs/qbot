@@ -7,6 +7,7 @@ import {
     getSuccessfulAcceptJoinRequestEmbed,
     getNoJoinRequestEmbed,
     getInvalidRobloxGroupEmbed,
+    getNoPermissionEmbed
 } from '../../handlers/locale';
 import { config } from '../../config';
 import { User, PartialUser, Group } from 'bloxy/dist/structures';
@@ -46,7 +47,7 @@ class AcceptJoinCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    ids: config.permissions.join,
+                    ids: config.basePermissions.join,
                     value: true,
                 }
             ]
@@ -54,12 +55,12 @@ class AcceptJoinCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        let robloxGroup: Group = defaultRobloxGroup;
-        if(ctx.args['group']) {
-            const secondaryGroup = config.secondaryGroups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
-            if(!secondaryGroup) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
-            robloxGroup = await robloxClient.getGroup(secondaryGroup.id);
-        }
+        let robloxGroup: Group;
+
+        const groupConfig = config.groups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+        if(!groupConfig) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+        if(!ctx.checkSecondaryPermissions(groupConfig.permissions, "join")) return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
+        robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
 
         let robloxUser: User | PartialUser;
         try {
@@ -88,7 +89,7 @@ class AcceptJoinCommand extends Command {
         try {
             await robloxGroup.acceptJoinRequest(robloxUser.id);
             ctx.reply({ embeds: [ await getSuccessfulAcceptJoinRequestEmbed(robloxUser) ]});
-            logAction('Accept Join Request', ctx.user, ctx.args['reason'], robloxUser);
+            logAction(robloxGroup, 'Accept Join Request', ctx.user, ctx.args['reason'], robloxUser);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
