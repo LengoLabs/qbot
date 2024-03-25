@@ -1,7 +1,6 @@
 import { AutocompleteInteraction, APIApplicationCommandOptionChoice } from 'discord.js';
-import { robloxGroup } from '../main';
 
-const handleRobloxRole = async (interaction: AutocompleteInteraction, option: APIApplicationCommandOptionChoice) => {
+const handleRobloxRole = async (robloxGroup, interaction: AutocompleteInteraction, option: APIApplicationCommandOptionChoice) => {
     try {
         let allRoles = await robloxGroup.getRoles();
         if(allRoles.length > 25) {
