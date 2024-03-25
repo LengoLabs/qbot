@@ -4,12 +4,13 @@ import {
     getSuccessfulRevertRanksEmbed,
     getInvalidDurationEmbed,
     getInvalidRobloxUserEmbed,
+    getInvalidRobloxGroupEmbed
 } from '../../handlers/locale';
 import { config } from '../../config';
-import { discordClient, robloxClient, robloxGroup } from '../../main';
+import { discordClient, robloxClient } from '../../main';
 import ms from 'ms';
 import { logAction } from '../../handlers/handleLogging';
-import { PartialUser, User } from 'bloxy/dist/structures';
+import { PartialUser, User, Group } from 'bloxy/dist/structures';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 
 class RevertRanksCommand extends Command {
@@ -39,11 +40,19 @@ class RevertRanksCommand extends Command {
                     required: false,
                     type: 'String',
                 },
+                {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in, if any?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                }
             ],
             permissions: [
                 {
                     type: 'role',
-                    ids: config.permissions.admin,
+                    ids: config.basePermissions.admin,
                     value: true,
                 }
             ]
@@ -51,6 +60,12 @@ class RevertRanksCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
+        let robloxGroup: Group;
+
+        const groupConfig = config.groups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+        if(!groupConfig) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+        robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
+
         let robloxUser: User | PartialUser;
         if(ctx.args['filter']) {
             try {
@@ -105,7 +120,7 @@ class RevertRanksCommand extends Command {
             }, index * 1000);
         });
 
-        logAction('Revert Ranks', ctx.user, ctx.args['reason'], null, null, maximumDate);
+        logAction(robloxGroup, 'Revert Ranks', ctx.user, ctx.args['reason'], null, null, maximumDate);
         return ctx.reply({ embeds: [ getSuccessfulRevertRanksEmbed(affectedLogs.length) ] });
     }
 }

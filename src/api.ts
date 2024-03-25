@@ -2,7 +2,7 @@ import express from 'express';
 import { config } from './config';
 import { provider } from './database';
 import { logAction } from './handlers/handleLogging';
-import { robloxClient, robloxGroup } from './main';
+import { robloxClient } from './main';
 import ms from 'ms';
 import { findEligibleRole } from './handlers/handleXpRankup';
 const app = express();

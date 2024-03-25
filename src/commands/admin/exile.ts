@@ -1,4 +1,4 @@
-import { discordClient, robloxClient, robloxGroup as defaultRobloxGroup } from '../../main';
+import { discordClient, robloxClient } from '../../main';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
@@ -40,17 +40,17 @@ class ExileCommand extends Command {
                 },
                 {
                     trigger: 'group',
-                    description: 'Which secondary group would you like to run this action in, if any?',
+                    description: 'Which group would you like to run this action in, if any?',
                     isLegacyFlag: true,
                     autocomplete: true,
-                    required: false,
-                    type: 'SecondaryGroup',
+                    required: true,
+                    type: 'Group',
                 }
             ],
             permissions: [
                 {
                     type: 'role',
-                    ids: config.permissions.admin,
+                    ids: config.basePermissions.admin,
                     value: true,
                 }
             ]
@@ -58,12 +58,11 @@ class ExileCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        let robloxGroup: Group = defaultRobloxGroup;
-        if(ctx.args['group']) {
-            const secondaryGroup = config.secondaryGroups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
-            if(!secondaryGroup) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
-            robloxGroup = await robloxClient.getGroup(secondaryGroup.id);
-        }
+        let robloxGroup: Group;
+
+        const groupConfig = config.groups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+        if(!groupConfig) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+        robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
 
         let robloxUser: User | PartialUser;
         try {
@@ -100,13 +99,14 @@ class ExileCommand extends Command {
         }
 
         const userData = await provider.findUser(robloxUser.id.toString());
+
         if(userData.xp !== 0) return provider.updateUser(robloxUser.id.toString(), { xp: 0 });
         if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
 
         try {
-            await robloxMember.kickFromGroup(config.groupId);
+            await robloxMember.kickFromGroup(groupConfig.groupId);
             ctx.reply({ embeds: [ await getSuccessfulExileEmbed(robloxUser) ]})
-            logAction('Exile', ctx.user, ctx.args['reason'], robloxUser);
+            logAction(robloxGroup, 'Exile', ctx.user, ctx.args['reason'], robloxUser);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});

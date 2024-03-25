@@ -1,7 +1,7 @@
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
-import { discordClient, robloxClient, robloxGroup } from '../../main';
-import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
+import { discordClient, robloxClient } from '../../main';
+import { User, PartialUser, GroupMember, Group } from 'bloxy/dist/structures';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { provider } from '../../database';
@@ -11,7 +11,8 @@ import {
     getVerificationChecksFailedEmbed,
     getUnexpectedErrorEmbed,
     getSuccessfulGroupBanEmbed,
-    getUserBannedEmbed
+    getUserBannedEmbed,
+    getInvalidRobloxGroupEmbed
 } from '../../handlers/locale';
 import { config } from '../../config';
 
@@ -35,12 +36,20 @@ class GroupBanCommand extends Command {
                     description: 'If you would like a reason to be supplied in the logs, put it here.',
                     required: false,
                     type: 'String'
+                },
+                {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in, if any?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
                 }
             ],
             permissions: [
                 {
                     type: 'role',
-                    ids: config.permissions.admin,
+                    ids: config.basePermissions.admin,
                     value: true,
                 }
             ]
@@ -48,6 +57,12 @@ class GroupBanCommand extends Command {
     };
 
     async run(ctx: CommandContext) {
+        let robloxGroup: Group;
+
+        const groupConfig = config.groups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+        if(!groupConfig) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+        robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
+
         let robloxUser: User | PartialUser;
         try {
             robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
@@ -88,7 +103,7 @@ class GroupBanCommand extends Command {
                 isBanned: true
             });
             if(robloxMember) await robloxGroup.kickMember(robloxUser.id);
-            logAction('Group Ban', ctx.user, ctx.args['reason'], robloxUser);
+            logAction(robloxGroup, 'Group Ban', ctx.user, ctx.args['reason'], robloxUser);
             return ctx.reply({ embeds: [ getSuccessfulGroupBanEmbed(robloxUser) ]});
         } catch(e) {
             console.log(e);

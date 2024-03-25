@@ -34,14 +34,44 @@ const config: BotConfig = {
         threshold: 10,
     },
 
+    basePermissions: {
+
+        /**
+         * Access to all commands. Please be careful with this.
+         */
+        all: [],
+        /**
+         * Access to the promote, demote, setrank, and fire commands.
+         */
+        ranking: [],
+        /**
+         * Access to the info, add-xp, remove-xp, and xp-rankup commands.
+         */
+        users: [],
+        /**
+         * Access to the shout command.
+         */
+        shout: [],
+        /**
+         * Access to the join-requests, accept-join, and deny-join commands.
+         */
+        join: [],
+        /**
+         * Access to the signal command.
+         */
+        signal: [],
+        /**
+         * Access to the revert-ranks, exile, groupban, and ungroupban command.
+         */
+        admin: []
+    },
+
     groups: [
         {
-
             /**
              * The name of the group, to be uniquely identified by.
-             * boolean = default to group name
              */
-            name: false,
+            name: "Official Group of Roblox",
 
             /**
              * The Roblox ID of the group.

@@ -6,7 +6,6 @@ Forked from qbot/multi-group.
 * Multi-group support
 
 # TODO:
-* A GroupConfig type interface instead of the stupid "any".
 * Code & param cleanup.
 * Update logAction() first param to pass robloxGroup.
 * API re-write is last priority.

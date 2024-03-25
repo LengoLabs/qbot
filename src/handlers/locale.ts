@@ -412,7 +412,7 @@ export const getWallPostEmbed = async (post): Promise<EmbedBuilder> => {
     return embed;
 }
 
-export const getLogEmbed = async (robloxGroup: RobloxGroup|null, action: string, moderator: DiscordUser | User | GroupMember | any, reason?: string, target?: User | PartialUser, rankChange?: string, endDate?: Date, body?: string, xpChange?: string): Promise<EmbedBuilder> => {
+export const getLogEmbed = async (robloxGroup: RobloxGroup|boolean, action: string, moderator: DiscordUser | User | GroupMember | any, reason?: string, target?: User | PartialUser, rankChange?: string, endDate?: Date, body?: string, xpChange?: string): Promise<EmbedBuilder> => {
     if (target && !target.name) target = null;
 
     const embed = new EmbedBuilder()

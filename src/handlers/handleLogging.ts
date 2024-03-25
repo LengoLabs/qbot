@@ -12,7 +12,7 @@ const getLogChannels = async () => {
     }
 }
 
-const logAction = async (robloxGroup: RobloxGroup, action: string, moderator: DiscordUser | RobloxUser | GroupMember | any, reason?: string, target?: RobloxUser | PartialUser, rankChange?: string, endDate?: Date, body?: string, xpChange?: string) => {
+const logAction = async (robloxGroup: RobloxGroup|boolean, action: string, moderator: DiscordUser | RobloxUser | GroupMember | any, reason?: string, target?: RobloxUser | PartialUser, rankChange?: string, endDate?: Date, body?: string, xpChange?: string) => {
     if (moderator.id !== discordClient.user.id) recordAction(robloxGroup, moderator);
     if (!actionLogChannel) return;
     actionLogChannel.send({ embeds: [await getLogEmbed(robloxGroup, action, moderator, reason, target, rankChange, endDate, body, xpChange)] });

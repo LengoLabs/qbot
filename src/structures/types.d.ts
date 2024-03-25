@@ -4,12 +4,42 @@ import {
     ApplicationCommandOptionAllowedChannelTypes
 } from 'discord.js';
 
+export interface PermissionsConfig {
+    /**
+     * Access to all commands. Please be careful with this.
+     */
+    all?: string[];
+    /**
+     * Access to the promote, demote, setrank, and fire commands.
+     */
+    ranking?: string[];
+    /**
+     * Access to the info, add-xp, remove-xp, and xp-rankup commands.
+     */
+    users?: string[];
+    /**
+     * Access to the shout command.
+     */
+    shout?: string[];
+    /**
+     * Access to the join-requests, accept-join, and deny-join commands.
+     */
+    join?: string[];
+    /**
+     * Access to the signal command.
+     */
+    signal?: string[];
+    /**
+     * Access to the revert-ranks, exile, groupban, and ungroupban command.
+     */
+    admin?: string[];
+}
+
 export interface GroupConfig {
     /**
     * The name of the group, to be uniquely identified by.
-    * boolean = default to group name
     */
-    name: string | boolean;
+    name: string;
     
     /**
      * The Roblox ID of the group.
@@ -47,36 +77,7 @@ export interface GroupConfig {
     /**
    * IDs of roles that have permission to do various things.
    */
-    permissions: {
-        /**
-         * Access to all commands. Please be careful with this.
-         */
-        all?: string[];
-        /**
-         * Access to the promote, demote, setrank, and fire commands.
-         */
-        ranking?: string[];
-        /**
-         * Access to the info, add-xp, remove-xp, and xp-rankup commands.
-         */
-        users?: string[];
-        /**
-         * Access to the shout command.
-         */
-        shout?: string[];
-        /**
-         * Access to the join-requests, accept-join, and deny-join commands.
-         */
-        join?: string[];
-        /**
-         * Access to the signal command.
-         */
-        signal?: string[];
-        /**
-         * Access to the revert-ranks, exile, groupban, and ungroupban command.
-         */
-        admin?: string[];
-    }
+    permissions: PermissionsConfig
 
     memberCount: {
         /**
@@ -209,6 +210,8 @@ export interface BotConfig {
         bloxlinkGuildId?: string;
     };
 
+    basePermissions: PermissionsConfig
+
     groups: [GroupConfig];
 
     /**
@@ -287,7 +290,7 @@ export declare type CommandArgument = {
     /**
      * How should the value be resolved or what should be prompted for slash commands?
      */
-    type: 'Subcommand' | 'SubcommandGroup' | 'String' | 'Number' | 'Boolean' | 'Subcommand' | 'RobloxUser' | 'RobloxRole' | 'DiscordUser' | 'DiscordRole' | 'DiscordChannel' | 'DiscordMentionable' | 'SecondaryGroup';
+    type: 'Subcommand' | 'SubcommandGroup' | 'String' | 'Number' | 'Boolean' | 'Subcommand' | 'RobloxUser' | 'RobloxRole' | 'DiscordUser' | 'DiscordRole' | 'DiscordChannel' | 'DiscordMentionable' | 'Group';
     /**
      * Should the bot be sent requests to autocomplete everything they type?
      * @default false;
