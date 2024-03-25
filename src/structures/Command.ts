@@ -26,7 +26,7 @@ const argumentTypeMappings = {
     DiscordRole: ApplicationCommandOptionType.Role,
     DiscordChannel: ApplicationCommandOptionType.Channel,
     DiscordMentionable: ApplicationCommandOptionType.Mentionable,
-    SecondaryGroup: ApplicationCommandOptionType.String,
+    Group: ApplicationCommandOptionType.String,
 }
 
 const mapArgument = (arg: CommandArgument) => {

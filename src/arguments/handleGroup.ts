@@ -1,8 +1,8 @@
 import { AutocompleteInteraction, APIApplicationCommandOptionChoice } from 'discord.js';
 import { config } from '../config';
 
-const handleSecondaryGroup = async (interaction: AutocompleteInteraction, option: APIApplicationCommandOptionChoice) => {
-    let options = config.secondaryGroups.map((group) => ({
+const handleGroup = async (interaction: AutocompleteInteraction, option: APIApplicationCommandOptionChoice) => {
+    let options = config.groups.map((group) => ({
         name: group.name,
         value: group.name,
     }));
@@ -15,4 +15,4 @@ const handleSecondaryGroup = async (interaction: AutocompleteInteraction, option
     await interaction.respond(options.slice(0, 25));
 }
 
-export { handleSecondaryGroup };
+export { handleGroup };
