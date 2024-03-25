@@ -11,7 +11,6 @@ const handleGroup = async (interaction: AutocompleteInteraction, option: APIAppl
         options = options.filter((o) => o.name.toLowerCase().includes((option.value as string).toLowerCase()));
     }
 
-
     await interaction.respond(options.slice(0, 25));
 }
 

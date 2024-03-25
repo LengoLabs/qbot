@@ -5,11 +5,15 @@ import {
     CommandInteraction,
     AutocompleteInteraction,
     CacheType,
+    ApplicationCommandSubGroup,
+    ApplicationCommandSubCommand,
+    CommandInteractionOptionResolver
 } from 'discord.js';
 import { handleRobloxUser } from '../arguments/handleRobloxUser';
 import { handleRobloxRole } from '../arguments/handleRobloxRole';
 import { handleGroup } from '../arguments/handleGroup';
 import { getUnknownCommandMessage, getNoPermissionEmbed } from '../handlers/locale';
+import { Group as RobloxGroup } from "bloxy/dist/structures";
 
 const handleInteraction = async (payload: Interaction<CacheType>) => {
     if(payload instanceof CommandInteraction) {
@@ -41,8 +45,13 @@ const handleInteraction = async (payload: Interaction<CacheType>) => {
         if(!command) return;
         const focusedArg = (new command()).args.find((arg) => arg.trigger === focusedOption.name);
 
+        let robloxGroup;
+        // get it somehow??? test draft below.
+        const robloxGroupName = interaction.options.getString('group');
+        console.log(robloxGroupName, interaction.options);
+
         if(focusedArg.type === 'RobloxUser') handleRobloxUser(interaction, focusedOption);
-        if(focusedArg.type === 'RobloxRole') await handleRobloxRole(interaction, focusedOption);
+        if(focusedArg.type === 'RobloxRole') await handleRobloxRole(robloxGroup, interaction, focusedOption);
         if(focusedArg.type === 'Group') await handleGroup(interaction, focusedOption);
     }
 }
