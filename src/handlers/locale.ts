@@ -1,7 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import { CommandArgument, DatabaseUser } from '../structures/types';
 import { config } from '../config';
-import { User, PartialUser, GroupMember, GroupJoinRequest, GroupRole } from 'bloxy/dist/structures';
+import { User, PartialUser, GroupMember, GroupJoinRequest, GroupRole, Group as RobloxGroup } from 'bloxy/dist/structures';
 import { User as DiscordUser } from 'discord.js';
 import { Command } from '../structures/Command';
 import { robloxClient } from '../main';
@@ -412,13 +412,13 @@ export const getWallPostEmbed = async (post): Promise<EmbedBuilder> => {
     return embed;
 }
 
-export const getLogEmbed = async (action: string, moderator: DiscordUser | User | GroupMember | any, reason?: string, target?: User | PartialUser, rankChange?: string, endDate?: Date, body?: string, xpChange?: string, secondaryGroup?: string): Promise<EmbedBuilder> => {
+export const getLogEmbed = async (robloxGroup: RobloxGroup|null, action: string, moderator: DiscordUser | User | GroupMember | any, reason?: string, target?: User | PartialUser, rankChange?: string, endDate?: Date, body?: string, xpChange?: string): Promise<EmbedBuilder> => {
     if (target && !target.name) target = null;
 
     const embed = new EmbedBuilder()
         .setColor(mainColor)
         .setTimestamp()
-        .setDescription(`**Action:** ${action}\n${target ? `**Target:** ${target.name} (${target.id})\n` : ''}${rankChange ? `**Rank Change:** ${rankChange}\n` : ''}${xpChange ? `**XP Change:** ${xpChange}\n` : ''}${endDate ? `**Duration:** <t:${Math.round(endDate.getTime() / 1000)}:R>\n` : ''}${secondaryGroup ? `**Group:** ${secondaryGroup}\n` : ''}${reason ? `**Reason:** ${reason}\n` : ''}${body ? `**Body:** ${body}\n` : ''}`);
+        .setDescription(`**Action:** ${action}\n${target ? `**Target:** ${target.name} (${target.id})\n` : ''}${rankChange ? `**Rank Change:** ${rankChange}\n` : ''}${xpChange ? `**XP Change:** ${xpChange}\n` : ''}${endDate ? `**Duration:** <t:${Math.round(endDate.getTime() / 1000)}:R>\n` : ''}${robloxGroup ? `**Group:** ${robloxGroup.name}\n` : ''}${reason ? `**Reason:** ${reason}\n` : ''}${body ? `**Body:** ${body}\n` : ''}`);
 
     if (typeof moderator === 'string') {
         embed.setAuthor({ name: moderator });

@@ -11,6 +11,7 @@ import { recordMemberCount } from './events/member';
 import { clearActions } from './handlers/abuseDetection';
 import { checkBans } from './events/bans';
 import { checkWallForAds } from './events/wall';
+import { GroupConfig } from './structures/types';
 require('dotenv').config();
 
 // [Ensure Setup]
@@ -23,31 +24,26 @@ require('./database');
 require('./api');
 
 // [Clients]
+const robloxClient = new RobloxClient({ credentials: { cookie: process.env.ROBLOX_COOKIE } });
 const discordClient = new QbotClient();
 discordClient.login(process.env.DISCORD_TOKEN);
 
-const robloxClient = new RobloxClient({ credentials: { cookie: process.env.ROBLOX_COOKIE } });
-let robloxGroup: Group = null;
-
 (async () => {
     await robloxClient.login().catch(console.error);
-    robloxGroup = await robloxClient.getGroup(config.groupId);
     
     // [Events]
     checkSuspensions();
     checkBans();
 
-    if(config.logChannels.shout) recordShout(robloxGroup);
-    if(config.recordManualActions) recordAuditLogs(robloxGroup);
-    if(config.memberCount.enabled) recordMemberCount();
     if(config.antiAbuse.enabled) clearActions();
-    if(config.deleteWallURLs) checkWallForAds();
 
-    config.secondaryGroups.forEach(async (group) => {
-        const robloxGroup = await robloxClient.getGroup(group.id);
-        
-        if (group.recordManualActions) recordAuditLogs(robloxGroup);
+    config.groups.forEach(async (groupConfig: GroupConfig) => {
+        const robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
+
         if (config.logChannels.shout) recordShout(robloxGroup);
+        if (groupConfig.memberCount.enabled) recordMemberCount(robloxGroup, groupConfig);
+        if (groupConfig.deleteWallURLs) checkWallForAds(robloxGroup);
+        if (groupConfig.recordManualActions) recordAuditLogs(robloxGroup);
     });
 })();
 
@@ -56,4 +52,4 @@ discordClient.on('interactionCreate', handleInteraction as any);
 discordClient.on('messageCreate', handleLegacyCommand);
 
 // [Module]
-export { discordClient, robloxClient, robloxGroup };
+export { discordClient, robloxClient };

@@ -4,6 +4,128 @@ import {
     ApplicationCommandOptionAllowedChannelTypes
 } from 'discord.js';
 
+export interface GroupConfig {
+    /**
+    * The name of the group, to be uniquely identified by.
+    * boolean = default to group name
+    */
+    name: string | boolean;
+    
+    /**
+     * The Roblox ID of the group.
+     */
+    groupId: number;
+
+    /**
+     * What rank should be the maximum that can be ranked by your bot? 
+    */
+    maximumRank: number;
+
+    /**
+     * What rank should be the maximum that can be ranked by your bot? 
+    */
+    recordManualActions: boolean;
+
+    /**
+     * What rank should users be ranked to when they are fired?
+     * @default 1
+     */
+    firedRank: number;
+
+    /**
+     * What role should users be placed at if they are suspended?
+     * @default 1
+     */
+    suspendedRank: number;
+
+    /**
+     * Should the bot delete URLs in your group wall?
+     * @default false
+     */
+    deleteWallURLs: boolean;
+
+    /**
+   * IDs of roles that have permission to do various things.
+   */
+    permissions: {
+        /**
+         * Access to all commands. Please be careful with this.
+         */
+        all?: string[];
+        /**
+         * Access to the promote, demote, setrank, and fire commands.
+         */
+        ranking?: string[];
+        /**
+         * Access to the info, add-xp, remove-xp, and xp-rankup commands.
+         */
+        users?: string[];
+        /**
+         * Access to the shout command.
+         */
+        shout?: string[];
+        /**
+         * Access to the join-requests, accept-join, and deny-join commands.
+         */
+        join?: string[];
+        /**
+         * Access to the signal command.
+         */
+        signal?: string[];
+        /**
+         * Access to the revert-ranks, exile, groupban, and ungroupban command.
+         */
+        admin?: string[];
+    }
+
+    memberCount: {
+        /**
+         * Is this feature enabled?
+         */
+        enabled: boolean;
+        /**
+         * What channel should the member count be announced in when it changes?
+         */
+        channelId?: string;
+        /**
+         * Multiples of this number will be considered milestones.
+         */
+        milestone?: number;
+        /**
+         * Should the bot log member counts that are not milestones?
+         */
+        onlyMilestones?: boolean;
+    };
+
+    /**
+   * Configuration for the XP system.
+   */
+    xpSystem: {
+        /**
+         * Should the XP system be enabled?
+         */
+        enabled: boolean;
+        /**
+         * Should users be ranked up if they meet requirements after their XP is changed through commands?
+         */
+        autoRankup: boolean;
+        /**
+         * Roles that users can rank up to.
+         */
+        roles?: {
+            /**
+             * The rank number of this role.
+             */
+            rank: number;
+            /**
+             * The minimum XP that a user needs to rank up to this role.
+             * They will always rank up to the one with the highest XP.
+             */
+            xp: number;
+        }[];
+    };
+}
+
 export interface BotConfig {
     /**
      * The ID of the Roblox group this bot will be tied to.
@@ -91,126 +213,7 @@ export interface BotConfig {
         bloxlinkGuildId?: string;
     };
 
-    groups: {
-        /**
-         * The name of the group, to be uniquely identified by.
-         * boolean = default to group name
-         */
-        name: string | boolean;
-        /**
-         * The Roblox ID of the group.
-         */
-        id: number;
-
-        /**
-         * What rank should be the maximum that can be ranked by your bot? 
-        */
-        maximumRank: number;
-
-        /**
-         * What rank should be the maximum that can be ranked by your bot? 
-        */
-        recordManualActions: boolean;
-
-        /**
-         * What rank should users be ranked to when they are fired?
-         * @default 1
-         */
-        firedRank: number;
-
-        /**
-         * What role should users be placed at if they are suspended?
-         * @default 1
-         */
-        suspendedRank: number;
-
-        /**
-         * Should the bot delete URLs in your group wall?
-         * @default false
-         */
-        deleteWallURLs: boolean;
-
-        /**
-     * IDs of roles that have permission to do various things.
-     */
-        permissions: {
-            /**
-             * Access to all commands. Please be careful with this.
-             */
-            all?: string[];
-            /**
-             * Access to the promote, demote, setrank, and fire commands.
-             */
-            ranking?: string[];
-            /**
-             * Access to the info, add-xp, remove-xp, and xp-rankup commands.
-             */
-            users?: string[];
-            /**
-             * Access to the shout command.
-             */
-            shout?: string[];
-            /**
-             * Access to the join-requests, accept-join, and deny-join commands.
-             */
-            join?: string[];
-            /**
-             * Access to the signal command.
-             */
-            signal?: string[];
-            /**
-             * Access to the revert-ranks, exile, groupban, and ungroupban command.
-             */
-            admin?: string[];
-        }
-
-        memberCount: {
-            /**
-             * Is this feature enabled?
-             */
-            enabled: boolean;
-            /**
-             * What channel should the member count be announced in when it changes?
-             */
-            channelId?: string;
-            /**
-             * Multiples of this number will be considered milestones.
-             */
-            milestone?: number;
-            /**
-             * Should the bot log member counts that are not milestones?
-             */
-            onlyMilestones?: boolean;
-        };
-
-        /**
-     * Configuration for the XP system.
-     */
-        xpSystem: {
-            /**
-             * Should the XP system be enabled?
-             */
-            enabled: boolean;
-            /**
-             * Should users be ranked up if they meet requirements after their XP is changed through commands?
-             */
-            autoRankup: boolean;
-            /**
-             * Roles that users can rank up to.
-             */
-            roles?: {
-                /**
-                 * The rank number of this role.
-                 */
-                rank: number;
-                /**
-                 * The minimum XP that a user needs to rank up to this role.
-                 * They will always rank up to the one with the highest XP.
-                 */
-                xp: number;
-            }[];
-        };
-    }[];
+    groups: [GroupConfig];
 
     /**
      * Configuration for the bot's activity status (rich presence) on Discord.

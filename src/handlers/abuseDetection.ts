@@ -1,13 +1,14 @@
 import { User } from 'discord.js';
-import { config } from '../config';
-import { discordClient, robloxGroup } from '../main';
+import { config, findGroupById } from '../config';
+import { discordClient } from '../main';
 import { getLinkedRobloxUser } from './accountLinks';
 import { logAction } from './handleLogging';
 
 let actionCounts = [];
 
-const recordAction = async (moderator: User) => {
+const recordAction = async (robloxGroup, moderator: User) => {
     if(!config.antiAbuse.enabled) return;
+
     if(actionCounts[moderator.id]) {
         actionCounts[moderator.id] += 1;
     } else {
@@ -18,10 +19,20 @@ const recordAction = async (moderator: User) => {
         try {
             const linkedUser = await getLinkedRobloxUser(moderator.id);
             if(!linkedUser) return;
+
+            let groupConfig;
+
+            try {
+                groupConfig = await findGroupById(robloxGroup.id);
+            } catch (error) {
+                return console.error("Failed to recordAction, cannot find group config.");
+            }
+
             const groupRoles = await robloxGroup.getRoles();
-            const role = groupRoles.find((role) => role.rank === config.antiAbuse.demotionRank);
+            const demotionRank = groupConfig.suspendedRank > 0 ? groupConfig.suspendedRank : 1;
+            const role = groupRoles.find((role: any) => role.rank === demotionRank);
             await robloxGroup.updateMember(linkedUser.id, role.id);
-            logAction('Automatic Demotion', discordClient.user, '[Automatic] Admin abuse detected.', linkedUser);
+            logAction(robloxGroup, 'Automatic Demotion', discordClient.user, '[Automatic] Admin abuse detected.', linkedUser);
         } catch (err) {};
     }
 }

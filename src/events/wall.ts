@@ -1,10 +1,10 @@
 import { config } from '../config';
 import { robloxClient } from '../main';
 
-const checkWallForAds = async () => {
+const checkWallForAds = async (group) => {
     setTimeout(checkWallForAds, 30000);
+    
     try {
-        const group = await robloxClient.getGroup(config.groupId);
         const posts = await group.getWallPosts({ limit: 100, sortOrder: 'Desc' });
         posts.data?.forEach((post: any, index) => {
             setTimeout(async () => {

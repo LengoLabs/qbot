@@ -1,7 +1,7 @@
 import { ActivityType } from 'discord.js';
 import { BotConfig } from './structures/types';
 
-export const config: BotConfig = {
+const config: BotConfig = {
     groupId: 0,
     slashCommands: true,
     api: false,
@@ -43,10 +43,11 @@ export const config: BotConfig = {
              * boolean = default to group name
              */
             name: false,
+
             /**
              * The Roblox ID of the group.
              */
-            id: 1200769,
+            groupId: 1200769,
 
             /**
              * What rank should be the maximum that can be ranked by your bot? 
@@ -77,8 +78,8 @@ export const config: BotConfig = {
             deleteWallURLs: true,
 
             /**
-         * IDs of roles that have permission to do various things.
-         */
+            * IDs of roles that have permission to do various things.
+            */
             permissions: {
                 /**
                  * Access to all commands. Please be careful with this.
@@ -149,3 +150,15 @@ export const config: BotConfig = {
         }
     ],
 }
+
+function findGroupById(groupId: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+        config.groups.forEach(async (group) => {
+            if (group.id == groupId) resolve(group);
+        });
+
+        reject("Group not found. Are you sure it exists?");
+    });
+}
+
+export { config, findGroupById }
