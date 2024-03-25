@@ -37,7 +37,7 @@ class DenyJoinCommand extends Command {
                 },
                 {
                     trigger: 'group',
-                    description: 'Which secondary group would you like to run this action in, if any?',
+                    description: 'Which group would you like to run this action in?',
                     isLegacyFlag: true,
                     autocomplete: true,
                     required: true,

@@ -33,17 +33,17 @@ class ShoutCommand extends Command {
                 },
                 {
                     trigger: 'group',
-                    description: 'Which secondary group would you like to run this action in, if any?',
+                    description: 'Which group would you like to run this action in?',
                     isLegacyFlag: true,
                     autocomplete: true,
-                    required: false,
-                    type: 'SecondaryGroup',
+                    required: true,
+                    type: 'Group',
                 }
             ],
             permissions: [
                 {
                     type: 'role',
-                    ids: config.permissions.shout,
+                    ids: config.basePermissions.shout,
                     value: true,
                 }
             ]
