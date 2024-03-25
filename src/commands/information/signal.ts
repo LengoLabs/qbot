@@ -22,7 +22,7 @@ class SignalCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    ids: config.permissions.signal,
+                    ids: config.basePermissions.signal,
                     value: true,
                 }
             ]
