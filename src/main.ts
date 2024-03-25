@@ -35,7 +35,7 @@ let robloxGroup: Group = null;
     checkSuspensions();
     checkBans();
     if(config.logChannels.shout) recordShout();
-    if(config.recordManualActions) recordAuditLogs();
+    if(config.recordManualActions) recordAuditLogs(robloxGroup);
     if(config.memberCount.enabled) recordMemberCount();
     if(config.antiAbuse.enabled) clearActions();
     if(config.deleteWallURLs) checkWallForAds();

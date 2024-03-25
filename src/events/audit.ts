@@ -1,10 +1,10 @@
-import { robloxClient, robloxGroup } from '../main';
+import { robloxClient } from '../main';
 import { logAction } from '../handlers/handleLogging';
 import { config } from '../config';
 
 let lastRecordedDate: number;
 
-const recordAuditLogs = async () => {
+const recordAuditLogs = async (robloxGroup) => {
     try {
         const auditLog = await robloxClient.apis.groupsAPI.getAuditLogs({
             groupId: config.groupId,
@@ -12,7 +12,9 @@ const recordAuditLogs = async () => {
             limit: 10,
             sortOrder: 'Desc',
         });
+
         const mostRecentDate = new Date(auditLog.data?.[0].created).getTime();
+
         if(lastRecordedDate) {
             const groupRoles = await robloxGroup.getRoles();
             auditLog.data.forEach(async (log) => {
