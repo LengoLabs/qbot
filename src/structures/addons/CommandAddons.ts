@@ -12,6 +12,7 @@ import { Command } from '../Command';
 import { Args } from 'lexure';
 import { getMissingArgumentsEmbed } from '../../handlers/locale';
 import { config } from '../../config';
+import { GroupConfig, PermissionsConfig } from '../types';
 
 export class CommandContext {
     type: 'interaction' | 'message';
@@ -78,14 +79,12 @@ export class CommandContext {
         }
     }
 
-    checkSecondaryPermissions(permissionConfig: any, permissionGroup: string = "ranking") {
-        if (permissionConfig.length === 0) return true;
-
+    checkSecondaryPermissions(permissionConfig: PermissionsConfig, permissionGroup: string = "admin") {
         let hasPermission = null;
 
         permissionConfig[permissionGroup].forEach((roleId: string) => {
             if (!hasPermission) {
-                const hasGlobalPermission: boolean = config.permissions.all && this.member.roles.cache.some((role: any) => config.permissions.all.includes(role.id));
+                const hasGlobalPermission: boolean = config.basePermissions.all && this.member.roles.cache.some((role: any) => config.basePermissions.all.includes(role.id));
                 const hasSecGroupPermission: boolean = permissionConfig.all && this.member.roles.cache.some((role: any) => permissionConfig.all.includes(role.id));
 
                 hasPermission = (hasGlobalPermission || hasSecGroupPermission) ? true : this.member.roles.cache.has(roleId);
@@ -113,7 +112,7 @@ export class CommandContext {
             const permission = permissions.forEach((permission) => {
                 let fitsCriteria: boolean;
                 if (!hasPermission) {
-                    if (config.permissions.all && this.member.roles.cache.some((role) => config.permissions.all.includes(role.id))) {
+                    if (config.basePermissions.all && this.member.roles.cache.some((role) => config.basePermissions.all.includes(role.id))) {
                         fitsCriteria = true;
                     } else {
                         if (permission.type === 'role') fitsCriteria = this.member.roles.cache.has(permission.id);

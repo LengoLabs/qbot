@@ -4,7 +4,8 @@ import {
     getSuccessfulRevertRanksEmbed,
     getInvalidDurationEmbed,
     getInvalidRobloxUserEmbed,
-    getInvalidRobloxGroupEmbed
+    getInvalidRobloxGroupEmbed,
+    getNoPermissionEmbed
 } from '../../handlers/locale';
 import { config } from '../../config';
 import { discordClient, robloxClient } from '../../main';
@@ -64,6 +65,7 @@ class RevertRanksCommand extends Command {
 
         const groupConfig = config.groups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
         if(!groupConfig) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+        if(!ctx.checkSecondaryPermissions(groupConfig.permissions, ctx.command.module)) return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
         robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
 
         let robloxUser: User | PartialUser;
