@@ -2,7 +2,6 @@ import { ActivityType } from 'discord.js';
 import { BotConfig } from './structures/types';
 
 const config: BotConfig = {
-    groupId: 0,
     slashCommands: true,
     api: false,
     status: 'online',
@@ -154,7 +153,7 @@ const config: BotConfig = {
 function findGroupById(groupId: number): Promise<any> {
     return new Promise((resolve, reject) => {
         config.groups.forEach(async (group) => {
-            if (group.id == groupId) resolve(group);
+            if (group.groupId == groupId) resolve(group);
         });
 
         reject("Group not found. Are you sure it exists?");

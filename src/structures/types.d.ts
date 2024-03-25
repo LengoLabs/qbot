@@ -128,10 +128,6 @@ export interface GroupConfig {
 
 export interface BotConfig {
     /**
-     * The ID of the Roblox group this bot will be tied to.
-     */
-    groupId: number;
-    /**
      * Should slash commands be enabled? This is highly recommended, as it provides a way more interactive user experience.
      * 
      * Learn more at https://discord.dev/interactions/application-commands.
