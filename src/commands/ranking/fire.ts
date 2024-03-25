@@ -1,4 +1,4 @@
-import { discordClient, robloxClient, robloxGroup as defaultRobloxGroup } from '../../main';
+import { discordClient, robloxClient } from '../../main';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
@@ -44,17 +44,17 @@ class FireCommand extends Command {
                 },
                 {
                     trigger: 'group',
-                    description: 'Which secondary group would you like to run this action in, if any?',
+                    description: 'Which group would you like to run this action in, if any?',
                     isLegacyFlag: true,
                     autocomplete: true,
-                    required: false,
-                    type: 'SecondaryGroup',
+                    required: true,
+                    type: 'Group',
                 }
             ],
             permissions: [
                 {
                     type: 'role',
-                    ids: config.permissions.ranking,
+                    ids: config.basePermissions.ranking,
                     value: true,
                 }
             ]
@@ -62,13 +62,12 @@ class FireCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        let robloxGroup: Group = defaultRobloxGroup;
-        if(ctx.args['group']) {
-            const secondaryGroup = config.secondaryGroups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
-            if(!secondaryGroup) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
-            if(!ctx.checkSecondaryPermissions(secondaryGroup.permissions, ctx.command.module)) return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
-            robloxGroup = await robloxClient.getGroup(secondaryGroup.id);
-        }
+        let robloxGroup: Group;
+
+        const groupConfig = config.groups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+        if(!groupConfig) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+        if(!ctx.checkSecondaryPermissions(groupConfig.permissions, ctx.command.module)) return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
+        robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
 
         let robloxUser: User | PartialUser;
         try {
@@ -100,13 +99,13 @@ class FireCommand extends Command {
         }
 
         const groupRoles = await robloxGroup.getRoles();
-        const role = groupRoles.find((role) => role.rank === config.firedRank);
+        const role = groupRoles.find((role) => role.rank === groupConfig.firedRank);
         if(!role) {
             console.error(noFiredRankLog);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
         }
-        if(robloxMember.role.rank === config.firedRank) return ctx.reply({ embeds: [ getAlreadyFiredEmbed() ] });
-        if(role.rank > config.maximumRank || robloxMember.role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
+        if(robloxMember.role.rank === groupConfig.firedRank) return ctx.reply({ embeds: [ getAlreadyFiredEmbed() ] });
+        if(role.rank > groupConfig.maximumRank || robloxMember.role.rank > groupConfig.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
 
         if(config.verificationChecks.enabled) {
             const actionEligibility = await checkActionEligibility(robloxGroup, ctx.user.id, ctx.member.roles.cache.map((r) => r.id), ctx.guild.id, robloxMember, role.rank);
@@ -120,7 +119,7 @@ class FireCommand extends Command {
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);
             ctx.reply({ embeds: [ await getSuccessfulFireEmbed(robloxUser, role.name) ]});
-            logAction('Fire', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`, null, null, null, ctx.args['group']);
+            logAction(robloxGroup, 'Fire', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`, null, null, null);
         } catch (err) {
             console.error(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});

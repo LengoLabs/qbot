@@ -1,4 +1,4 @@
-import { discordClient, robloxClient, robloxGroup as defaultRobloxGroup } from '../../main';
+import { discordClient, robloxClient } from '../../main';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
@@ -43,17 +43,17 @@ class PromoteCommand extends Command {
                 },
                 {
                     trigger: 'group',
-                    description: 'Which secondary group would you like to run this action in, if any?',
+                    description: 'Which group would you like to run this action in, if any?',
                     isLegacyFlag: true,
                     autocomplete: true,
-                    required: false,
-                    type: 'SecondaryGroup',
+                    required: true,
+                    type: 'Group',
                 },
             ],
             permissions: [
                 {
                     type: 'role',
-                    ids: config.permissions.ranking,
+                    ids: config.basePermissions.ranking,
                     value: true,
                 }
             ]
@@ -61,13 +61,12 @@ class PromoteCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        let robloxGroup: Group = defaultRobloxGroup;
-        if(ctx.args['group']) {
-            const secondaryGroup = config.secondaryGroups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
-            if(!secondaryGroup) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
-            if(!ctx.checkSecondaryPermissions(secondaryGroup.permissions, ctx.command.module)) return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
-            robloxGroup = await robloxClient.getGroup(secondaryGroup.id);
-        }
+        let robloxGroup: Group;
+
+        const groupConfig = config.groups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+        if(!groupConfig) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+        if(!ctx.checkSecondaryPermissions(groupConfig.permissions, ctx.command.module)) return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
+        robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
 
         let robloxUser: User | PartialUser;
         try {
@@ -102,7 +101,7 @@ class PromoteCommand extends Command {
         const currentRoleIndex = groupRoles.findIndex((role) => role.rank === robloxMember.role.rank);
         const role = groupRoles[currentRoleIndex + 1];
         if(!role) return ctx.reply({ embeds: [ getNoRankAboveEmbed() ]});
-        if(role.rank > config.maximumRank || robloxMember.role.rank > config.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
+        if(role.rank > groupConfig.maximumRank || robloxMember.role.rank > groupConfig.maximumRank) return ctx.reply({ embeds: [ getRoleNotFoundEmbed() ] });
 
         if(config.verificationChecks.enabled) {
             const actionEligibility = await checkActionEligibility(robloxGroup, ctx.user.id, ctx.member.roles.cache.map((r) => r.id), ctx.guild.id, robloxMember, role.rank);
@@ -115,7 +114,7 @@ class PromoteCommand extends Command {
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);
             ctx.reply({ embeds: [ await getSuccessfulPromotionEmbed(robloxUser, role.name) ]});
-            logAction('Promote', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`, null, null, null, ctx.args['group']);
+            logAction(robloxGroup, 'Promote', ctx.user, ctx.args['reason'], robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`, null, null, null);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
