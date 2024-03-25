@@ -40,9 +40,7 @@ let robloxGroup: Group = null;
     if(config.memberCount.enabled) recordMemberCount();
     if(config.antiAbuse.enabled) clearActions();
     if(config.deleteWallURLs) checkWallForAds();
-})();
 
-(async () => {
     config.secondaryGroups.forEach(async (group) => {
         const robloxGroup = await robloxClient.getGroup(group.id);
         if (group.recordManualActions) recordAuditLogs(robloxGroup);
