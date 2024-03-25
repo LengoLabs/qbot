@@ -16,6 +16,7 @@ export interface BotConfig {
      * @default true
      */
     slashCommands: boolean;
+
     /**
      * Options for legacy (prefixed) commands (e.g. q!promote)
      */
@@ -31,39 +32,7 @@ export interface BotConfig {
          */
         prefixes: string[];
     }
-    /**
-     * IDs of roles that have permission to do various things.
-     */
-    permissions: {
-        /**
-         * Access to all commands. Please be careful with this.
-         */
-        all?: string[];
-        /**
-         * Access to the promote, demote, setrank, and fire commands.
-         */
-        ranking?: string[];
-        /**
-         * Access to the info, add-xp, remove-xp, and xp-rankup commands.
-         */
-        users?: string[];
-        /**
-         * Access to the shout command.
-         */
-        shout?: string[];
-        /**
-         * Access to the join-requests, accept-join, and deny-join commands.
-         */
-        join?: string[];
-        /**
-         * Access to the signal command.
-         */
-        signal?: string[];
-        /**
-         * Access to the revert-ranks, exile, groupban, and ungroupban command.
-         */
-        admin?: string[];
-    }
+
     // /**
     //  * Configuration for the built-in database module used by suspension and XP-related commands.
     //  */
@@ -77,6 +46,7 @@ export interface BotConfig {
     //      */
     //     type: 'mongodb' | 'sqlite';
     // }
+
     /**
      * Should actions be logged, and if so, where?
      */
@@ -90,14 +60,17 @@ export interface BotConfig {
          */
         shout?: string;
     }
+
     /**
      * Should the API be enabled? You are expected to have an environmental variable named API_KEY with a unique password-like string if this is enabled.
     */
     api: boolean;
+
     /**
-     * What rank should be the maximum that can be ranked by your bot? 
-    */
-    maximumRank: number;
+     * Configuration for the bot's status (online/idle/dnd).
+     */
+    status: 'online' | 'idle' | 'dnd';
+
     /**
      * Verification checks allows Qbot to integrate with Bloxlink to prevent users from ranking themselves, or uses above or at the same rank as them in your group.
     */
@@ -117,114 +90,128 @@ export interface BotConfig {
          */
         bloxlinkGuildId?: string;
     };
-    /**
-     * What rank should users be ranked to when they are fired?
-     * @default 1
-     */
-    firedRank: number;
-    /**
-     * What role should users be placed at if they are suspended?
-     * @default 1
-     */
-    suspendedRank: number;
-    /**
-     * Secondary groups allows users to run actions on multiple groups but one bot.
-     */
-    secondaryGroups: {
+
+    groups: {
         /**
          * The name of the group, to be uniquely identified by.
+         * boolean = default to group name
          */
-        name: string;
+        name: string | boolean;
         /**
          * The Roblox ID of the group.
          */
         id: number;
 
+        /**
+         * What rank should be the maximum that can be ranked by your bot? 
+        */
+        maximumRank: number;
+
+        /**
+         * What rank should be the maximum that can be ranked by your bot? 
+        */
         recordManualActions: boolean;
 
-        // Additional required permissions
+        /**
+         * What rank should users be ranked to when they are fired?
+         * @default 1
+         */
+        firedRank: number;
+
+        /**
+         * What role should users be placed at if they are suspended?
+         * @default 1
+         */
+        suspendedRank: number;
+
+        /**
+         * Should the bot delete URLs in your group wall?
+         * @default false
+         */
+        deleteWallURLs: boolean;
+
+        /**
+     * IDs of roles that have permission to do various things.
+     */
         permissions: {
+            /**
+             * Access to all commands. Please be careful with this.
+             */
             all?: string[];
+            /**
+             * Access to the promote, demote, setrank, and fire commands.
+             */
             ranking?: string[];
+            /**
+             * Access to the info, add-xp, remove-xp, and xp-rankup commands.
+             */
+            users?: string[];
+            /**
+             * Access to the shout command.
+             */
+            shout?: string[];
+            /**
+             * Access to the join-requests, accept-join, and deny-join commands.
+             */
+            join?: string[];
+            /**
+             * Access to the signal command.
+             */
+            signal?: string[];
+            /**
+             * Access to the revert-ranks, exile, groupban, and ungroupban command.
+             */
+            admin?: string[];
         }
-    }[];
-    /**
-     * Should the user being given xp using add-xp be automatically ranked up if they have the right amount of xp?
-     */
-    recordManualActions: boolean;
-    /**
-     * Configuration for the member count feature.
-     */
-    memberCount: {
+
+        memberCount: {
+            /**
+             * Is this feature enabled?
+             */
+            enabled: boolean;
+            /**
+             * What channel should the member count be announced in when it changes?
+             */
+            channelId?: string;
+            /**
+             * Multiples of this number will be considered milestones.
+             */
+            milestone?: number;
+            /**
+             * Should the bot log member counts that are not milestones?
+             */
+            onlyMilestones?: boolean;
+        };
+
         /**
-         * Is this feature enabled?
-         */
-        enabled: boolean;
-        /**
-         * What channel should the member count be announced in when it changes?
-         */
-        channelId?: string;
-        /**
-         * Multiples of this number will be considered milestones.
-         */
-        milestone?: number;
-        /**
-         * Should the bot log member counts that are not milestones?
-         */
-        onlyMilestones?: boolean;
-    }
-    /**
      * Configuration for the XP system.
      */
-    xpSystem: {
-        /**
-         * Should the XP system be enabled?
-         */
-        enabled: boolean;
-        /**
-         * Should users be ranked up if they meet requirements after their XP is changed through commands?
-         */
-        autoRankup: boolean;
-        /**
-         * Roles that users can rank up to.
-         */
-        roles?: {
+        xpSystem: {
             /**
-             * The rank number of this role.
+             * Should the XP system be enabled?
              */
-            rank: number;
+            enabled: boolean;
             /**
-             * The minimum XP that a user needs to rank up to this role.
-             * They will always rank up to the one with the highest XP.
+             * Should users be ranked up if they meet requirements after their XP is changed through commands?
              */
-            xp: number;
-        }[];
-    }
-    /**
-     * Configuration for the anti abuse feature. This works by demoting users who exceed the action threshold within the set amount of time.
-     */
-    antiAbuse: {
-        /**
-         * Should the anti abuse feature be enabled?
-         */
-        enabled: boolean;
-        /**
-         * How frequently should recorded actions be cleared? This is in seconds, and does not require integers.
-         */
-        clearDuration?: number;
-        /**
-         * Within the flushDuration specified above, how many actions can a user have before being demoted due to this anti abuse system?
-         */
-        threshold?: number;
-        /**
-         * What rank number should users be demoted to if their actions exceed the 
-         */
-        demotionRank?: number;
-        /**
-         * Is there a role that can bypass this? If so, place the ID here.
-         */
-        bypassRoleId?: string;
-    }
+            autoRankup: boolean;
+            /**
+             * Roles that users can rank up to.
+             */
+            roles?: {
+                /**
+                 * The rank number of this role.
+                 */
+                rank: number;
+                /**
+                 * The minimum XP that a user needs to rank up to this role.
+                 * They will always rank up to the one with the highest XP.
+                 */
+                xp: number;
+            }[];
+        };
+    }[];
+
     /**
      * Configuration for the bot's activity status (rich presence) on Discord.
      */
@@ -246,14 +233,32 @@ export interface BotConfig {
          */
         url?: string;
     }
+
+
     /**
-     * Configuration for the bot's status (online/idle/dnd).
-     */
-    status: 'online' | 'idle' | 'dnd';
-    /**
-     * Should the bot delete URLs in your group wall?
-     */
-    deleteWallURLs: boolean;
+    * Configuration for the anti abuse feature. This works by demoting users who exceed the action threshold within the set amount of time.
+    */
+    antiAbuse: {
+        /**
+         * Should the anti abuse feature be enabled?
+         */
+        enabled: boolean;
+
+        /**
+         * How frequently should recorded actions be cleared? This is in seconds, and does not require integers.
+         */
+        clearDuration?: number;
+
+        /**
+         * Within the flushDuration specified above, how many actions can a user have before being demoted due to this anti abuse system?
+         */
+        threshold?: number;
+
+        /**
+         * Is there a role that can bypass this? If so, place the ID here.
+         */
+        bypassRoleId?: string;
+    };
 }
 
 export declare type CommandPermission = {

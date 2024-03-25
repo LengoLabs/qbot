@@ -25,6 +25,7 @@ require('./api');
 // [Clients]
 const discordClient = new QbotClient();
 discordClient.login(process.env.DISCORD_TOKEN);
+
 const robloxClient = new RobloxClient({ credentials: { cookie: process.env.ROBLOX_COOKIE } });
 let robloxGroup: Group = null;
 
@@ -35,6 +36,7 @@ let robloxGroup: Group = null;
     // [Events]
     checkSuspensions();
     checkBans();
+
     if(config.logChannels.shout) recordShout(robloxGroup);
     if(config.recordManualActions) recordAuditLogs(robloxGroup);
     if(config.memberCount.enabled) recordMemberCount();
@@ -43,8 +45,9 @@ let robloxGroup: Group = null;
 
     config.secondaryGroups.forEach(async (group) => {
         const robloxGroup = await robloxClient.getGroup(group.id);
+        
         if (group.recordManualActions) recordAuditLogs(robloxGroup);
-        if(config.logChannels.shout) recordShout(robloxGroup);
+        if (config.logChannels.shout) recordShout(robloxGroup);
     });
 })();
 
