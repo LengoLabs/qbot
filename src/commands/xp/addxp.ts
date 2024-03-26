@@ -118,6 +118,7 @@ class AddXPCommand extends Command {
 
         const groupRoles = await robloxGroup.getRoles();
         const role = await findEligibleRole(robloxMember, groupRoles, xp);
+        
         if (role) {
             enoughForRankUp = true;
             try {

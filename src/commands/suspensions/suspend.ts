@@ -131,9 +131,9 @@ class SuspendCommand extends Command {
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 
-        const userData = await provider.findUser(robloxUser.id.toString());
+        const userData = await provider.findSuspendedUser(robloxUser.id.toString(), groupConfig.groupId);
         if(userData.suspendedUntil) return ctx.reply({ embeds: [ getAlreadySuspendedEmbed() ] });
-        await provider.updateUser(robloxUser.id.toString(), { suspendedUntil: endDate, unsuspendRank: robloxMember.role.id });
+        await provider.updateUserSuspension(robloxUser.id.toString(), groupConfig.groupId, { suspendedUntil: endDate, unsuspendRank: robloxMember.role.id });
 
         try {
             if(robloxMember.role.id !== role.id) await robloxGroup.updateMember(robloxUser.id, role.id);

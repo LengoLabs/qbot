@@ -97,7 +97,7 @@ class UnsuspendCommand extends Command {
             return ctx.reply({ embeds: [ getRobloxUserIsNotMemberEmbed() ]});
         }
 
-        const userData = await provider.findUser(robloxUser.id.toString());
+        const userData = await provider.findSuspendedUser(robloxUser.id.toString(), groupConfig.groupId);
         if(!userData.suspendedUntil) return ctx.reply({ embeds: [ getNotSuspendedEmbed() ] });
 
         const groupRoles = await robloxGroup.getRoles();
@@ -111,7 +111,7 @@ class UnsuspendCommand extends Command {
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 
-        await provider.updateUser(robloxUser.id.toString(), { suspendedUntil: null, unsuspendRank: null });
+        await provider.updateUserSuspension(robloxUser.id.toString(), groupConfig.groupId, { suspendedUntil: null, unsuspendRank: null });
 
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);

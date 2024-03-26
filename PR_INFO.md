@@ -6,6 +6,9 @@ Forked from qbot/multi-group.
 * Multi-group support
 * queryString param "groupId" is required to be passed on API endpoints which touch a group. Example: promote, xp, etc.
 
+> [!CAUTION]
+> In this new version of qbot, previous data of XP & suspensions will be lost due to new DB structure.
+
 # TODO:
 * Code & param cleanup.
 * Code review

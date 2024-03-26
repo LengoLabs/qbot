@@ -361,7 +361,8 @@ export declare type BloxlinkResponse = {
     resolved: any;
 }
 
-export declare type DatabaseUser = {
+
+export declare type SuspendedUser = {
     /**
      * Database-generated UUID for this user. No relevance to the Roblox or Discord IDs; you should ignore this value.
      */
@@ -371,9 +372,9 @@ export declare type DatabaseUser = {
      */
     robloxId: string;
     /**
-     * How much XP this user has.
+     * The Group ID of the associated with the user suspension.
      */
-    xp: number;
+    groupId: number;
     /**
      * If this user is suspended, when will they be unsuspended?
      */
@@ -382,6 +383,36 @@ export declare type DatabaseUser = {
      * What should they be ranked to once unsuspended?
      */
     unsuspendRank?: number;
+}
+
+export declare type XPUser = {
+    /**
+     * Database-generated UUID for this user. No relevance to the Roblox or Discord IDs; you should ignore this value.
+     */
+    id: string;
+    /**
+     * The Roblox ID of the user belonging to this database entry.
+     */
+    robloxId: string;
+    /**
+     * The Group ID of the associated with the user XP.
+     */
+    groupId: number;
+    /**
+     * How much XP this user has.
+     */
+    xp: number;
+}
+
+export declare type DatabaseUser = {
+    /**
+     * Database-generated UUID for this user. No relevance to the Roblox or Discord IDs; you should ignore this value.
+     */
+    id: string;
+    /**
+     * The Roblox ID of the user belonging to this database entry.
+     */
+    robloxId: string;
     /**
      * Is the user banned from the group?
      */
