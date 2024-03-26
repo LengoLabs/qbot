@@ -112,9 +112,9 @@ class AddXPCommand extends Command {
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 
-        const userData = await provider.findUser(robloxUser.id.toString());
+        const userData = await provider.findXPUser(robloxUser.id.toString(), groupConfig.groupId);
         const xp = Number(userData.xp) + Number(ctx.args['increment']);
-        await provider.updateUser(robloxUser.id.toString(), { xp });
+        await provider.updateUserXP(robloxUser.id.toString(), groupConfig.groupId, { xp });
 
         const groupRoles = await robloxGroup.getRoles();
         const role = await findEligibleRole(robloxMember, groupRoles, xp);

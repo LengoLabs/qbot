@@ -23,6 +23,12 @@ class PrismaProvider extends DatabaseProvider {
         return userData;
     }
 
+    async findXPUser(robloxId: string, groupId: number): Promise<XPUser> {
+        let userData = await this.db.xp.findUnique({ where: { robloxId: robloxId, groupId: groupId  } });
+        if (!userData) userData = await this.db.xp.create({ data: { robloxId: robloxId, groupId: groupId  } });
+        return userData;
+    }
+
     async findSuspendedUsers(groupId: number | null): Promise<SuspendedUser[]> {
         if (groupId == null) return await this.db.suspensions.findMany({ where: { suspendedUntil: { not: null } } });
         return await this.db.suspensions.findMany({ where: { groupId: groupId, suspendedUntil: { not: null } } });

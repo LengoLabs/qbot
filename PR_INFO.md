@@ -16,9 +16,11 @@ Forked from qbot/multi-group.
 # Issues
 ## Prisma database is untouched
 Additional modifications for multi-group/new config is required. qbot *may be fine* as long you don't utilize database releated functions. -- Current priority to get database done.
+* Update: Seem's completed. requires testing. api.ts needs updated for it.
 
 ## handleInteraction
 handleInteraction needs to be updated for getting robloxGroup for role searching. Currently broken.
+* Update: Testing soon.
 
 # Status
 STABLE: **NO**
