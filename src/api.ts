@@ -38,9 +38,49 @@ if (config.api) {
         next();
     });
 
+    app.get('/user/suspension', async (req, res) => {
+        const { id, groupId } = req.query;
+        if (!id) return res.send({ success: false, msg: 'Missing parameters.' });
+
+        try {
+            const robloxUser = await robloxClient.getUser(id as string);
+            const userData = await provider.findSuspendedUser(robloxUser.id.toString(), Number(groupId));
+            if (!userData) throw new Error();
+
+            return res.send({
+                success: true,
+                robloxId: userData.robloxId,
+                suspendedUntil: userData.suspendedUntil,
+                unsuspendRank: userData.unsuspendRank,
+            })
+        } catch (err) {
+            return res.send({ success: false, msg: 'Failed to get information.' });
+        }
+    });
+
+    app.get('/user/xp', async (req, res) => {
+        const { id, groupId } = req.query;
+        if (!id) return res.send({ success: false, msg: 'Missing parameters.' });
+
+        try {
+            const robloxUser = await robloxClient.getUser(id as string);
+            const userData = await provider.findXPUser(robloxUser.id.toString(), Number(groupId));
+            if (!userData) throw new Error();
+
+            return res.send({
+                success: true,
+                robloxId: userData.robloxId,
+                xp: userData.xp,
+            })
+        } catch (err) {
+            return res.send({ success: false, msg: 'Failed to get information.' });
+        }
+    });
+
     app.get('/user', async (req, res) => {
         const { id } = req.query;
         if (!id) return res.send({ success: false, msg: 'Missing parameters.' });
+
         try {
             const robloxUser = await robloxClient.getUser(id as string);
             const userData = await provider.findUser(robloxUser.id.toString());
@@ -49,9 +89,6 @@ if (config.api) {
             return res.send({
                 success: true,
                 robloxId: userData.robloxId,
-                xp: userData.xp,
-                suspendedUntil: userData.suspendedUntil,
-                unsuspendRank: userData.unsuspendRank,
                 isBanned: userData.isBanned,
             })
         } catch (err) {
@@ -60,8 +97,9 @@ if (config.api) {
     });
 
     app.get('/suspensions', async (req, res) => {
+        const { groupId } = req.query;
         try {
-            const suspensions = await provider.findSuspendedUsers();
+            const suspensions = await provider.findSuspendedUsers(Number(groupId));
             if (suspensions.length == 0) return res.send({ success: true, msg: 'No currently suspended users.' });
 
             const data = JSON.stringify(suspensions);
@@ -109,7 +147,7 @@ if (config.api) {
         const { groupId } = req.query;
 
         if (!id) return res.send({ success: false, msg: 'Missing parameters.' });
-        
+
         try {
             const robloxGroup = await robloxClient.getGroup(Number(groupId));
             const robloxMember = await robloxGroup.getMember(Number(id));
@@ -208,10 +246,10 @@ if (config.api) {
             const role = groupRoles.find((role) => role.rank === groupConfig.suspendedRank);
             if (!role) throw new Error();
 
-            const userData = await provider.findUser(robloxMember.id.toString());
+            const userData = await provider.findSuspendedUser(robloxMember.id.toString(), Number(groupId));
             if (userData.suspendedUntil) throw new Error();
             if (robloxMember.role.id !== role.id) await robloxGroup.updateMember(Number(id), role.id);
-            
+
             const durationInMs = Number(ms(duration));
             if (durationInMs < 0.5 * 60000 && durationInMs > 6.31138519 * (10 ^ 10)) throw new Error();
 
@@ -219,7 +257,7 @@ if (config.api) {
             endDate.setMilliseconds(endDate.getMilliseconds() + durationInMs);
 
             logAction(robloxGroup, 'Suspend', 'API Action', null, robloxMember, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`, endDate);
-            await provider.updateUser(robloxMember.id.toString(), { suspendedUntil: endDate, unsuspendRank: robloxMember.role.id });
+            await provider.updateUserSuspension(robloxMember.id.toString(), Number(groupId), { suspendedUntil: endDate, unsuspendRank: robloxMember.role.id });
 
             return res.send({ success: true });
         } catch (err) {
@@ -236,7 +274,7 @@ if (config.api) {
             const robloxMember = await robloxGroup.getMember(Number(id));
             if (!robloxMember) throw new Error();
 
-            const userData = await provider.findUser(robloxMember.id.toString());
+            const userData = await provider.findSuspendedUser(robloxMember.id.toString(), Number(groupId));
             if (!userData.suspendedUntil) throw new Error();
             if (robloxMember.role.id !== userData.unsuspendRank) await robloxGroup.updateMember(Number(id), userData.unsuspendRank);
 
@@ -245,7 +283,7 @@ if (config.api) {
             if (!role) throw new Error();
 
             logAction(robloxGroup, 'Unsuspend', 'API Action', null, robloxMember, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
-            await provider.updateUser(robloxMember.id.toString(), { suspendedUntil: null, unsuspendRank: null });
+            await provider.updateUserSuspension(robloxMember.id.toString(), Number(groupId), { suspendedUntil: null, unsuspendRank: null });
 
             return res.send({ success: true });
         } catch (err) {
@@ -262,11 +300,11 @@ if (config.api) {
             const robloxMember = await robloxGroup.getMember(Number(id));
             if (!robloxMember) throw new Error();
 
-            const userData = await provider.findUser(robloxMember.id.toString());
+            const userData = await provider.findXPUser(robloxMember.id.toString(), Number(groupId));
             const xp = Number(userData.xp) + Number(amount);
 
             logAction(robloxGroup, 'Add XP', 'API Action', null, robloxMember, null, null, null, `${userData.xp} → ${xp} (+${Number(amount)})`);
-            await provider.updateUser(robloxMember.id.toString(), { xp });
+            await provider.updateUserXP(robloxMember.id.toString(), Number(groupId), { xp });
 
             return res.send({ success: true });
         } catch (err) {
@@ -283,11 +321,11 @@ if (config.api) {
             const robloxMember = await robloxGroup.getMember(Number(id));
             if (!robloxMember) throw new Error();
 
-            const userData = await provider.findUser(robloxMember.id.toString());
+            const userData = await provider.findXPUser(robloxMember.id.toString(), Number(groupId));
             const xp = Number(userData.xp) - Number(amount);
 
             logAction(robloxGroup, 'Remove XP', 'API Action', null, robloxMember, null, null, null, `${userData.xp} → ${xp} (+${Number(amount)})`);
-            await provider.updateUser(robloxMember.id.toString(), { xp });
+            await provider.updateUserXP(robloxMember.id.toString(), Number(groupId), { xp });
 
             return res.send({ success: true });
         } catch (err) {
@@ -305,7 +343,7 @@ if (config.api) {
             if (!robloxMember) throw new Error();
 
             const groupRoles = await robloxGroup.getRoles();
-            const userData = await provider.findUser(robloxMember.id.toString());
+            const userData = await provider.findXPUser(robloxMember.id.toString(), Number(groupId));
             const role = await findEligibleRole(robloxMember, groupRoles, userData.xp);
             if (!role) return res.send({ success: false, msg: 'No rankup available.' });
 
