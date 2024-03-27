@@ -4,7 +4,8 @@ import { Group as RobloxGroup } from "bloxy/dist/structures";
 import { GroupConfig } from '../structures/types';
 
 const checkSuspensions = async (robloxGroup: RobloxGroup, groupConfig: GroupConfig) => {
-    const suspensions = await provider.findSuspendedUsers();
+    const suspensions = await provider.findSuspendedUsers(robloxGroup.id);
+    
     suspensions.forEach(async (suspension) => {
         try {
             const robloxMember = await robloxGroup.getMember(Number(suspension.robloxId));

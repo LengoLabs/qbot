@@ -90,9 +90,9 @@ class XPRankupCommand extends Command {
             return ctx.reply({ embeds: [ getRobloxUserIsNotMemberEmbed() ]});
         }
 
-        const groupRoles = await robloxGroup.getRoles();
         const userData = await provider.findXPUser(robloxUser.id.toString(), groupConfig.groupId);
-        const role = await findEligibleRole(robloxMember, groupRoles, userData.xp);
+        const role = await findEligibleRole(robloxMember, robloxGroup, userData.xp);
+        
         if(!role) return ctx.reply({ embeds: [ getNoRankupAvailableEmbed() ] });
 
         if(ctx.args['roblox-user']) {

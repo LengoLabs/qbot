@@ -24,8 +24,8 @@ class PrismaProvider extends DatabaseProvider {
     }
 
     async findXPUser(robloxId: string, groupId: number): Promise<XPUser> {
-        let userData = await this.db.xp.findUnique({ where: { robloxId: robloxId, groupId: groupId  } });
-        if (!userData) userData = await this.db.xp.create({ data: { robloxId: robloxId, groupId: groupId  } });
+        let userData = await this.db.xP.findUnique({ where: { robloxId: robloxId, groupId: groupId  } });
+        if (!userData) userData = await this.db.xP.create({ data: { robloxId: robloxId, groupId: groupId  } });
         return userData;
     }
 
@@ -48,12 +48,12 @@ class PrismaProvider extends DatabaseProvider {
     }
 
     async updateUserXP(robloxId: string, groupId: number, data: any) {
-        let userData = await this.db.xp.findUnique({ where: { robloxId: robloxId, groupId: groupId } });
-        if (!userData) userData = await this.db.xp.create({ data: { robloxId: robloxId, groupId: groupId } });
+        let userData = await this.db.xP.findUnique({ where: { robloxId: robloxId, groupId: groupId } });
+        if (!userData) userData = await this.db.xP.create({ data: { robloxId: robloxId, groupId: groupId } });
 
         const newData: XPUser = userData;
         Object.keys(data).forEach((key) => newData[key] = data[key]);
-        return await this.db.xp.update({ where: { robloxId: robloxId, groupId: groupId }, data: userData });
+        return await this.db.xP.update({ where: { robloxId: robloxId, groupId: groupId }, data: userData });
     }
 
     async updateUserSuspension(robloxId: string, groupId: number, data: any) {

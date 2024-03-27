@@ -418,7 +418,7 @@ export const getLogEmbed = async (robloxGroup: RobloxGroup|boolean, action: stri
     const embed = new EmbedBuilder()
         .setColor(mainColor)
         .setTimestamp()
-        .setDescription(`**Action:** ${action}\n${target ? `**Target:** ${target.name} (${target.id})\n` : ''}${rankChange ? `**Rank Change:** ${rankChange}\n` : ''}${xpChange ? `**XP Change:** ${xpChange}\n` : ''}${endDate ? `**Duration:** <t:${Math.round(endDate.getTime() / 1000)}:R>\n` : ''}${robloxGroup ? `**Group:** ${robloxGroup.name}\n` : ''}${reason ? `**Reason:** ${reason}\n` : ''}${body ? `**Body:** ${body}\n` : ''}`);
+        .setDescription(`**Action:** ${action}\n${target ? `**Target:** ${target.name} (${target.id})\n` : ''}${rankChange ? `**Rank Change:** ${rankChange}\n` : ''}${xpChange ? `**XP Change:** ${xpChange}\n` : ''}${endDate ? `**Duration:** <t:${Math.round(endDate.getTime() / 1000)}:R>\n` : ''}${typeof robloxGroup === "boolean" ? '' : `**Group:** ${robloxGroup.name}\n`}${reason ? `**Reason:** ${reason}\n` : ''}${body ? `**Body:** ${body}\n` : ''}`);
 
     if (typeof moderator === 'string') {
         embed.setAuthor({ name: moderator });
@@ -494,6 +494,15 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
                 inline: true
             },
             {
+                name: 'Banned',
+                value: data.isBanned ? `✅` : '❌',
+                inline: true
+            }
+        ]);
+
+        /*
+        TODO: ADD
+            {
                 name: 'XP',
                 value: data.xp.toString() || '0',
                 inline: true
@@ -503,13 +512,7 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
                 value: data.suspendedUntil ? `✅ (<t:${Math.round(data.suspendedUntil.getTime() / 1000)}:R>)` : '❌',
                 inline: true
             },
-            {
-                name: 'Banned',
-                value: data.isBanned ? `✅` : '❌',
-                inline: true
-            }
-        ]);
-
+            */
     return embed;
 }
 

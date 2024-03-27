@@ -30,6 +30,7 @@ class InfoCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
+        /*
         let robloxUser: User | PartialUser;
         try {
             if(ctx.args['roblox-user']) {
@@ -67,6 +68,7 @@ class InfoCommand extends Command {
         }
 
         return ctx.reply({ embeds: [ await getUserInfoEmbed(robloxUser, robloxMember, userData) ] });
+        */
     }
 }
 

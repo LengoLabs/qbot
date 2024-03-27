@@ -342,9 +342,8 @@ if (config.api) {
             const robloxMember = await robloxGroup.getMember(Number(id));
             if (!robloxMember) throw new Error();
 
-            const groupRoles = await robloxGroup.getRoles();
             const userData = await provider.findXPUser(robloxMember.id.toString(), Number(groupId));
-            const role = await findEligibleRole(robloxMember, groupRoles, userData.xp);
+            const role = await findEligibleRole(robloxMember, robloxGroup, userData.xp);
             if (!role) return res.send({ success: false, msg: 'No rankup available.' });
 
             await robloxGroup.updateMember(robloxMember.id, role.id);

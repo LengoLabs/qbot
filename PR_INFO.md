@@ -10,7 +10,8 @@ Forked from qbot/multi-group.
 > In this new version of qbot, previous data of XP & suspensions will be lost due to new DB structure.
 
 # TODO:
-* Code & param cleanup.
+* Testing
+* info.ts command
 * Code review
 
 # Issues
