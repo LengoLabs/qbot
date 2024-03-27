@@ -108,8 +108,8 @@ class PromoteCommand extends Command {
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 
-        const userData = await provider.findUser(robloxUser.id.toString());
-        if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
+        const susUserData = await provider.findSuspendedUser(robloxUser.id.toString(), robloxGroup.id);
+        if(susUserData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
 
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);

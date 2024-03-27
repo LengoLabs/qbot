@@ -2,10 +2,12 @@ import { TextChannel } from 'discord.js';
 import { discordClient, robloxClient } from '../main';
 import { config } from '../config';
 import { getShoutLogEmbed } from '../handlers/locale';
+import { Group } from 'bloxy/dist/structures';
+
 let firstShout = true;
 let lastShout: string;
 
-const recordShout = async (group) => {
+const recordShout = async (group: Group) => {
     try {
         const logChannel = await discordClient.channels.fetch(config.logChannels.shout) as TextChannel;
 

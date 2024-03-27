@@ -114,9 +114,11 @@ class FireCommand extends Command {
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 
-        const userData = await provider.findUser(robloxUser.id.toString());
-        if(userData.xp !== 0) return provider.updateUser(robloxUser.id.toString(), { xp: 0 });
-        if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
+        const xpUserData = await provider.findXPUser(robloxUser.id.toString(), robloxGroup.id);
+        const susUserData = await provider.findSuspendedUser(robloxUser.id.toString(), robloxGroup.id);
+
+        if(xpUserData.xp !== 0) return provider.updateUser(robloxUser.id.toString(), { xp: 0 });
+        if(susUserData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
 
         try {
             await robloxGroup.updateMember(robloxUser.id, role.id);
