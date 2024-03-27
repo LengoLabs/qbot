@@ -5,12 +5,32 @@ Forked from qbot/multi-group.
 * Code issue fixes
 * Multi-group support
 * queryString param "groupId" is required to be passed on API endpoints which touch a group. Example: promote, xp, etc.
+* few more i prob forgo
 
 > [!CAUTION]
 > In this new version of qbot, previous data of XP & suspensions will be lost due to new DB structure.
 
-# TODO:
-* Code review
+# Tests
+## Legend
+* ✅ = PASS BUG FREE/FULLY OPERATIONAL
+* 🐛 = BUGGY
+* ❌ = FAIL
+
+## Test results
+* /joinrequest - ✅
+* /acceptjoin - ✅
+* /denyjoin - ✅
+* /shout - ✅
+* /promote - ✅
+* /setrank - ✅
+* /fire - TEST
+* /roles - ✅
+* /revertranks - ✅
+* /groupban - ✅
+* /ungroupban - ✅
+* /exile - ✅
+
+XP & Suspension system un-tested.
 
 # Issues
 ## Prisma database is untouched
@@ -19,8 +39,7 @@ Forked from qbot/multi-group.
 * Update: Seems fully done, testing required.
 
 # Status
-STABLE: **NO**
-TESTING: **IN-PROGRESS**
+STABLE: **YES**
 
 # Contributors:
 * [vq9o](https://github.com/vq9o)
