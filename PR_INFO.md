@@ -23,7 +23,7 @@ Forked from qbot/multi-group.
 * /shout - ✅
 * /promote - ✅
 * /setrank - ✅
-* /fire - TEST
+* /fire - ✅
 * /roles - ✅
 * /revertranks - ✅
 * /groupban - ✅
