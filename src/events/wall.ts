@@ -1,7 +1,7 @@
 import { Group as RobloxGroup } from "bloxy/dist/structures";
 
 const checkWallForAds = async (group: RobloxGroup) => {
-    setTimeout(checkWallForAds, 30000);
+    setTimeout(() => checkWallForAds(group), 30000);
     
     try {
         const posts = await group.getWallPosts({ limit: 100, sortOrder: 'Desc' });

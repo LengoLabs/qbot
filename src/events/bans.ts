@@ -16,7 +16,7 @@ const checkBans = async (robloxGroup: RobloxGroup) => {
     } catch (err) {
         console.error(err);
     }
-    setTimeout(checkBans, 30000);
+    setTimeout(() => checkBans(robloxGroup), 30000);
 }
 
 export { checkBans };

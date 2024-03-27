@@ -36,7 +36,7 @@ const recordAuditLogs = async (robloxGroup: RobloxGroup) => {
         console.error(err);
     }
 
-    setTimeout(recordAuditLogs, 60000);
+    setTimeout(() => recordAuditLogs(robloxGroup), 60000);
 }
 
 export { recordAuditLogs };

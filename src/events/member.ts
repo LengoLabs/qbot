@@ -12,7 +12,7 @@ let lastRemainder: number;
 let lastMemberCount: number;
 
 const recordMemberCount = async (robloxGroup: RobloxGroup, groupConfig: GroupConfig) => {
-    setTimeout(recordMemberCount, 60 * 1000);
+    setTimeout(() => recordMemberCount(robloxGroup, groupConfig), 60 * 1000);
 
     try {
         if (!firstRecord) {
