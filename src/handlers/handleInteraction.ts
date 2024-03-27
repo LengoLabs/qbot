@@ -19,7 +19,7 @@ const handleInteraction = async (payload: Interaction<CacheType>) => {
 
         const command = discordClient.commands.find((cmd) => (new cmd()).trigger === interaction.commandName);
         const context = new CommandContext(interaction, command);
-        const permission = await context.checkPermissions();
+        const permission = context.checkPermissions();
 
         if (!permission) {
             context.reply({ embeds: [getNoPermissionEmbed()] });

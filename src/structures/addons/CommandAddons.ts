@@ -79,64 +79,51 @@ export class CommandContext {
         }
     }
 
-    checkSecondaryPermissions(permissionConfig: PermissionsConfig, permissionGroup: string = "admin") {
+    checkSecondaryPermissions(permissionConfig: PermissionsConfig, permissionGroup: string = "admin"): boolean {
         let hasPermission = false;
+        const roles = this.member.roles.cache.map(role => role.id);
 
-        console.log(this.member.roles.cache);
+        if (permissionConfig.all.some(b => roles.includes(b))) return true;
 
         permissionConfig[permissionGroup].forEach((roleId: string) => {
             if (!hasPermission) {
-                if (this.member.roles.cache.some((role: any) => config.basePermissions.all.includes(role.id))) return hasPermission = true;
-                if (this.member.roles.cache.some((role: any) => permissionConfig.all.includes(role.id))) return hasPermission = true;
-                hasPermission = this.member.roles.cache.has(roleId);
+                if (this.member.roles.cache.some((role: any) => config.basePermissions.all.includes(role.id))) hasPermission = true;
+                if (!hasPermission && this.member.roles.cache.some((role: any) => permissionConfig.all.includes(role.id))) hasPermission = true;
+                if (!hasPermission) hasPermission = this.member.roles.cache.has(roleId);
             }
         });
 
         return hasPermission;
     }
 
-    /*
-    TEST RESULTS:
-    User Roles: [ '1222540360320942090', '1222535401038942279' ]
-    []
-    User has permission: false
+    checkPermissions(): boolean {
+        if (!this.command.permissions || this.command.permissions.length === 0) return true;
 
-    ISSUE: permissions array map is empty somehow. :)
-    FIX: ASAP.
-    */
+        const roles = this.member.roles.cache.map(role => role.id);
 
-    async checkPermissions(): Promise<boolean> {
-        return new Promise(async (resolve, reject) => {
-            if (!this.command.permissions || this.command.permissions.length === 0) return resolve(true);
+        if (config.basePermissions.all.some(b => roles.includes(b))) return true;
 
-            const roles = this.member.roles.cache.map(role => role.id);
-            console.log("User Roles:", roles);
+        let hasPermission = false;
+        let permissions = [];
 
-            let hasPermission = false;
-            let permissions = [];
-
-            this.command.permissions.map(async (permission) => {
-                for (const id of permission.ids) {
-                    const perm = {
-                        type: permission.type,
-                        id,
-                        value: permission.value,
-                    };
-
-                    if (!hasPermission) {
-                        if (config.basePermissions.all && this.member.roles.cache.some((role) => config.basePermissions.all.includes(role.id))) hasPermission = true;
-                        if (perm.type === 'role' && !hasPermission) hasPermission = this.member.roles.cache.has(perm.id);
-                        if (perm.type === 'user' && !hasPermission) hasPermission = this.member.id === perm.id;
-                    }
-                }
-
-                console.log("Permission:", permission);
-                console.log("User has permission:", hasPermission);
-                resolve(hasPermission);
+        this.command.permissions.map((permission) => {
+            permission.ids.forEach((id) => {
+                return permissions.push({
+                    type: permission.type,
+                    id,
+                    value: permission.value,
+                });
             });
         });
-    }
 
+        permissions.forEach((perm) => {
+            if (perm.type === 'role' && !hasPermission) hasPermission = this.member.roles.cache.has(perm.id);
+            if (perm.type === 'user' && !hasPermission) hasPermission = this.member.id === perm.id;
+        });
+
+        return hasPermission;
+    }
+    
     /**
      * Send a mesasge in the channel of the command message, or directly reply to a command interaction.
      * 
