@@ -5,9 +5,7 @@ import {
     CommandInteraction,
     AutocompleteInteraction,
     CacheType,
-    ApplicationCommandSubGroup,
-    ApplicationCommandSubCommand,
-    CommandInteractionOptionResolver
+    GuildMember
 } from 'discord.js';
 import { handleRobloxUser } from '../arguments/handleRobloxUser';
 import { handleRobloxRole } from '../arguments/handleRobloxRole';

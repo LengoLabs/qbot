@@ -80,49 +80,72 @@ export class CommandContext {
     }
 
     checkSecondaryPermissions(permissionConfig: PermissionsConfig, permissionGroup: string = "admin") {
-        let hasPermission = null;
+        let hasPermission = false;
+
+        console.log(this.member.roles.cache);
 
         permissionConfig[permissionGroup].forEach((roleId: string) => {
             if (!hasPermission) {
-                const hasGlobalPermission: boolean = config.basePermissions.all && this.member.roles.cache.some((role: any) => config.basePermissions.all.includes(role.id));
-                const hasSecGroupPermission: boolean = permissionConfig.all && this.member.roles.cache.some((role: any) => permissionConfig.all.includes(role.id));
-
-                hasPermission = (hasGlobalPermission || hasSecGroupPermission) ? true : this.member.roles.cache.has(roleId);
+                if (this.member.roles.cache.some((role: any) => config.basePermissions.all.includes(role.id))) return hasPermission = true;
+                if (this.member.roles.cache.some((role: any) => permissionConfig.all.includes(role.id))) return hasPermission = true;
+                hasPermission = this.member.roles.cache.has(roleId);
             }
         });
 
-        return hasPermission || false;
+        return hasPermission;
     }
 
-    checkPermissions() {
-        if (!this.command.permissions || this.command.permissions.length === 0) {
-            return true;
-        } else {
-            let hasPermission = null;
+    /*
+    TEST RESULTS:
+    User Roles: [ '1222540360320942090', '1222535401038942279' ]
+    []
+    User has permission: false
+
+    ISSUE: permissions array map is empty somehow. :)
+    FIX: ASAP.
+    */
+
+    async checkPermissions(): Promise<boolean> {
+        return new Promise(async (resolve, reject) => {
+            const roles = this.member.roles.cache.map(role => role.id);
+            console.log("User Roles:", roles);
+
+            let hasPermission = false;
             let permissions = [];
-            this.command.permissions.map((permission) => {
+
+            await Promise.all(this.command.permissions.map(async (permission) => {
                 permission.ids.forEach((id) => {
-                    return permissions.push({
+                    permissions.push({
                         type: permission.type,
                         id,
                         value: permission.value,
                     });
                 });
-            });
-            const permission = permissions.forEach((permission) => {
-                let fitsCriteria: boolean;
+            }));
+
+            console.log(permissions);
+
+            for (const permission of permissions) {
                 if (!hasPermission) {
-                    if (config.basePermissions.all && this.member.roles.cache.some((role) => config.basePermissions.all.includes(role.id))) {
-                        fitsCriteria = true;
-                    } else {
-                        if (permission.type === 'role') fitsCriteria = this.member.roles.cache.has(permission.id);
-                        if (permission.type === 'user') fitsCriteria = this.member.id === permission.id;
+                    // Check global permissions
+                    /*
+                    for (const roleId of config.basePermissions.all) {
+                        if (roles.includes(roleId)) {
+                            hasPermission = true;
+                            break;
+                        }
                     }
-                    if (fitsCriteria) hasPermission = true;
+                    */
+
+                    if (config.basePermissions.all && this.member.roles.cache.some((role) => config.basePermissions.all.includes(role.id))) hasPermission = true;
+                    if (permission.type === 'role' && !hasPermission) hasPermission = this.member.roles.cache.has(permission.id);
+                    if (permission.type === 'user' && !hasPermission) hasPermission = this.member.id === permission.id;
                 }
-            });
-            return hasPermission || false;
-        }
+            }
+
+            console.log("User has permission:", hasPermission);
+            resolve(hasPermission);
+        });
     }
 
     /**
