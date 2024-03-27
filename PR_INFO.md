@@ -36,7 +36,8 @@ XP & Suspension system un-tested.
 ## Prisma database is untouched
 ~~Additional modifications for multi-group/new config is required. qbot *may be fine* as long you don't utilize database releated functions. -- Current priority to get database done.~~
 * ~~Update: Seem's completed. requires testing. api.ts needs updated for it.~~
-* Update: Seems fully done, testing required.
+* ~~Update: Seems fully done, testing required.~~
+* Update: Operational & Fine.
 
 # Status
 STABLE: **YES**
