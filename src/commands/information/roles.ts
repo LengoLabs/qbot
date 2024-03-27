@@ -1,9 +1,9 @@
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import { config } from '../../config';
-import { robloxClient } from '../../main';
+import { robloxClient, getClient } from '../../main';
 import { getRoleListEmbed, getInvalidRobloxGroupEmbed } from '../../handlers/locale';
-import { Group } from 'bloxy/dist/structures';
+import { Group as RobloxGroup } from 'bloxy/dist/structures';
 
 class RolesCommand extends Command {
     constructor() {
@@ -26,14 +26,10 @@ class RolesCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        let robloxGroup: Group;
-
         const groupConfig = config.groups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
-        if(!groupConfig) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
-        robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
-
-        const roles = await robloxGroup.getRoles();
-        return ctx.reply({ embeds: [ getRoleListEmbed(roles) ] });
+        if (!groupConfig) return ctx.reply({ embeds: [getInvalidRobloxGroupEmbed()] });
+        const robloxGroup: RobloxGroup = await robloxClient.getGroup(Number(groupConfig.groupId));
+        return ctx.reply({ embeds: [await getRoleListEmbed(robloxGroup)] });
     }
 }
 

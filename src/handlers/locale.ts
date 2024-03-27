@@ -513,9 +513,11 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
     return embed;
 }
 
-export const getRoleListEmbed = (roles: GroupRole[]): EmbedBuilder => {
+export const getRoleListEmbed = async (robloxGroup: RobloxGroup): Promise<EmbedBuilder> => {
+    const roles = await robloxGroup.getRoles();
+
     const embed = new EmbedBuilder()
-        .setAuthor({ name: 'Group Roles', iconURL: infoIconUrl })
+        .setAuthor({ name: robloxGroup.name + "'s Group Roles", iconURL: infoIconUrl })
         .setColor(mainColor)
         .setDescription('Here is a list of all roles on the group.');
 

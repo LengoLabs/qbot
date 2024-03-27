@@ -27,6 +27,7 @@ require('./api');
 // [Clients]
 const robloxClient = new RobloxClient({ credentials: { cookie: process.env.ROBLOX_COOKIE } });
 const discordClient = new QbotClient();
+const robloxGroupClients = [];
 discordClient.login(process.env.DISCORD_TOKEN);
 
 (async () => {
@@ -35,6 +36,7 @@ discordClient.login(process.env.DISCORD_TOKEN);
 
     config.groups.forEach(async (groupConfig: GroupConfig) => {
         const robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
+        robloxGroupClients[Number(groupConfig.groupId)] = robloxGroup;
 
         if (config.logChannels.shout) recordShout(robloxGroup);
         if (groupConfig.memberCount.enabled) recordMemberCount(robloxGroup, groupConfig);
@@ -45,9 +47,14 @@ discordClient.login(process.env.DISCORD_TOKEN);
     });
 })();
 
+function getClient(groupId: String|null = null) {
+    if (groupId == null) return robloxGroupClients;
+    return robloxGroupClients[Number(groupId)]
+}
+
 // [Handlers]
 discordClient.on('interactionCreate', handleInteraction as any);
 discordClient.on('messageCreate', handleLegacyCommand);
 
 // [Module]
-export { discordClient, robloxClient };
+export { discordClient, robloxClient, getClient };
