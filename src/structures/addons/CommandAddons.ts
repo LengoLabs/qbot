@@ -107,44 +107,33 @@ export class CommandContext {
 
     async checkPermissions(): Promise<boolean> {
         return new Promise(async (resolve, reject) => {
+            if (!this.command.permissions || this.command.permissions.length === 0) return resolve(true);
+
             const roles = this.member.roles.cache.map(role => role.id);
             console.log("User Roles:", roles);
 
             let hasPermission = false;
             let permissions = [];
 
-            await Promise.all(this.command.permissions.map(async (permission) => {
-                permission.ids.forEach((id) => {
-                    permissions.push({
+            this.command.permissions.map(async (permission) => {
+                for (const id of permission.ids) {
+                    const perm = {
                         type: permission.type,
                         id,
                         value: permission.value,
-                    });
-                });
-            }));
+                    };
 
-            console.log(permissions);
-
-            for (const permission of permissions) {
-                if (!hasPermission) {
-                    // Check global permissions
-                    /*
-                    for (const roleId of config.basePermissions.all) {
-                        if (roles.includes(roleId)) {
-                            hasPermission = true;
-                            break;
-                        }
+                    if (!hasPermission) {
+                        if (config.basePermissions.all && this.member.roles.cache.some((role) => config.basePermissions.all.includes(role.id))) hasPermission = true;
+                        if (perm.type === 'role' && !hasPermission) hasPermission = this.member.roles.cache.has(perm.id);
+                        if (perm.type === 'user' && !hasPermission) hasPermission = this.member.id === perm.id;
                     }
-                    */
-
-                    if (config.basePermissions.all && this.member.roles.cache.some((role) => config.basePermissions.all.includes(role.id))) hasPermission = true;
-                    if (permission.type === 'role' && !hasPermission) hasPermission = this.member.roles.cache.has(permission.id);
-                    if (permission.type === 'user' && !hasPermission) hasPermission = this.member.id === permission.id;
                 }
-            }
 
-            console.log("User has permission:", hasPermission);
-            resolve(hasPermission);
+                console.log("Permission:", permission);
+                console.log("User has permission:", hasPermission);
+                resolve(hasPermission);
+            });
         });
     }
 

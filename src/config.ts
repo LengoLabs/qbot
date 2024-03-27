@@ -190,4 +190,14 @@ function findGroupById(groupId: number): Promise<any> {
     });
 }
 
-export { config, findGroupById }
+function findGroupByName(name: String): Promise<any> {
+    return new Promise((resolve, reject) => {
+        config.groups.forEach(async (group) => {
+            if (group.name == name) resolve(group);
+        });
+
+        reject("Group not found. Are you sure it exists?");
+    });
+}
+
+export { config, findGroupById, findGroupByName }

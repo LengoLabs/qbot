@@ -1,29 +1,28 @@
-import { discordClient } from '../main';
+import { discordClient, getClient } from '../main';
 import { CommandContext } from '../structures/addons/CommandAddons';
 import {
     Interaction,
     CommandInteraction,
     AutocompleteInteraction,
-    CacheType,
-    GuildMember
+    CacheType
 } from 'discord.js';
 import { handleRobloxUser } from '../arguments/handleRobloxUser';
 import { handleRobloxRole } from '../arguments/handleRobloxRole';
 import { handleGroup } from '../arguments/handleGroup';
 import { getUnknownCommandMessage, getNoPermissionEmbed } from '../handlers/locale';
-import { Group as RobloxGroup } from "bloxy/dist/structures";
+import { findGroupByName } from '../config';
 
 const handleInteraction = async (payload: Interaction<CacheType>) => {
-    if(payload instanceof CommandInteraction) {
+    if (payload instanceof CommandInteraction) {
         const interaction = payload as CommandInteraction;
-        if(!interaction.channel || !interaction.guild) return interaction.reply({ embeds: [ getUnknownCommandMessage() ] });
+        if (!interaction.channel || !interaction.guild) return interaction.reply({ embeds: [getUnknownCommandMessage()] });
 
         const command = discordClient.commands.find((cmd) => (new cmd()).trigger === interaction.commandName);
         const context = new CommandContext(interaction, command);
-        const permission = context.checkPermissions();
+        const permission = await context.checkPermissions();
 
-        if(!permission) {
-            context.reply({ embeds: [ getNoPermissionEmbed() ] });
+        if (!permission) {
+            context.reply({ embeds: [getNoPermissionEmbed()] });
         } else {
             await context.defer();
 
@@ -33,24 +32,26 @@ const handleInteraction = async (payload: Interaction<CacheType>) => {
                 console.log(err);
             }
         }
-    } else if(payload instanceof AutocompleteInteraction) {
+    } else if (payload instanceof AutocompleteInteraction) {
         const interaction = payload as AutocompleteInteraction;
-        if(!interaction.channel || !interaction.guild) return;
+        if (!interaction.channel || !interaction.guild) return;
 
         const focusedOption = payload.options.getFocused(true);
         const command = await discordClient.commands.find((cmd) => (new cmd()).trigger === interaction.commandName);
 
-        if(!command) return;
+        if (!command) return;
         const focusedArg = (new command()).args.find((arg) => arg.trigger === focusedOption.name);
 
-        let robloxGroup;
-        // get it somehow??? test draft below.
         const robloxGroupName = interaction.options.getString('group');
-        console.log(robloxGroupName, interaction.options);
 
-        if(focusedArg.type === 'RobloxUser') handleRobloxUser(interaction, focusedOption);
-        if(focusedArg.type === 'RobloxRole') await handleRobloxRole(robloxGroup, interaction, focusedOption);
-        if(focusedArg.type === 'Group') await handleGroup(interaction, focusedOption);
+        try {
+            const groupConfig = await findGroupByName(robloxGroupName);
+            const robloxGroup = getClient(groupConfig.groupId);
+            if (focusedArg.type === 'RobloxRole' && robloxGroup) await handleRobloxRole(robloxGroup, interaction, focusedOption);
+        } catch (error) {}
+
+        if (focusedArg.type === 'RobloxUser') handleRobloxUser(interaction, focusedOption);
+        if (focusedArg.type === 'Group') await handleGroup(interaction, focusedOption);
     }
 }
 
