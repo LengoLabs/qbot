@@ -29,19 +29,19 @@ class XPRankupCommand extends Command {
             module: 'xp',
             args: [
                 {
-                    trigger: 'roblox-user',
-                    description: 'Who do you want to attempt to rankup? This defaults to yourself.',
-                    required: false,
-                    autocomplete: true,
-                    type: 'RobloxUser',
-                },
-                {
                     trigger: 'group',
                     description: 'Which group would you like to run this action in?',
                     isLegacyFlag: true,
                     autocomplete: true,
                     required: true,
                     type: 'Group',
+                },
+                {
+                    trigger: 'roblox-user',
+                    description: 'Who do you want to attempt to rankup? This defaults to yourself.',
+                    required: false,
+                    autocomplete: true,
+                    type: 'RobloxUser',
                 }
             ]
         });

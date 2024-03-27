@@ -30,6 +30,14 @@ class AddXPCommand extends Command {
             module: 'xp',
             args: [
                 {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                },
+                {
                     trigger: 'roblox-user',
                     description: 'Who do you want to add XP to?',
                     autocomplete: true,
@@ -46,14 +54,6 @@ class AddXPCommand extends Command {
                     isLegacyFlag: true,
                     required: false,
                     type: 'String',
-                },
-                {
-                    trigger: 'group',
-                    description: 'Which group would you like to run this action in?',
-                    isLegacyFlag: true,
-                    autocomplete: true,
-                    required: true,
-                    type: 'Group',
                 }
             ],
             permissions: [

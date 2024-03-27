@@ -30,6 +30,14 @@ class FireCommand extends Command {
             module: 'ranking',
             args: [
                 {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                },
+                {
                     trigger: 'roblox-user',
                     description: 'Who do you want to fire?',
                     autocomplete: true,
@@ -41,14 +49,6 @@ class FireCommand extends Command {
                     isLegacyFlag: true,
                     required: false,
                     type: 'String',
-                },
-                {
-                    trigger: 'group',
-                    description: 'Which group would you like to run this action in?',
-                    isLegacyFlag: true,
-                    autocomplete: true,
-                    required: true,
-                    type: 'Group',
                 }
             ],
             permissions: [

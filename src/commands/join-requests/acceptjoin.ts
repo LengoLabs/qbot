@@ -23,6 +23,14 @@ class AcceptJoinCommand extends Command {
             module: 'join-requests',
             args: [
                 {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                },
+                {
                     trigger: 'roblox-user',
                     description: 'Whose join request do you want to accept?',
                     autocomplete: true,
@@ -34,14 +42,6 @@ class AcceptJoinCommand extends Command {
                     isLegacyFlag: true,
                     required: false,
                     type: 'String',
-                },
-                {
-                    trigger: 'group',
-                    description: 'Which group would you like to run this action in?',
-                    isLegacyFlag: true,
-                    autocomplete: true,
-                    required: true,
-                    type: 'Group',
                 }
             ],
             permissions: [

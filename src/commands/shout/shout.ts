@@ -20,6 +20,14 @@ class ShoutCommand extends Command {
             module: 'shout',
             args: [
                 {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                },
+                {
                     trigger: 'content',
                     description: 'What should the content of the shout be? If none, the shout will be cleared.',
                     required: false,
@@ -32,14 +40,6 @@ class ShoutCommand extends Command {
                     required: false,
                     type: 'String',
                 },
-                {
-                    trigger: 'group',
-                    description: 'Which group would you like to run this action in?',
-                    isLegacyFlag: true,
-                    autocomplete: true,
-                    required: true,
-                    type: 'Group',
-                }
             ],
             permissions: [
                 {

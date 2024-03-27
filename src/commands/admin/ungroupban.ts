@@ -24,6 +24,14 @@ class UnGroupBanCommand extends Command {
             module: 'admin',
             args: [
                 {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                },
+                {
                     trigger: 'roblox-user',
                     description: 'Who do you wish to unban from the group?',
                     autocomplete: true,
@@ -35,13 +43,6 @@ class UnGroupBanCommand extends Command {
                     description: 'If you would like a reason to be supplied in the logs, put it here.',
                     required: false,
                     type: 'String'
-                },{
-                    trigger: 'group',
-                    description: 'Which group would you like to run this action in?',
-                    isLegacyFlag: true,
-                    autocomplete: true,
-                    required: true,
-                    type: 'Group',
                 }
             ],
             permissions: [

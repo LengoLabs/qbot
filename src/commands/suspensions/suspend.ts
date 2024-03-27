@@ -31,6 +31,14 @@ class SuspendCommand extends Command {
             module: 'suspensions',
             args: [
                 {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                },
+                {
                     trigger: 'roblox-user',
                     description: 'Who do you want to suspend?',
                     autocomplete: true,
@@ -47,14 +55,6 @@ class SuspendCommand extends Command {
                     isLegacyFlag: true,
                     required: false,
                     type: 'String',
-                },
-                {
-                    trigger: 'group',
-                    description: 'Which group would you like to run this action in?',
-                    isLegacyFlag: true,
-                    autocomplete: true,
-                    required: true,
-                    type: 'Group',
                 }
             ],
             permissions: [

@@ -23,6 +23,14 @@ class RevertRanksCommand extends Command {
             module: 'admin',
             args: [
                 {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                },
+                {
                     trigger: 'duration',
                     description: 'How much time of ranking events would you like to revert?',
                     type: 'String',
@@ -40,14 +48,6 @@ class RevertRanksCommand extends Command {
                     isLegacyFlag: true,
                     required: false,
                     type: 'String',
-                },
-                {
-                    trigger: 'group',
-                    description: 'Which group would you like to run this action in?',
-                    isLegacyFlag: true,
-                    autocomplete: true,
-                    required: true,
-                    type: 'Group',
                 }
             ],
             permissions: [

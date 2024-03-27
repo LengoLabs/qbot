@@ -13,6 +13,14 @@ class SignalCommand extends Command {
             module: 'information',
             args: [
                 {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                },
+                {
                     trigger: 'signal',
                     description: 'What signal/command would you like to run?',
                     required: false,

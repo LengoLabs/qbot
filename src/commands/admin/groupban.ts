@@ -26,6 +26,14 @@ class GroupBanCommand extends Command {
             module: 'admin',
             args: [
                 {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                },
+                {
                     trigger: 'roblox-user',
                     description: 'Who do you wish to ban from the group?',
                     autocomplete: true,
@@ -38,14 +46,6 @@ class GroupBanCommand extends Command {
                     required: false,
                     type: 'String'
                 },
-                {
-                    trigger: 'group',
-                    description: 'Which group would you like to run this action in?',
-                    isLegacyFlag: true,
-                    autocomplete: true,
-                    required: true,
-                    type: 'Group',
-                }
             ],
             permissions: [
                 {
