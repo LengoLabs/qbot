@@ -10,8 +10,6 @@ Forked from qbot/multi-group.
 > In this new version of qbot, previous data of XP & suspensions will be lost due to new DB structure.
 
 # TODO:
-* Testing
-* info.ts command
 * Code review
 
 # Issues
@@ -19,9 +17,6 @@ Forked from qbot/multi-group.
 ~~Additional modifications for multi-group/new config is required. qbot *may be fine* as long you don't utilize database releated functions. -- Current priority to get database done.~~
 * ~~Update: Seem's completed. requires testing. api.ts needs updated for it.~~
 * Update: Seems fully done, testing required.
-
-## handleInteraction
-handleInteraction needs to be updated for getting robloxGroup for role searching. Currently broken.
 
 # Status
 STABLE: **NO**
