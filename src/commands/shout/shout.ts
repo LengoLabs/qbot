@@ -1,10 +1,11 @@
-import { robloxGroup as defaultRobloxGroup, robloxClient } from '../../main';
+import { robloxClient } from '../../main';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
     getUnexpectedErrorEmbed,
     getSuccessfulShoutEmbed,
     getInvalidRobloxGroupEmbed,
+    getNoPermissionEmbed
 } from '../../handlers/locale';
 import { config } from '../../config';
 import { logAction } from '../../handlers/handleLogging';
@@ -19,6 +20,14 @@ class ShoutCommand extends Command {
             module: 'shout',
             args: [
                 {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                },
+                {
                     trigger: 'content',
                     description: 'What should the content of the shout be? If none, the shout will be cleared.',
                     required: false,
@@ -31,19 +40,11 @@ class ShoutCommand extends Command {
                     required: false,
                     type: 'String',
                 },
-                {
-                    trigger: 'group',
-                    description: 'Which secondary group would you like to run this action in, if any?',
-                    isLegacyFlag: true,
-                    autocomplete: true,
-                    required: false,
-                    type: 'SecondaryGroup',
-                }
             ],
             permissions: [
                 {
                     type: 'role',
-                    ids: config.permissions.shout,
+                    ids: config.basePermissions.shout,
                     value: true,
                 }
             ]
@@ -51,17 +52,17 @@ class ShoutCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        let robloxGroup: Group = defaultRobloxGroup;
-        if(ctx.args['group']) {
-            const secondaryGroup = config.secondaryGroups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
-            if(!secondaryGroup) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
-            robloxGroup = await robloxClient.getGroup(secondaryGroup.id);
-        }
+        let robloxGroup: Group;
+
+        const groupConfig = config.groups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+        if(!groupConfig) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+        if(!ctx.checkSecondaryPermissions(groupConfig.permissions, ctx.command.module)) return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
+        robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
 
         try {
             await robloxGroup.updateShout(ctx.args['content'] || '');
             ctx.reply({ embeds: [ await getSuccessfulShoutEmbed() ]});
-            logAction('Shout', ctx.user, ctx.args['reason'], null, null, null, ctx.args['content'] || '*Cleared.*');
+            logAction(robloxGroup, 'Shout', ctx.user, ctx.args['reason'], null, null, null, ctx.args['content'] || '*Cleared.*');
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});

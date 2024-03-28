@@ -1,4 +1,4 @@
-import { discordClient, robloxClient, robloxGroup as defaultRobloxGroup } from '../../main';
+import { discordClient, robloxClient } from '../../main';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
@@ -9,6 +9,7 @@ import {
     getVerificationChecksFailedEmbed,
     getUserSuspendedEmbed,
     getInvalidRobloxGroupEmbed,
+    getNoPermissionEmbed
 } from '../../handlers/locale';
 import { config } from '../../config';
 import { User, PartialUser, GroupMember, Group } from 'bloxy/dist/structures';
@@ -26,6 +27,14 @@ class ExileCommand extends Command {
             module: 'admin',
             args: [
                 {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                },
+                {
                     trigger: 'roblox-user',
                     description: 'Who do you want to exile?',
                     autocomplete: true,
@@ -37,20 +46,12 @@ class ExileCommand extends Command {
                     isLegacyFlag: true,
                     required: false,
                     type: 'String',
-                },
-                {
-                    trigger: 'group',
-                    description: 'Which secondary group would you like to run this action in, if any?',
-                    isLegacyFlag: true,
-                    autocomplete: true,
-                    required: false,
-                    type: 'SecondaryGroup',
                 }
             ],
             permissions: [
                 {
                     type: 'role',
-                    ids: config.permissions.admin,
+                    ids: config.basePermissions.admin,
                     value: true,
                 }
             ]
@@ -58,12 +59,12 @@ class ExileCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        let robloxGroup: Group = defaultRobloxGroup;
-        if(ctx.args['group']) {
-            const secondaryGroup = config.secondaryGroups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
-            if(!secondaryGroup) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
-            robloxGroup = await robloxClient.getGroup(secondaryGroup.id);
-        }
+        let robloxGroup: Group;
+
+        const groupConfig = config.groups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+        if(!groupConfig) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+        if(!ctx.checkSecondaryPermissions(groupConfig.permissions, ctx.command.module)) return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
+        robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
 
         let robloxUser: User | PartialUser;
         try {
@@ -99,14 +100,16 @@ class ExileCommand extends Command {
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 
-        const userData = await provider.findUser(robloxUser.id.toString());
-        if(userData.xp !== 0) return provider.updateUser(robloxUser.id.toString(), { xp: 0 });
-        if(userData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
+        const xpUserData = await provider.findXPUser(robloxUser.id.toString(), robloxGroup.id);
+        const susUserData = await provider.findSuspendedUser(robloxUser.id.toString(), robloxGroup.id);
+
+        if(xpUserData.xp !== 0) return provider.updateUser(robloxUser.id.toString(), { xp: 0 });
+        if(susUserData.suspendedUntil) return ctx.reply({ embeds: [ getUserSuspendedEmbed() ] });
 
         try {
-            await robloxMember.kickFromGroup(config.groupId);
+            await robloxMember.kickFromGroup(groupConfig.groupId);
             ctx.reply({ embeds: [ await getSuccessfulExileEmbed(robloxUser) ]})
-            logAction('Exile', ctx.user, ctx.args['reason'], robloxUser);
+            logAction(robloxGroup, 'Exile', ctx.user, ctx.args['reason'], robloxUser);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});

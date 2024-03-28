@@ -1,18 +1,20 @@
-import { robloxClient, robloxGroup } from '../main';
+import { robloxClient } from '../main';
 import { logAction } from '../handlers/handleLogging';
-import { config } from '../config';
+import { Group as RobloxGroup } from "bloxy/dist/structures";
 
 let lastRecordedDate: number;
 
-const recordAuditLogs = async () => {
+const recordAuditLogs = async (robloxGroup: RobloxGroup) => {
     try {
         const auditLog = await robloxClient.apis.groupsAPI.getAuditLogs({
-            groupId: config.groupId,
+            groupId: robloxGroup.id,
             actionType: 'ChangeRank',
             limit: 10,
             sortOrder: 'Desc',
         });
+
         const mostRecentDate = new Date(auditLog.data?.[0].created).getTime();
+
         if(lastRecordedDate) {
             const groupRoles = await robloxGroup.getRoles();
             auditLog.data.forEach(async (log) => {
@@ -22,7 +24,7 @@ const recordAuditLogs = async () => {
                         const oldRole = groupRoles.find((role) => role.id === log.description['OldRoleSetId']);
                         const newRole = groupRoles.find((role) => role.id === log.description['NewRoleSetId']);
                         const target = await robloxClient.getUser(log.description['TargetId']);
-                        logAction('Manual Set Rank', log.actor.user, null, target, `${oldRole.name} (${oldRole.rank}) → ${newRole.name} (${newRole.rank})`);
+                        logAction(robloxGroup, 'Manual Set Rank', log.actor.user, null, target, `${oldRole.name} (${oldRole.rank}) → ${newRole.name} (${newRole.rank})`, null, null, null);
                     }
                 }
             });
@@ -33,7 +35,8 @@ const recordAuditLogs = async () => {
     } catch (err) {
         console.error(err);
     }
-    setTimeout(recordAuditLogs, 60000);
+
+    setTimeout(() => recordAuditLogs(robloxGroup), 60000);
 }
 
 export { recordAuditLogs };

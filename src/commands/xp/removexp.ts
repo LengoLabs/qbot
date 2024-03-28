@@ -1,4 +1,4 @@
-import { discordClient, robloxClient, robloxGroup } from '../../main';
+import { discordClient, robloxClient } from '../../main';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
@@ -8,10 +8,13 @@ import {
     getVerificationChecksFailedEmbed,
     getSuccessfulXPChangeEmbed,
     getInvalidXPEmbed,
+    getInvalidRobloxGroupEmbed,
+    getNoPermissionEmbed,
+    getXPSysDisabledEmbed
 } from '../../handlers/locale';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
-import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
+import { User, PartialUser, GroupMember, Group } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { provider } from '../../database';
@@ -24,6 +27,14 @@ class RemoveXPCommand extends Command {
             type: 'ChatInput',
             module: 'xp',
             args: [
+                {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                },
                 {
                     trigger: 'roblox-user',
                     description: 'Who do you want to remove XP from?',
@@ -41,12 +52,12 @@ class RemoveXPCommand extends Command {
                     isLegacyFlag: true,
                     required: false,
                     type: 'String',
-                },
+                }
             ],
             permissions: [
                 {
                     type: 'role',
-                    ids: config.permissions.users,
+                    ids: config.basePermissions.users,
                     value: true,
                 }
             ]
@@ -54,6 +65,14 @@ class RemoveXPCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
+        let robloxGroup: Group;
+
+        const groupConfig = config.groups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+        if(!groupConfig) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+        if (!groupConfig.xpSystem.enabled) return ctx.reply({ embeds: [ getXPSysDisabledEmbed() ]});
+        if(!ctx.checkSecondaryPermissions(groupConfig.permissions, "users")) return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
+        robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
+
         let robloxUser: User | PartialUser;
         try {
             robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
@@ -90,13 +109,13 @@ class RemoveXPCommand extends Command {
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 
-        const userData = await provider.findUser(robloxUser.id.toString());
+        const userData = await provider.findXPUser(robloxUser.id.toString(), groupConfig.groupId);
         const xp = Number(userData.xp) - Number(ctx.args['decrement']);
-        await provider.updateUser(robloxUser.id.toString(), { xp });
+        await provider.updateUserXP(robloxUser.id.toString(), groupConfig.groupId, { xp });
 
         try {
             ctx.reply({ embeds: [ await getSuccessfulXPChangeEmbed(robloxUser, xp) ]});
-            logAction('Remove XP', ctx.user, ctx.args['reason'], robloxUser, null, null, null, `${userData.xp} → ${xp} (-${Number(ctx.args['decrement'])})`);
+            logAction(robloxGroup, 'Remove XP', ctx.user, ctx.args['reason'], robloxUser, null, null, null, `${userData.xp} → ${xp} (-${Number(ctx.args['decrement'])})`);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});

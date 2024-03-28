@@ -3,3 +3,4 @@ node_modules
 dist
 src/database/qbotdata.db
 src/resources/commands.json
+PR_INFO.md

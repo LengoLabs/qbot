@@ -1,10 +1,9 @@
-import { config } from '../config';
-import { robloxClient } from '../main';
+import { Group as RobloxGroup } from "bloxy/dist/structures";
 
-const checkWallForAds = async () => {
-    setTimeout(checkWallForAds, 30000);
+const checkWallForAds = async (group: RobloxGroup) => {
+    setTimeout(() => checkWallForAds(group), 30000);
+    
     try {
-        const group = await robloxClient.getGroup(config.groupId);
         const posts = await group.getWallPosts({ limit: 100, sortOrder: 'Desc' });
         posts.data?.forEach((post: any, index) => {
             setTimeout(async () => {

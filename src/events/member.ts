@@ -1,6 +1,7 @@
 import { TextChannel } from 'discord.js';
-import { config } from '../config';
-import { discordClient, robloxClient } from '../main';
+import { Group as RobloxGroup } from "bloxy/dist/structures";
+import { GroupConfig } from '../structures/types';
+import { discordClient } from '../main';
 import {
     getMemberCountMessage,
     getMemberCountMilestoneEmbed,
@@ -10,34 +11,32 @@ let firstRecord = true;
 let lastRemainder: number;
 let lastMemberCount: number;
 
-const recordMemberCount = async () => {
-    setTimeout(recordMemberCount, 60 * 1000);
+const recordMemberCount = async (robloxGroup: RobloxGroup, groupConfig: GroupConfig) => {
+    setTimeout(() => recordMemberCount(robloxGroup, groupConfig), 60 * 1000);
+
     try {
-        if(!firstRecord) {
-            const group = await robloxClient.getGroup(config.groupId);
-            const memberCountChannel = await discordClient.channels.cache.get(config.memberCount.channelId) as TextChannel;
-            if(group.memberCount === lastMemberCount) return;
-    
-            if(config.memberCount.milestone) {
-                const currentRemainder = group.memberCount % config.memberCount.milestone;
-                if (lastMemberCount < group.memberCount && (currentRemainder === 0 || lastRemainder > currentRemainder)) {
-                    memberCountChannel.send({ embeds: [ getMemberCountMilestoneEmbed(group.memberCount) ] });
+        if (!firstRecord) {
+            const memberCountChannel = await discordClient.channels.cache.get(groupConfig.memberCount.channelId) as TextChannel;
+
+            if (robloxGroup.memberCount === lastMemberCount) return;
+
+            if (groupConfig.memberCount.milestone) {
+                const currentRemainder = robloxGroup.memberCount % groupConfig.memberCount.milestone;
+                if (lastMemberCount < robloxGroup.memberCount && (currentRemainder === 0 || lastRemainder > currentRemainder)) {
+                    memberCountChannel.send({ embeds: [getMemberCountMilestoneEmbed(robloxGroup.memberCount)] });
                 } else {
-                    if (!config.memberCount.onlyMilestones) {
-                        memberCountChannel.send({ content: getMemberCountMessage(lastMemberCount, group.memberCount) });
-                    }
+                    if (!groupConfig.memberCount.onlyMilestones) memberCountChannel.send({ content: getMemberCountMessage(lastMemberCount, robloxGroup.memberCount) });
                 }
-                
+
                 lastRemainder = currentRemainder;
             } else {
-                memberCountChannel.send({ content: getMemberCountMessage(lastMemberCount, group.memberCount) });
+                memberCountChannel.send({ content: getMemberCountMessage(lastMemberCount, robloxGroup.memberCount) });
             }
-    
-            lastMemberCount = group.memberCount;
+
+            lastMemberCount = robloxGroup.memberCount;
         } else {
-            const group = await robloxClient.getGroup(config.groupId);
-            lastMemberCount = group.memberCount;
-            if(config.memberCount.milestone) lastRemainder = group.memberCount % config.memberCount.milestone;
+            lastMemberCount = robloxGroup.memberCount;
+            if (groupConfig.memberCount.milestone) lastRemainder = robloxGroup.memberCount % groupConfig.memberCount.milestone;
             firstRecord = false;
         }
     } catch (err) {

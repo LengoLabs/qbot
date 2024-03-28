@@ -8,10 +8,22 @@ datasource db {
 }
 
 model User {
+  id       String  @id @default(uuid())
+  robloxId String  @unique
+  isBanned Boolean @default(false)
+}
+
+model Suspensions {
   id             String    @id @default(uuid())
   robloxId       String    @unique
-  xp             Int       @default(0)
+  groupId        Int       @default(0)
   suspendedUntil DateTime?
   unsuspendRank  Int?
-  isBanned       Boolean   @default(false)
+}
+
+model XP {
+  id       String @id @default(uuid())
+  robloxId String @unique
+  groupId  Int    @default(0)
+  xp       Int    @default(0)
 }

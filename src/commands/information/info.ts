@@ -1,4 +1,4 @@
-import { discordClient, robloxClient, robloxGroup } from '../../main';
+import { discordClient, robloxClient } from '../../main';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import { PartialUser, User, GroupMember } from 'bloxy/dist/structures';
@@ -30,6 +30,7 @@ class InfoCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
+        /*
         let robloxUser: User | PartialUser;
         try {
             if(ctx.args['roblox-user']) {
@@ -67,6 +68,7 @@ class InfoCommand extends Command {
         }
 
         return ctx.reply({ embeds: [ await getUserInfoEmbed(robloxUser, robloxMember, userData) ] });
+        */
     }
 }
 

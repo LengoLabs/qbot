@@ -1,4 +1,4 @@
-import { discordClient, robloxClient, robloxGroup as defaultRobloxGroup } from '../../main';
+import { discordClient, robloxClient } from '../../main';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
@@ -6,7 +6,8 @@ import {
     getUnexpectedErrorEmbed,
     getSuccessfulDenyJoinRequestEmbed,
     getNoJoinRequestEmbed,
-    getInvalidRobloxGroupEmbed
+    getInvalidRobloxGroupEmbed,
+    getNoPermissionEmbed
 } from '../../handlers/locale';
 import { config } from '../../config';
 import { User, PartialUser, Group } from 'bloxy/dist/structures';
@@ -22,6 +23,14 @@ class DenyJoinCommand extends Command {
             module: 'join-requests',
             args: [
                 {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                },
+                {
                     trigger: 'roblox-user',
                     description: 'Whose join request do you want to deny?',
                     autocomplete: true,
@@ -33,20 +42,12 @@ class DenyJoinCommand extends Command {
                     isLegacyFlag: true,
                     required: false,
                     type: 'String',
-                },
-                {
-                    trigger: 'group',
-                    description: 'Which secondary group would you like to run this action in, if any?',
-                    isLegacyFlag: true,
-                    autocomplete: true,
-                    required: false,
-                    type: 'SecondaryGroup',
                 }
             ],
             permissions: [
                 {
                     type: 'role',
-                    ids: config.permissions.join,
+                    ids: config.basePermissions.join,
                     value: true,
                 }
             ]
@@ -54,12 +55,12 @@ class DenyJoinCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
-        let robloxGroup: Group = defaultRobloxGroup;
-        if(ctx.args['group']) {
-            const secondaryGroup = config.secondaryGroups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
-            if(!secondaryGroup) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
-            robloxGroup = await robloxClient.getGroup(secondaryGroup.id);
-        }
+        let robloxGroup: Group;
+
+        const groupConfig = config.groups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+        if(!groupConfig) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+        if(!ctx.checkSecondaryPermissions(groupConfig.permissions, "join")) return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
+        robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
 
         let robloxUser: User | PartialUser;
         try {
@@ -88,7 +89,7 @@ class DenyJoinCommand extends Command {
         try {
             await robloxGroup.declineJoinRequest(robloxUser.id);
             ctx.reply({ embeds: [ await getSuccessfulDenyJoinRequestEmbed(robloxUser) ]});
-            logAction('Deny Join Request', ctx.user, ctx.args['reason'], robloxUser);
+            logAction(robloxGroup, 'Deny Join Request', ctx.user, ctx.args['reason'], robloxUser);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});

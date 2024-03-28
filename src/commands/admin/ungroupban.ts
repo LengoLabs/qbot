@@ -1,7 +1,7 @@
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import { discordClient, robloxClient } from '../../main';
-import { User, PartialUser } from 'bloxy/dist/structures';
+import { User, PartialUser, Group } from 'bloxy/dist/structures';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { provider } from '../../database';
 import { logAction } from '../../handlers/handleLogging';
@@ -9,7 +9,9 @@ import {
     getInvalidRobloxUserEmbed,
     getUnexpectedErrorEmbed,
     getSuccessfulGroupUnbanEmbed,
-    getUserNotBannedEmbed
+    getUserNotBannedEmbed,
+    getInvalidRobloxGroupEmbed,
+    getNoPermissionEmbed
 } from '../../handlers/locale';
 import { config } from '../../config';
 
@@ -21,6 +23,14 @@ class UnGroupBanCommand extends Command {
             type: 'ChatInput',
             module: 'admin',
             args: [
+                {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                },
                 {
                     trigger: 'roblox-user',
                     description: 'Who do you wish to unban from the group?',
@@ -38,7 +48,7 @@ class UnGroupBanCommand extends Command {
             permissions: [
                 {
                     type: 'role',
-                    ids: config.permissions.admin,
+                    ids: config.basePermissions.admin,
                     value: true,
                 }
             ]
@@ -46,6 +56,13 @@ class UnGroupBanCommand extends Command {
     };
 
     async run(ctx: CommandContext) {
+        let robloxGroup: Group;
+
+        const groupConfig = config.groups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+        if(!groupConfig) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+        if(!ctx.checkSecondaryPermissions(groupConfig.permissions, ctx.command.module)) return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
+        robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
+
         let robloxUser: User | PartialUser;
         try {
             robloxUser = await robloxClient.getUser(ctx.args['roblox-user'] as number);
@@ -74,7 +91,7 @@ class UnGroupBanCommand extends Command {
             await provider.updateUser(robloxUser.id.toString(), {
                 isBanned: false
             });
-            logAction('Ungroup Ban', ctx.user, ctx.args['reason'], robloxUser);
+            logAction(robloxGroup, 'Ungroup Ban', ctx.user, ctx.args['reason'], robloxUser);
             return ctx.reply({ embeds: [ getSuccessfulGroupUnbanEmbed(robloxUser) ]});
         } catch(e) {
             console.log(e);

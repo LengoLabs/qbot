@@ -1,4 +1,4 @@
-import { discordClient, robloxClient, robloxGroup } from '../../main';
+import { discordClient, robloxClient } from '../../main';
 import { CommandContext } from '../../structures/addons/CommandAddons';
 import { Command } from '../../structures/Command';
 import {
@@ -9,10 +9,13 @@ import {
     getSuccessfulXPChangeEmbed,
     getInvalidXPEmbed,
     getSuccessfulAddingAndRankupEmbed,
+    getInvalidRobloxGroupEmbed,
+    getNoPermissionEmbed,
+    getXPSysDisabledEmbed
 } from '../../handlers/locale';
 import { checkActionEligibility } from '../../handlers/verificationChecks';
 import { config } from '../../config';
-import { User, PartialUser, GroupMember } from 'bloxy/dist/structures';
+import { User, PartialUser, GroupMember, Group } from 'bloxy/dist/structures';
 import { logAction } from '../../handlers/handleLogging';
 import { getLinkedRobloxUser } from '../../handlers/accountLinks';
 import { provider } from '../../database';
@@ -26,6 +29,14 @@ class AddXPCommand extends Command {
             type: 'ChatInput',
             module: 'xp',
             args: [
+                {
+                    trigger: 'group',
+                    description: 'Which group would you like to run this action in?',
+                    isLegacyFlag: true,
+                    autocomplete: true,
+                    required: true,
+                    type: 'Group',
+                },
                 {
                     trigger: 'roblox-user',
                     description: 'Who do you want to add XP to?',
@@ -43,12 +54,12 @@ class AddXPCommand extends Command {
                     isLegacyFlag: true,
                     required: false,
                     type: 'String',
-                },
+                }
             ],
             permissions: [
                 {
                     type: 'role',
-                    ids: config.permissions.users,
+                    ids: config.basePermissions.users,
                     value: true,
                 }
             ]
@@ -56,6 +67,14 @@ class AddXPCommand extends Command {
     }
 
     async run(ctx: CommandContext) {
+        let robloxGroup: Group;
+
+        const groupConfig = config.groups.find((group) => group.name.toLowerCase() === ctx.args['group'].toLowerCase());
+        if(!groupConfig) return ctx.reply({ embeds: [ getInvalidRobloxGroupEmbed() ]});
+        if (!groupConfig.xpSystem.enabled) return ctx.reply({ embeds: [ getXPSysDisabledEmbed() ]});
+        if(!ctx.checkSecondaryPermissions(groupConfig.permissions, "users")) return ctx.reply({ embeds: [ getNoPermissionEmbed() ] });
+        robloxGroup = await robloxClient.getGroup(groupConfig.groupId);
+
         let enoughForRankUp: boolean;
         let robloxUser: User | PartialUser;
         try {
@@ -93,18 +112,18 @@ class AddXPCommand extends Command {
             if(!actionEligibility) return ctx.reply({ embeds: [ getVerificationChecksFailedEmbed() ] });
         }
 
-        const userData = await provider.findUser(robloxUser.id.toString());
+        const userData = await provider.findXPUser(robloxUser.id.toString(), groupConfig.groupId);
         const xp = Number(userData.xp) + Number(ctx.args['increment']);
-        await provider.updateUser(robloxUser.id.toString(), { xp });
+        await provider.updateUserXP(robloxUser.id.toString(), groupConfig.groupId, { xp });
 
-        const groupRoles = await robloxGroup.getRoles();
-        const role = await findEligibleRole(robloxMember, groupRoles, xp);
+        const role = await findEligibleRole(robloxMember, robloxGroup, xp);
+        
         if (role) {
             enoughForRankUp = true;
             try {
                 await robloxGroup.updateMember(robloxUser.id, role.id);
                 ctx.reply({ embeds: [ await getSuccessfulAddingAndRankupEmbed(robloxUser, role.name,xp.toString()) ]});
-                logAction('XP Rankup', ctx.user, null, robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
+                logAction(robloxGroup, 'XP Rankup', ctx.user, null, robloxUser, `${robloxMember.role.name} (${robloxMember.role.rank}) → ${role.name} (${role.rank})`);
             } catch (err) {
                 console.log(err);
                 return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});
@@ -114,7 +133,7 @@ class AddXPCommand extends Command {
         }
 
         try {
-            logAction('Add XP', ctx.user, ctx.args['reason'], robloxUser, null, null, null, `${userData.xp} → ${xp} (+${Number(ctx.args['increment'])})`);
+            logAction(robloxGroup, 'Add XP', ctx.user, ctx.args['reason'], robloxUser, null, null, null, `${userData.xp} → ${xp} (+${Number(ctx.args['increment'])})`);
         } catch (err) {
             console.log(err);
             return ctx.reply({ embeds: [ getUnexpectedErrorEmbed() ]});

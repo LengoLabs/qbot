@@ -4,149 +4,81 @@ import {
     ApplicationCommandOptionAllowedChannelTypes
 } from 'discord.js';
 
-export interface BotConfig {
+export interface PermissionsConfig {
     /**
-     * The ID of the Roblox group this bot will be tied to.
+     * Access to all commands. Please be careful with this.
+     */
+    all?: string[];
+    /**
+     * Access to the promote, demote, setrank, and fire commands.
+     */
+    ranking?: string[];
+    /**
+     * Access to the info, add-xp, remove-xp, and xp-rankup commands.
+     */
+    users?: string[];
+    /**
+     * Access to the shout command.
+     */
+    shout?: string[];
+    /**
+     * Access to the join-requests, accept-join, and deny-join commands.
+     */
+    join?: string[];
+    /**
+     * Access to the signal command.
+     */
+    signal?: string[];
+    /**
+     * Access to the revert-ranks, exile, groupban, and ungroupban command.
+     */
+    admin?: string[];
+}
+
+export interface GroupConfig {
+    /**
+    * The name of the group, to be uniquely identified by.
+    */
+    name: string;
+    
+    /**
+     * The Roblox ID of the group.
      */
     groupId: number;
-    /**
-     * Should slash commands be enabled? This is highly recommended, as it provides a way more interactive user experience.
-     * 
-     * Learn more at https://discord.dev/interactions/application-commands.
-     * @default true
-     */
-    slashCommands: boolean;
-    /**
-     * Options for legacy (prefixed) commands (e.g. q!promote)
-     */
-    legacyCommands: {
-        /**
-         * Should legacy (prefixed) commands be enabled?
-         * @default true
-         */
-        enabled: boolean;
-        /**
-         * A list of strings that must be appended to messages for commands to be parsed.
-         * @default q!
-         */
-        prefixes: string[];
-    }
-    /**
-     * IDs of roles that have permission to do various things.
-     */
-    permissions: {
-        /**
-         * Access to all commands. Please be careful with this.
-         */
-        all?: string[];
-        /**
-         * Access to the promote, demote, setrank, and fire commands.
-         */
-        ranking?: string[];
-        /**
-         * Access to the info, add-xp, remove-xp, and xp-rankup commands.
-         */
-        users?: string[];
-        /**
-         * Access to the shout command.
-         */
-        shout?: string[];
-        /**
-         * Access to the join-requests, accept-join, and deny-join commands.
-         */
-        join?: string[];
-        /**
-         * Access to the signal command.
-         */
-        signal?: string[];
-        /**
-         * Access to the revert-ranks, exile, groupban, and ungroupban command.
-         */
-        admin?: string[];
-    }
-    // /**
-    //  * Configuration for the built-in database module used by suspension and XP-related commands.
-    //  */
-    // database: {
-    //     /**
-    //      * Should the database module be enabled? Disabling this will also disable a few essential commands.
-    //      */
-    //     enabled: boolean;
-    //     /**
-    //      * What type of database would you like to use? If it is MongoDB, you need to install mongoose separately.
-    //      */
-    //     type: 'mongodb' | 'sqlite';
-    // }
-    /**
-     * Should actions be logged, and if so, where?
-     */
-    logChannels: {
-        /**
-         * The ID of the channel where you would like all actions done through commands on this bot to be logged.
-         */
-        actions?: string;
-        /**
-         * The ID of the channel where you would like all shouts to be logged. Usually, this is a public channel.
-         */
-        shout?: string;
-    }
-    /**
-     * Should the API be enabled? You are expected to have an environmental variable named API_KEY with a unique password-like string if this is enabled.
-    */
-    api: boolean;
+
     /**
      * What rank should be the maximum that can be ranked by your bot? 
     */
     maximumRank: number;
+
     /**
-     * Verification checks allows Qbot to integrate with Bloxlink to prevent users from ranking themselves, or uses above or at the same rank as them in your group.
+     * What rank should be the maximum that can be ranked by your bot? 
     */
-    verificationChecks: {
-        /**
-         * Should verification checks be ran? This will require users to be verified with Bloxlink to use the bot.
-         * 
-         * **We highly recommend disabling this feature if your server does not use Bloxlink.**
-        */
-        enabled: boolean;
-        /**
-         * If you have Discord roles you would like to be exempt from verification checks, place their IDs in an array here.
-         */
-        bypassRoleIds: string[];
-        /**
-         * To check for Bloxlink verification status specifically in your server, paste your Discord server ID here. Required if verification checks are enabled.
-         */
-        bloxlinkGuildId?: string;
-    };
+    recordManualActions: boolean;
+
     /**
      * What rank should users be ranked to when they are fired?
      * @default 1
      */
     firedRank: number;
+
     /**
      * What role should users be placed at if they are suspended?
      * @default 1
      */
     suspendedRank: number;
+
     /**
-     * Secondary groups allows users to run actions on multiple groups but one bot.
+     * Should the bot delete URLs in your group wall?
+     * @default false
      */
-    secondaryGroups: {
-        /**
-         * The name of the group, to be uniquely identified by.
-         */
-        name: string;
-        /**
-         * The Roblox ID of the group.
-         */
-        id: number;
-    }[];
+    deleteWallURLs: boolean;
+
     /**
-     * Should the user being given xp using add-xp be automatically ranked up if they have the right amount of xp?
-     */
-    recordManualActions: boolean;
-    /**
-     * Configuration for the member count feature.
-     */
+   * IDs of roles that have permission to do various things.
+   */
+    permissions: PermissionsConfig
+
     memberCount: {
         /**
          * Is this feature enabled?
@@ -164,10 +96,11 @@ export interface BotConfig {
          * Should the bot log member counts that are not milestones?
          */
         onlyMilestones?: boolean;
-    }
+    };
+
     /**
-     * Configuration for the XP system.
-     */
+   * Configuration for the XP system.
+   */
     xpSystem: {
         /**
          * Should the XP system be enabled?
@@ -191,32 +124,96 @@ export interface BotConfig {
              */
             xp: number;
         }[];
-    }
+    };
+}
+
+export interface BotConfig {
     /**
-     * Configuration for the anti abuse feature. This works by demoting users who exceed the action threshold within the set amount of time.
+     * Should slash commands be enabled? This is highly recommended, as it provides a way more interactive user experience.
+     * 
+     * Learn more at https://discord.dev/interactions/application-commands.
+     * @default true
      */
-    antiAbuse: {
+    slashCommands: boolean;
+
+    /**
+     * Options for legacy (prefixed) commands (e.g. q!promote)
+     */
+    legacyCommands: {
         /**
-         * Should the anti abuse feature be enabled?
+         * Should legacy (prefixed) commands be enabled?
+         * @default true
          */
         enabled: boolean;
         /**
-         * How frequently should recorded actions be cleared? This is in seconds, and does not require integers.
+         * A list of strings that must be appended to messages for commands to be parsed.
+         * @default q!
          */
-         clearDuration?: number;
-        /**
-         * Within the flushDuration specified above, how many actions can a user have before being demoted due to this anti abuse system?
-         */
-        threshold?: number;
-        /**
-         * What rank number should users be demoted to if their actions exceed the 
-         */
-        demotionRank?: number;
-        /**
-         * Is there a role that can bypass this? If so, place the ID here.
-         */
-        bypassRoleId?: string;
+        prefixes: string[];
     }
+
+    // /**
+    //  * Configuration for the built-in database module used by suspension and XP-related commands.
+    //  */
+    // database: {
+    //     /**
+    //      * Should the database module be enabled? Disabling this will also disable a few essential commands.
+    //      */
+    //     enabled: boolean;
+    //     /**
+    //      * What type of database would you like to use? If it is MongoDB, you need to install mongoose separately.
+    //      */
+    //     type: 'mongodb' | 'sqlite';
+    // }
+
+    /**
+     * Should actions be logged, and if so, where?
+     */
+    logChannels: {
+        /**
+         * The ID of the channel where you would like all actions done through commands on this bot to be logged.
+         */
+        actions?: string;
+        /**
+         * The ID of the channel where you would like all shouts to be logged. Usually, this is a public channel.
+         */
+        shout?: string;
+    }
+
+    /**
+     * Should the API be enabled? You are expected to have an environmental variable named API_KEY with a unique password-like string if this is enabled.
+    */
+    api: boolean;
+
+    /**
+     * Configuration for the bot's status (online/idle/dnd).
+     */
+    status: 'online' | 'idle' | 'dnd';
+
+    /**
+     * Verification checks allows Qbot to integrate with Bloxlink to prevent users from ranking themselves, or uses above or at the same rank as them in your group.
+    */
+    verificationChecks: {
+        /**
+         * Should verification checks be ran? This will require users to be verified with Bloxlink to use the bot.
+         * 
+         * **We highly recommend disabling this feature if your server does not use Bloxlink.**
+        */
+        enabled: boolean;
+        /**
+         * If you have Discord roles you would like to be exempt from verification checks, place their IDs in an array here.
+         */
+        bypassRoleIds: string[];
+        /**
+         * To check for Bloxlink verification status specifically in your server, paste your Discord server ID here. Required if verification checks are enabled.
+         */
+        bloxlinkGuildId?: string;
+    };
+
+    basePermissions: PermissionsConfig
+
+    groups: [GroupConfig];
+
     /**
      * Configuration for the bot's activity status (rich presence) on Discord.
      */
@@ -238,14 +235,31 @@ export interface BotConfig {
          */
         url?: string;
     }
+
     /**
-     * Configuration for the bot's status (online/idle/dnd).
-     */
-    status: 'online' | 'idle' | 'dnd';
-    /**
-     * Should the bot delete URLs in your group wall?
-     */
-    deleteWallURLs: boolean;
+    * Configuration for the anti abuse feature. This works by demoting users who exceed the action threshold within the set amount of time.
+    */
+    antiAbuse: {
+        /**
+         * Should the anti abuse feature be enabled?
+         */
+        enabled: boolean;
+
+        /**
+         * How frequently should recorded actions be cleared? This is in seconds, and does not require integers.
+         */
+        clearDuration?: number;
+
+        /**
+         * Within the flushDuration specified above, how many actions can a user have before being demoted due to this anti abuse system?
+         */
+        threshold?: number;
+
+        /**
+         * Is there a role that can bypass this? If so, place the ID here.
+         */
+        bypassRoleId?: string;
+    };
 }
 
 export declare type CommandPermission = {
@@ -275,7 +289,7 @@ export declare type CommandArgument = {
     /**
      * How should the value be resolved or what should be prompted for slash commands?
      */
-    type: 'Subcommand' | 'SubcommandGroup' | 'String' | 'Number' | 'Boolean' | 'Subcommand' | 'RobloxUser' | 'RobloxRole' | 'DiscordUser' | 'DiscordRole' | 'DiscordChannel' | 'DiscordMentionable' | 'SecondaryGroup';
+    type: 'Subcommand' | 'SubcommandGroup' | 'String' | 'Number' | 'Boolean' | 'Subcommand' | 'RobloxUser' | 'RobloxRole' | 'DiscordUser' | 'DiscordRole' | 'DiscordChannel' | 'DiscordMentionable' | 'Group';
     /**
      * Should the bot be sent requests to autocomplete everything they type?
      * @default false;
@@ -347,7 +361,8 @@ export declare type BloxlinkResponse = {
     resolved: any;
 }
 
-export declare type DatabaseUser = {
+
+export declare type SuspendedUser = {
     /**
      * Database-generated UUID for this user. No relevance to the Roblox or Discord IDs; you should ignore this value.
      */
@@ -357,9 +372,9 @@ export declare type DatabaseUser = {
      */
     robloxId: string;
     /**
-     * How much XP this user has.
+     * The Group ID of the associated with the user suspension.
      */
-    xp: number;
+    groupId: number;
     /**
      * If this user is suspended, when will they be unsuspended?
      */
@@ -368,6 +383,36 @@ export declare type DatabaseUser = {
      * What should they be ranked to once unsuspended?
      */
     unsuspendRank?: number;
+}
+
+export declare type XPUser = {
+    /**
+     * Database-generated UUID for this user. No relevance to the Roblox or Discord IDs; you should ignore this value.
+     */
+    id: string;
+    /**
+     * The Roblox ID of the user belonging to this database entry.
+     */
+    robloxId: string;
+    /**
+     * The Group ID of the associated with the user XP.
+     */
+    groupId: number;
+    /**
+     * How much XP this user has.
+     */
+    xp: number;
+}
+
+export declare type DatabaseUser = {
+    /**
+     * Database-generated UUID for this user. No relevance to the Roblox or Discord IDs; you should ignore this value.
+     */
+    id: string;
+    /**
+     * The Roblox ID of the user belonging to this database entry.
+     */
+    robloxId: string;
     /**
      * Is the user banned from the group?
      */

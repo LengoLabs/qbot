@@ -1,7 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import { CommandArgument, DatabaseUser } from '../structures/types';
 import { config } from '../config';
-import { User, PartialUser, GroupMember, GroupJoinRequest, GroupRole } from 'bloxy/dist/structures';
+import { User, PartialUser, GroupMember, GroupJoinRequest, GroupRole, Group as RobloxGroup } from 'bloxy/dist/structures';
 import { User as DiscordUser } from 'discord.js';
 import { Command } from '../structures/Command';
 import { robloxClient } from '../main';
@@ -32,7 +32,7 @@ export const noSuspendedRankLog = `Uh oh, you do not have a suspended rank with 
 export const getListeningText = (port) => `${consoleGreen}✓  ${consoleClear}Listening on port ${port}.`;
 
 const getHeadshotImage = async (userId: number) => {
-    return (await robloxClient.apis.thumbnailsAPI.getUsersAvatarHeadShotImages({ userIds: [ userId ], size: '48x48', format: 'png' })).data[0];
+    return (await robloxClient.apis.thumbnailsAPI.getUsersAvatarHeadShotImages({ userIds: [userId], size: '48x48', format: 'png' })).data[0];
 }
 
 export const getUnknownCommandMessage = (): EmbedBuilder => {
@@ -47,7 +47,7 @@ export const getUnknownCommandMessage = (): EmbedBuilder => {
 export const getMissingArgumentsEmbed = (cmdName: string, args: CommandArgument[]): EmbedBuilder => {
     let argString = '';
     args.forEach((arg) => {
-        if(arg.isLegacyFlag) {
+        if (arg.isLegacyFlag) {
             argString += arg.required || true ? `--<${arg.trigger}> ` : `--[${arg.trigger}] `;
         } else {
             argString += arg.required || true ? `<${arg.trigger}> ` : `[${arg.trigger}] `;
@@ -60,7 +60,7 @@ export const getMissingArgumentsEmbed = (cmdName: string, args: CommandArgument[
         .setColor(redColor)
         .setDescription(`Command Usage: \`${config.legacyCommands.prefixes[0]}${cmdName} ${argString}\``)
         .setFooter({ text: config.slashCommands ? 'Tip: Slash commands automatically display the required arguments for commands.' : '' });
-    
+
     return embed;
 }
 
@@ -100,7 +100,7 @@ export const getNoJoinRequestEmbed = (): EmbedBuilder => {
     return embed;
 }
 
-export const getSuccessfulAddingAndRankupEmbed = async(user: User | PartialUser, newRole: string, xpChange: string): Promise<EmbedBuilder> => {
+export const getSuccessfulAddingAndRankupEmbed = async (user: User | PartialUser, newRole: string, xpChange: string): Promise<EmbedBuilder> => {
     const embed = new EmbedBuilder()
         .setAuthor({ name: 'Success!', iconURL: checkIconUrl })
         .setColor(greenColor)
@@ -122,7 +122,7 @@ export const getSuccessfulPromotionEmbed = async (user: User | PartialUser, newR
 
 export const getSuccessfulDemotionEmbed = async (user: User | PartialUser, newRole: string): Promise<EmbedBuilder> => {
     const embed = new EmbedBuilder()
-    .setAuthor({ name: 'Success!', iconURL: checkIconUrl })
+        .setAuthor({ name: 'Success!', iconURL: checkIconUrl })
         .setColor(greenColor)
         .setThumbnail((await getHeadshotImage(user.id)).imageUrl)
         .setDescription(`**${user.name}** has been successfully demoted to **${newRole}**.`);
@@ -412,18 +412,18 @@ export const getWallPostEmbed = async (post): Promise<EmbedBuilder> => {
     return embed;
 }
 
-export const getLogEmbed = async (action: string, moderator: DiscordUser | User | GroupMember | any, reason?: string, target?: User | PartialUser, rankChange?: string, endDate?: Date, body?: string, xpChange?: string, secondaryGroup?: string): Promise<EmbedBuilder> => {
-    if(target && !target.name) target = null;
-    
+export const getLogEmbed = async (robloxGroup: RobloxGroup|boolean, action: string, moderator: DiscordUser | User | GroupMember | any, reason?: string, target?: User | PartialUser, rankChange?: string, endDate?: Date, body?: string, xpChange?: string): Promise<EmbedBuilder> => {
+    if (target && !target.name) target = null;
+
     const embed = new EmbedBuilder()
         .setColor(mainColor)
         .setTimestamp()
-        .setDescription(`**Action:** ${action}\n${target ? `**Target:** ${target.name} (${target.id})\n` : ''}${rankChange ? `**Rank Change:** ${rankChange}\n` : ''}${xpChange ? `**XP Change:** ${xpChange}\n` : ''}${endDate ? `**Duration:** <t:${Math.round(endDate.getTime() / 1000)}:R>\n` : ''}${secondaryGroup ? `**Group:** ${secondaryGroup}\n` : ''}${reason ? `**Reason:** ${reason}\n` : ''}${body ? `**Body:** ${body}\n` : ''}`);
+        .setDescription(`**Action:** ${action}\n${target ? `**Target:** ${target.name} (${target.id})\n` : ''}${rankChange ? `**Rank Change:** ${rankChange}\n` : ''}${xpChange ? `**XP Change:** ${xpChange}\n` : ''}${endDate ? `**Duration:** <t:${Math.round(endDate.getTime() / 1000)}:R>\n` : ''}${typeof robloxGroup === "boolean" ? '' : `**Group:** ${robloxGroup.name}\n`}${reason ? `**Reason:** ${reason}\n` : ''}${body ? `**Body:** ${body}\n` : ''}`);
 
-    if(typeof moderator === 'string') {
+    if (typeof moderator === 'string') {
         embed.setAuthor({ name: moderator });
     } else {
-        if(moderator instanceof DiscordUser) {
+        if (moderator instanceof DiscordUser) {
             embed.setAuthor({ name: moderator.username, iconURL: moderator.displayAvatarURL() });
             embed.setFooter({ text: `Moderator ID: ${moderator.id}` });
         } else {
@@ -431,6 +431,15 @@ export const getLogEmbed = async (action: string, moderator: DiscordUser | User 
             embed.setThumbnail((await getHeadshotImage(target.id)).imageUrl)
         }
     }
+
+    return embed;
+}
+
+export const getXPSysDisabledEmbed = (): EmbedBuilder => {
+    const embed = new EmbedBuilder()
+        .setAuthor({ name: 'XP System disabled', iconURL: xmarkIconUrl })
+        .setColor(redColor)
+        .setDescription('The group config has the XP system disabled for this group.');
 
     return embed;
 }
@@ -475,7 +484,7 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
         .setAuthor({ name: `Information: ${user.name}`, iconURL: infoIconUrl })
         .setColor(mainColor)
         .setDescription(primaryGroup ? `Primary Group: [${primaryGroup.group.name}](https://roblox.com/groups/${primaryGroup.group.id})` : null)
-        .setThumbnail((await robloxClient.apis.thumbnailsAPI.getUsersAvatarHeadShotImages({ userIds: [ user.id ], size: '150x150', format: 'png', isCircular: false })).data[0].imageUrl)
+        .setThumbnail((await robloxClient.apis.thumbnailsAPI.getUsersAvatarHeadShotImages({ userIds: [user.id], size: '150x150', format: 'png', isCircular: false })).data[0].imageUrl)
         .setFooter({ text: `User ID: ${user.id}` })
         .setTimestamp()
         .addFields([
@@ -484,6 +493,15 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
                 value: `${member.role.name} (${member.role.rank})`,
                 inline: true
             },
+            {
+                name: 'Banned',
+                value: data.isBanned ? `✅` : '❌',
+                inline: true
+            }
+        ]);
+
+        /*
+        TODO: ADD
             {
                 name: 'XP',
                 value: data.xp.toString() || '0',
@@ -494,19 +512,15 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
                 value: data.suspendedUntil ? `✅ (<t:${Math.round(data.suspendedUntil.getTime() / 1000)}:R>)` : '❌',
                 inline: true
             },
-            {
-                name: 'Banned',
-                value: data.isBanned ? `✅` : '❌',
-                inline: true
-            }
-        ]);
-
+            */
     return embed;
 }
 
-export const getRoleListEmbed = (roles: GroupRole[]): EmbedBuilder => {
+export const getRoleListEmbed = async (robloxGroup: RobloxGroup): Promise<EmbedBuilder> => {
+    const roles = await robloxGroup.getRoles();
+
     const embed = new EmbedBuilder()
-        .setAuthor({ name: 'Group Roles', iconURL: infoIconUrl })
+        .setAuthor({ name: robloxGroup.name + "'s Group Roles", iconURL: infoIconUrl })
         .setColor(mainColor)
         .setDescription('Here is a list of all roles on the group.');
 
@@ -531,7 +545,7 @@ export const getNotSuspendedEmbed = (): EmbedBuilder => {
 }
 
 export const getMemberCountMessage = (oldCount: number, newCount: number): string => {
-    if(newCount > oldCount) {
+    if (newCount > oldCount) {
         return `⬆️ The member count is now **${newCount}** (+${newCount - oldCount})`;
     } else {
         return `⬇️ The member count is now **${newCount}** (-${oldCount - newCount})`;
@@ -540,7 +554,7 @@ export const getMemberCountMessage = (oldCount: number, newCount: number): strin
 
 export const getMemberCountMilestoneEmbed = (count: number): EmbedBuilder => {
     const embed = new EmbedBuilder()
-    .setAuthor({ name: 'Member Milestone Reached!', iconURL: checkIconUrl })
+        .setAuthor({ name: 'Member Milestone Reached!', iconURL: checkIconUrl })
         .setColor(greenColor)
         .setDescription(`🎉 The member count is now **${count}**!`);
 
@@ -604,21 +618,21 @@ export const getJoinRequestsEmbed = (joinRequests: GroupJoinRequest[]): EmbedBui
     return embed;
 }
 
-export const getSuccessfulGroupBanEmbed = (user: User | PartialUser) : EmbedBuilder => {
+export const getSuccessfulGroupBanEmbed = (user: User | PartialUser): EmbedBuilder => {
     const embed = new EmbedBuilder()
         .setAuthor({ name: 'Success', iconURL: checkIconUrl })
         .setColor(greenColor)
         .setDescription(`**${user.name}** has successfully been banned from the group.`);
-    
+
     return embed;
 }
 
-export const getSuccessfulGroupUnbanEmbed = (user: User | PartialUser) : EmbedBuilder => {
+export const getSuccessfulGroupUnbanEmbed = (user: User | PartialUser): EmbedBuilder => {
     const embed = new EmbedBuilder()
         .setAuthor({ name: 'Success', iconURL: checkIconUrl })
         .setColor(greenColor)
         .setDescription(`**${user.name}** has successfully been unbanned from the group.`);
-    
+
     return embed;
 }
 
