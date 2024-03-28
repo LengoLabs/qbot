@@ -47,7 +47,7 @@ discordClient.login(process.env.DISCORD_TOKEN);
     });
 })();
 
-function getClient(groupId: String|null = null) {
+function getGroupClient(groupId: String|null = null) {
     if (groupId == null) return robloxGroupClients;
     return robloxGroupClients[Number(groupId)]
 }
@@ -57,4 +57,4 @@ discordClient.on('interactionCreate', handleInteraction as any);
 discordClient.on('messageCreate', handleLegacyCommand);
 
 // [Module]
-export { discordClient, robloxClient, getClient };
+export { discordClient, robloxClient, getGroupClient };

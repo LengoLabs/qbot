@@ -1,4 +1,4 @@
-import { discordClient, getClient } from '../main';
+import { discordClient, getGroupClient } from '../main';
 import { CommandContext } from '../structures/addons/CommandAddons';
 import {
     Interaction,
@@ -46,7 +46,7 @@ const handleInteraction = async (payload: Interaction<CacheType>) => {
 
         try {
             const groupConfig = await findGroupByName(robloxGroupName);
-            const robloxGroup = getClient(groupConfig.groupId);
+            const robloxGroup = getGroupClient(groupConfig.groupId);
             if (focusedArg.type === 'RobloxRole' && robloxGroup) await handleRobloxRole(robloxGroup, interaction, focusedOption);
         } catch (error) {}
 
