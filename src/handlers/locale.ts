@@ -504,22 +504,31 @@ export const getUserInfoEmbed = async (user: User | PartialUser, member: GroupMe
     return embed;
 }
 
-export const getRoleListEmbed = (roles: GroupRole[]): EmbedBuilder => {
-    const embed = new EmbedBuilder()
-        .setAuthor({ name: 'Group Roles', iconURL: infoIconUrl })
-        .setColor(mainColor)
-        .setDescription('Here is a list of all roles on the group.');
+export const getRoleListEmbed = (roles: GroupRole[]): EmbedBuilder[] => {
+    const embeds: EmbedBuilder[] = [];
 
-    roles.forEach((role) => {
-        embed.addFields({
-            name: role.name,
-            value: `Rank: \`${role.rank || '0'}\``,
-            inline: true
+    for (let i = 0; i < roles.length; i += 25) {
+        const chunk = roles.slice(i, i + 25);
+
+        const embed = new EmbedBuilder()
+            .setAuthor({ name: 'Group Roles', iconURL: infoIconUrl })
+            .setColor(mainColor)
+            .setDescription('Here is a list of all roles on the group.');
+
+        chunk.forEach((role) => {
+            embed.addFields({
+                name: role.name,
+                value: `Rank: \`${role.rank || '0'}\``,
+                inline: true
+            });
         });
-    });
 
-    return embed;
-}
+        embeds.push(embed);
+    }
+
+    return embeds;
+};
+
 
 export const getNotSuspendedEmbed = (): EmbedBuilder => {
     const embed = new EmbedBuilder()
